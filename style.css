@@ -1,6 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Song+Myung&display=swap');
+
+.song-myung-regular {
+    font-family: "Song Myung", serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
 body {
     margin: 0;
-    font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif;
+    font-family: "Song Myung", serif;
     background-color: #4e2e1e;
     color: #f5f0e6;
     min-height: 100vh;
@@ -160,7 +168,7 @@ footer {
     padding: 10px;
     border: none;
     border-radius: 5px;
-    font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif;
+    font-family: "Song Myung", serif;
     font-size: 1em;
     box-sizing: border-box;
 }
@@ -172,7 +180,7 @@ footer {
     color: #4e2e1e;
     border: none;
     cursor: pointer;
-    font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif;
+    font-family: "Song Myung", serif;
     font-size: 1em;
     transition: background-color 0.3s ease;
 }
@@ -182,7 +190,7 @@ footer {
 }
 
 .delete-btn, .edit-btn {
-    font-family: 'Noto Serif KR', 'Nanum Myeongjo', serif;
+    font-family: "Song Myung", serif;
     margin-left: 10px;
     padding: 3px 8px;
     background-color: #a94442;
