@@ -73,8 +73,8 @@ async function loadPosts() {
     const li = document.createElement("li");
 
     const titleDisplay = data.isPublic
-        ? `${data.title} - ${data.author}`
-        : `비밀글입니다. - ${data.author}`;
+        ? `${data.title}`
+        : `비밀글입니다.`;
 
     li.innerHTML = `
       <a href="diary-post.html?id=${docSnap.id}">${titleDisplay}</a>
