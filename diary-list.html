@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>일기 게시판</title>
+  <link rel="stylesheet" href="diary-list.css" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/css/datepicker.min.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/js/datepicker.min.js"></script>
+
+  <script type="module" src="diary-list.js"></script>
+</head>
+<body>
+  <label for="datepicker"></label>
+  <h1>주은의 일기</h1>
+  <p id="selected-date-title">날짜를 선택하세요</p>
+
+  <input type="text" id="datepicker" placeholder="날짜 선택" readonly />
+
+  <div class="main-container">
+    <a href="diary-write.html" class="write-link">글쓰기</a>
+
+
+  <ul id="post-list"></ul>
+
+  <div id="pagination">
+    <button id="prev-page">이전 페이지</button>
+    <span id="current-page">1</span>
+    <button id="next-page">다음 페이지</button>
+  </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>일기 상세</title>
+  <link rel="stylesheet" href="diary-post.css" />
+  <script type="module" src="diary-post.js"></script>
+</head>
+<body>
+
+
+<h1 id="post-title"></h1>
+<p id="post-content"></p>
+<p id="post-author"></p>
+
+<div class="button-wrapper">
+  <button id="edit-btn" class="edit-btn">수정하기</button>
+  <button id="delete-btn" class="delete-btn">삭제하기</button>
+  <button id="home-btn" class="home-link"><a href="/diary-list.html">목록으로</button></a>
+</div>
+
+
+<div id="edit-modal" class="modal">
+  <div class="modal-content">
+    <span class="close" id="modal-close">&times;</span>
+    <h3>일기 수정하기</h3>
+    <input type="text" id="edit-title" /><br />
+    <textarea id="edit-content"></textarea><br />
+    <button id="save-btn">저장하기</button>
+  </div>
+</div>
+
+<div id="password-modal" class="modal">
+  <div class="modal-content">
+      <span class="close" id="password-modal-close">&times;</span>
+      <h3>비밀글 입니다</h3>
+      <input type="password" id="password-input" placeholder="비밀번호 입력" />
+      <button id="password-submit-btn">확인</button>
+  </div>
+</div>
+
+
+
+    </div>
+  </div>
+
+</body>
+</html>
