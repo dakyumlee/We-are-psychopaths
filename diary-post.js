@@ -28,7 +28,7 @@ async function loadPost() {
             console.log("docSnap data:", data);
 
             if (!data.isPublic) {
-                // 비밀글 → 암호 입력 모달 띄움
+               
                 const passwordModal = document.getElementById("password-modal");
                 passwordModal.style.display = "block";
 
@@ -47,7 +47,7 @@ async function loadPost() {
                 });
 
             } else {
-                // 공개글 → 바로 보여주기
+             
                 showPost(data);
             }
         } else {
