@@ -120,3 +120,82 @@ h1 {
     font-weight: bold;
     cursor: pointer;
 }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+  
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  
+  .gallery-item {
+    background: #5d4037;
+    padding: 0.5rem;
+    border-radius: 8px;
+    position: relative;
+  }
+  
+  .gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .gallery-item p {
+    margin: 0 0 0.5rem 0;
+    word-break: break-word;
+  }
+  
+  .gallery-item button {
+    margin-right: 0.5rem;
+    background: #8d6e63;
+    border: none;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #fff;
+  }
+  
+  .gallery-item button:hover {
+    background: #a1887f;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  input[type="text"],
+  input[type="file"] {
+    padding: 0.5rem;
+    border-radius: 4px;
+    border: none;
+  }
+  
+  button {
+    background: #8d6e63;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background: #a1887f;
+  }
+  
+  #edit-image {
+    max-width: 300px;
+    display: block;
+    margin-bottom: 1rem;
+  }
+  

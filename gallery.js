@@ -1,52 +1,46 @@
 import { db } from "./firebase-config.js";
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-document.addEventListener("DOMContentLoaded", () => {
-    loadGallery();
-});
+import {
+  collection,
+  getDocs,
+  deleteDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 async function loadGallery() {
-    const querySnapshot = await getDocs(collection(db, "galleryPosts"));
+  const querySnapshot = await getDocs(collection(db, "galleryPosts"));
+  const galleryGrid = document.getElementById("gallery-grid");
+  galleryGrid.innerHTML = "";
 
-    const galleryGrid = document.getElementById("gallery-grid");
-    galleryGrid.innerHTML = "";
+  querySnapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+    const id = docSnap.id;
 
-    querySnapshot.forEach((docSnap) => {
-        const data = docSnap.data();
+    const item = document.createElement("div");
+    item.className = "gallery-item";
+    item.innerHTML = `
+      <img src="${data.imageUrl}" alt="${data.caption}" />
+      <p>${data.caption}</p>
+    `;
 
-        const imgDiv = document.createElement("div");
-        imgDiv.className = "gallery-item";
-
-        imgDiv.innerHTML = `
-            <img src="${data.imageUrl}" alt="${data.caption}" />
-            <p>${data.caption}</p>
-        `;
-
-        imgDiv.querySelector("img").addEventListener("click", () => {
-            openModal(data.imageUrl, data.caption);
-        });
-
-        galleryGrid.appendChild(imgDiv);
+    const editBtn = document.createElement("button");
+    editBtn.textContent = "수정";
+    editBtn.addEventListener("click", () => {
+      window.location.href = `gallery-edit.html?id=${id}`;
     });
+    item.appendChild(editBtn);
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "삭제";
+    deleteBtn.addEventListener("click", async () => {
+      if (confirm("정말 삭제하시겠습니까?")) {
+        await deleteDoc(doc(db, "galleryPosts", id));
+        item.remove();
+      }
+    });
+    item.appendChild(deleteBtn);
+
+    galleryGrid.appendChild(item);
+  });
 }
 
-const modal = document.getElementById("image-modal");
-const modalImg = document.getElementById("modal-img");
-const modalCaption = document.getElementById("modal-caption");
-const modalClose = document.getElementById("modal-close");
-
-function openModal(url, caption) {
-    modal.style.display = "block";
-    modalImg.src = url;
-    modalCaption.textContent = caption;
-}
-
-modalClose.addEventListener("click", () => {
-    modal.style.display = "none";
-});
-
-window.addEventListener("click", (event) => {
-    if (event.target === modal) {
-        modal.style.display = "none";
-    }
-});
+document.addEventListener("DOMContentLoaded", loadGallery);
