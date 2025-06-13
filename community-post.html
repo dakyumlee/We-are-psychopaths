@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>게시글 보기</title>
+  <link rel="stylesheet" href="community.css" />
+</head>
+<body>
+  <div class="container">
+    <h1 id="post-title"></h1>
+    <p id="post-content"></p>
+    <p>
+      조회수: <span id="view-count">0</span>  
+      좋아요: <span id="like-count">0</span>
+    </p>
+    <button id="like-btn">좋아요</button>
+    <button id="edit-btn">수정</button>
+    <button id="delete-btn">삭제</button>
+    <hr />
+    <h2>댓글</h2>
+    <ul id="comments-list"></ul>
+    <form id="comment-form">
+      <input type="text" id="comment-input" placeholder="댓글 입력" />
+      <button type="submit">등록</button>
+    </form>
+    <a href="community-list.html"><button>목록으로</button></a>
+  </div>
+  <script type="module" src="./community-post.js"></script>
+</body>
+</html>
