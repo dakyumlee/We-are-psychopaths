@@ -3,30 +3,16 @@
 <head>
     <meta charset="UTF-8" />
     <title>기록 갤러리 - 주은의 이야기</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="gallery.css" />
     <script type="module" src="gallery.js"></script>
 </head>
 <body>
 
     <h1>기록 갤러리</h1>
 
-    <div id="key-check">
-        <input type="password" id="master-key" placeholder="마스터키 입력" />
-        <button id="key-btn">확인</button>
-    </div>
+    <a href="gallery-write.html" class="home-link">사진 업로드 하기</a>
 
-    <div id="gallery-section">
-
-        
-        <form id="upload-form" style="display:none;">
-            <input type="file" id="image-input" accept="image/*" required />
-            <input type="text" id="caption-input" placeholder="사진 설명" required />
-            <button type="submit">업로드</button>
-        </form>
-
-        <div id="gallery-grid"></div>
-
-    </div>
+    <div id="gallery-grid"></div>
 
     <div id="image-modal" class="modal">
         <span class="close" id="modal-close">&times;</span>

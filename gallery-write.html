@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>사진 업로드 - 주은의 이야기</title>
+    <link rel="stylesheet" href="gallery.css" />
+    <script type="module" src="gallery-write.js"></script>
+</head>
+<body>
+
+    <h1>사진 업로드</h1>
+
+    <div id="key-check">
+        <input type="password" id="master-key" placeholder="마스터키 입력" />
+        <button id="key-btn">확인</button>
+    </div>
+
+    <div id="upload-section" style="display:none;">
+        <form id="upload-form">
+            <input type="file" id="image-input" accept="image/*" required />
+            <input type="text" id="caption-input" placeholder="사진 설명" required />
+            <button type="submit">업로드</button>
+        </form>
+    </div>
+
+</body>
+</html>
