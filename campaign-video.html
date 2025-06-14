@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <title>글 작성 / 수정</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>다큐 영상 업로드</title>
   <link rel="stylesheet" href="community.css" />
 </head>
-<body>
+<body class="song-myung-regular">
+
+
   <nav>
     <ul class="nav-container">
       <li><a href="../index.html">홈</a></li>
@@ -44,14 +47,36 @@
 
     </ul>
   </nav>
-  <div class="container">
-    <h1 id="form-title">새 글 작성</h1>
-    <form id="post-form">
-      <input type="text" id="title-input" placeholder="제목 입력" />
-      <textarea id="content-input" rows="10" placeholder="내용 입력"></textarea>
-      <button type="submit">저장</button>
-    </form>
+
+  <div class="main-container">
+    <h1>다큐 영상 업로드</h1>
+
+    <div id="key-check">
+      <input id="master-key" type="text" placeholder="감독 키 입력" />
+      <button id="key-btn">확인</button>
+    </div>
+
+    <section id="upload-section" style="display:none">
+      <form id="video-upload-form">
+        <label>
+          영상 파일 (예고편 업로드)
+          <input type="file" id="video-input" accept="video/*" />
+        </label>
+
+        <p style="text-align:center; margin: 10px 0;">또는</p>
+
+        <label>
+          YouTube 링크
+          <input type="url" id="link-input" placeholder="https://youtu.be/..." />
+        </label>
+
+        <input type="text" id="title-input" placeholder="영상 제목" />
+        <textarea id="desc-input" rows="4" placeholder="간단 설명"></textarea>
+        <button type="submit">업로드</button>
+      </form>
+    </section>
   </div>
-  <script type="module" src="./community-write.js"></script>
+
+  <script type="module" src="campaign-video.js"></script>
 </body>
 </html>

@@ -256,3 +256,25 @@ button:hover {
 .home-link:hover::after {
   transform: scaleX(1);
 }
+
+
+.upload-btn-container {
+  text-align: right;
+  margin-bottom: 1rem;
+}
+
+.upload-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #8d6e63;
+  color: #f5f0e6;
+  border-radius: 4px;
+  text-decoration: none;
+  font-family: "Song Myung", serif;
+  transition: background-color 0.3s ease;
+}
+
+.upload-btn:hover {
+  background-color: #a1887f;
+}
+
