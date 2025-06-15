@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>인터랙티브 타임라인</title>
+  <link href="community.css" rel="stylesheet" />
+  <link href="timeline.css" rel="stylesheet" />
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" />
+</head>
+<body class="song-myung-regular">
+
+  <nav>
+    <ul class="nav-container">
+      <li><a href="index.html">홈</a></li>
+      <li class="dropdown">
+        <a href="#" title="우리의 정신병 일지">1</a>
+        <ul class="dropdown-content">
+          <li><a href="diary-list.html">일기</a></li>
+          <li><a href="gallery.html">갤러리</a></li>
+          <li><a href="community-list.html">커뮤니티</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#" title="인식 개선 캠페인">2</a>
+        <ul class="dropdown-content">
+          <li><a href="campaign-clips.html">인터뷰 클립</a></li>
+          <li><a href="info.html">조현병 정보</a></li>
+          <li><a href="story.html">우리의 이야기</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#" title="지원 정보 허브">3</a>
+        <ul class="dropdown-content">
+          <li><a href="support.html">병원·정책·연락처</a></li>
+        </ul>
+      </li>
+      <li><a href="timeline.html">4</a></li>
+      <li><a href="mother.html">5</a></li>
+    </ul>
+  </nav>
+
+  <div class="main-container">
+    <h1>인터랙티브 타임라인</h1>
+
+    <div id="admin-check" class="admin-container">
+      <input id="admin-key" type="password" placeholder="관리자 키 입력" />
+      <button id="admin-btn">감독 모드</button>
+    </div>
+
+    <section id="event-form-section" style="display:none; margin-bottom:1.5rem;">
+      <form id="event-form">
+        <input type="date" id="event-date" required />
+        <input type="text" id="event-content" placeholder="이벤트 내용" required />
+        <button type="submit">추가</button>
+      </form>
+    </section>
+
+    <div id="timeline"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="timeline.js"></script>
+</body>
+</html>
