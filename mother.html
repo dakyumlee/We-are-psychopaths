@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>엄마의 이야기</title>
+
+  <link href="index.css" rel="stylesheet"/>
+  <link href="mother.css" rel="stylesheet"/>
+</head>
+<body class="song-myung-regular">
+
+  <nav>
+    <div class="nav-container">
+        <nav>
+            <ul class="nav-container">
+              <li><a href="index.html">홈</a></li>
+          
+              <li class="dropdown">
+                <a href="#">1</a>
+                <ul class="dropdown-content">
+                  <li><a href="diary-list.html">일기 게시판</a></li>
+                  <li><a href="gallery.html">기록 갤러리</a></li>
+                  <li><a href="community-list.html">커뮤니티</a></li>
+                </ul>
+              </li>
+          
+              <li class="dropdown">
+                <a href="#">2</a>
+                <ul class="dropdown-content">
+                  <li><a href="campaign-clips.html">다큐 영상</a></li>
+                  <li><a href="info.html">조현병 정보</a></li>
+                  <li><a href="interview.html">인터뷰 클립</a></li>
+                  <li><a href="story.html">우리의 이야기</a></li>
+                </ul>
+              </li>
+          
+              <li class="dropdown">
+                <a href="#">3</a>
+                <ul class="dropdown-content">
+                  <li><a href="support.html">병원/정책/연락처</a></li>
+                </ul>
+              </li>
+          
+              <li><a href="timeline.html">4</a></li>
+              <li><a href="mother.html">5</a></li>
+            </ul>
+          </nav>
+          
+    </div>
+</nav>   
+
+  <div class="main-container">
+    <h1>엄마의 이야기</h1>
+
+    <section class="timeline">
+      <div class="timeline-item">
+        <h3>1984</h3>
+        <p>엄마가 처음으로 조현병 진단을 받음.</p>
+      </div>
+      <div class="timeline-item">
+        <h3>1990</h3>
+        <p>가족과 함께 일상의 균형을 찾아가던 시기.</p>
+      </div>
+      <div class="timeline-item">
+        <h3>2005</h3>
+        <p>병이 재발하고 가족 구성원들의 지원이 절실했던 시기.</p>
+      </div>
+      <div class="timeline-item">
+        <h3>2024</h3>
+        <p>주은이 엄마의 이야기를 기록하기 시작.</p>
+      </div>
+    </section>
+
+    <div id="admin-check" class="admin-container">
+      <input id="admin-key" type="password" placeholder="관리자 키 입력" />
+      <button id="admin-btn">감독 권한</button>
+    </div>
+
+    <section id="music-section" style="display:none">
+      <h2>음악 추가</h2>
+      <form id="music-form">
+        <input type="url" id="music-url" placeholder="YouTube 링크 입력" />
+        <input type="text" id="music-title" placeholder="곡 제목 입력" />
+        <button type="submit">추가</button>
+      </form>
+    </section>
+
+    <section class="music">
+      <h2>엄마와 함께 듣던 음악</h2>
+      <div id="music-items"></div>
+    </section>
+
+    <section id="photo-section" style="display:none">
+      <h2>사진 추가</h2>
+      <form id="photo-form">
+        <input type="file" id="photo-input" accept="image/*" />
+        <input type="text" id="photo-caption" placeholder="사진 캡션 입력" />
+        <button type="submit">추가</button>
+      </form>
+    </section>
+
+    <section class="photo-gallery">
+      <h2>엄마와 우리의 사진들</h2>
+      <div id="photo-items"></div>
+    </section>
+
+    <section class="voices">
+      <h2>엄마에게 하고 싶은 말</h2>
+      <ul id="mother-comments-list"></ul>
+      <form id="mother-comment-form">
+        <textarea id="mother-comment-input" rows="4" placeholder="메시지를 입력하세요"></textarea>
+        <button type="submit">등록</button>
+      </form>
+    </section>
+
+    <a href="index.html" class="home-link">홈으로</a>
+  </div>
+
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="mother.js"></script>
+</body>
+</html>
