@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>조현병 정보</title>
+  <link href="community.css" rel="stylesheet" />
+  <link href="info.css" rel="stylesheet" />
+</head>
+<body class="song-myung-regular">
+
+  <nav>
+    <ul class="nav-container">
+      <li><a href="index.html">홈</a></li>
+      <li class="dropdown">
+        <a href="#" title="우리의 정신병 일지">1</a>
+        <ul class="dropdown-content">
+          <li><a href="diary-list.html">일기</a></li>
+          <li><a href="gallery.html">갤러리</a></li>
+          <li><a href="community-list.html">커뮤니티</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#" title="인식 개선 캠페인">2</a>
+        <ul class="dropdown-content">
+          <li><a href="campaign-clips.html">인터뷰 클립</a></li>
+          <li><a href="info.html">조현병 정보</a></li>
+          <li><a href="story.html">우리의 이야기</a></li>
+        </ul>
+      </li>
+      <li class="dropdown">
+        <a href="#" title="지원 정보 허브">3</a>
+        <ul class="dropdown-content">
+          <li><a href="support.html">병원·정책·연락처</a></li>
+        </ul>
+      </li>
+      <li><a href="timeline.html">4</a></li>
+      <li><a href="mother.html">5</a></li>
+    </ul>
+  </nav>
+
+  <div class="main-container">
+
+    <section class="hero">
+      <h1>조현병(Schizophrenia)이란?</h1>
+      <p>뇌의 정보 처리 과정에 영향을 주어 인지·감정·행동에 변화를 일으키는 정신질환입니다.</p>
+      <div class="stats">
+        <div><strong>1%</strong><span>전 세계 유병률</span></div>
+        <div><strong>15~25세</strong><span>발병 주 연령대</span></div>
+      </div>
+    </section>
+
+    <section class="info-accordion">
+      <h2>증상 & 징후</h2>
+      <div class="accordion">
+        <button class="acc-header">양성 증상 (환각·망상)</button>
+        <div class="acc-content">청각 환각, 과대망상 등이 대표적입니다.</div>
+
+        <button class="acc-header">음성 증상 (무의욕·감정 저하)</button>
+        <div class="acc-content">의욕 저하, 사회적 고립이 나타날 수 있습니다.</div>
+
+        <button class="acc-header">인지 기능 장애</button>
+        <div class="acc-content">집중력·기억력·의사결정 어려움을 동반합니다.</div>
+      </div>
+    </section>
+<br><br>
+    <section class="info-causes">
+      <h2>원인 및 위험요인</h2>
+      <div class="infographic">
+        <ul>
+          <li>유전적 요인: 80% 이상 유전적 위험</li>
+          <li>뇌 구조 변화: 해마·전전두엽 이상</li>
+          <li>환경 요인: 스트레스·약물 남용</li>
+        </ul>
+      </div>
+    </section>
+<br><br>
+    <section class="info-tips">
+      <h2>일상 관리 팁</h2>
+      <div class="card-grid">
+        <div class="tip-card">
+          <h3>규칙적 수면</h3>
+          <p>매일 같은 시간에 자고 일어나기</p>
+        </div>
+        <div class="tip-card">
+          <h3>균형 잡힌 식사</h3>
+          <p>단백질·채소 중심의 식단</p>
+        </div>
+        <div class="tip-card">
+          <h3>가벼운 운동</h3>
+          <p>산책·요가 등 스트레칭</p>
+        </div>
+        <div class="tip-card">
+          <h3>지원체계 활용</h3>
+          <p>가족·친구·전문가와 소통</p>
+        </div>
+      </div>
+    </section>
+    <br><br>
+    <section class="info-quiz">
+      <h2>자가 평가 체크리스트</h2>
+      <form id="quiz-form">
+        <label><input type="checkbox" name="q1" /> 최근 의욕 저하를 느끼십니까?</label>
+        <label><input type="checkbox" name="q2" /> 주변 소리가 들리지 않거나 왜곡되나요?</label>
+        <label><input type="checkbox" name="q3" /> 집중하기 어려우셨나요?</label>
+        <button type="submit">결과 보기</button>
+      </form>
+      <div id="quiz-result"></div>
+    </section>
+    <br><br>
+    <section class="info-resources">
+      <h2>추가 지원 & 리소스</h2>
+      <ul>
+        <li><a href="support.html">병원·정책·연락처 보기</a></li>
+        <li><a href="community-list.html">우리 열린 게시판</a></li>
+        <li><a href="https://www.schizophrenia.or.kr" target="_blank">외부 학회 사이트</a></li>
+      </ul>
+    </section>
+    <br><br>
+    <section class="info-faq">
+      <h2>자주 묻는 질문</h2>
+      <input type="text" id="faq-search" placeholder="검색어 입력" />
+      <div class="accordion" id="faq-acc">
+        <button class="acc-header">항정신병 약 부작용이 있나요?</button>
+        <div class="acc-content">체중 증가, 졸음 등이 있을 수 있습니다.</div>
+        <button class="acc-header">재발을 예방하려면?</button>
+        <div class="acc-content">치료 지속·스트레스 관리·지지체계 활용</div>
+      </div>
+    </section>
+    <br><br>
+    <div class="go-community">
+      <a href="community-list.html" class="upload-btn">열린 게시판으로 이동</a>
+    </div>
+
+  </div>
+
+  <script src="info.js"></script>
+</body>
+</html>
