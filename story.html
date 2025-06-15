@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>우리의 이야기</title>
+  <link href="community.css" rel="stylesheet"/>
+  <link href="story.css" rel="stylesheet"/>
+</head>
+<body class="song-myung-regular">
+
+    <nav>
+        <ul class="nav-container">
+          <li><a href="index.html">홈</a></li>
+          <li class="dropdown">
+            <a href="#" title="우리의 정신병 일지">1</a>
+            <ul class="dropdown-content">
+              <li><a href="diary-list.html">일기</a></li>
+              <li><a href="gallery.html">갤러리</a></li>
+              <li><a href="community-list.html">커뮤니티</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" title="인식 개선 캠페인">2</a>
+            <ul class="dropdown-content">
+              <li><a href="campaign-clips.html">인터뷰 클립</a></li>
+              <li><a href="info.html">조현병 정보</a></li>
+              <li><a href="story.html">우리의 이야기</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" title="지원 정보 허브">3</a>
+            <ul class="dropdown-content">
+              <li><a href="support.html">병원·정책·연락처</a></li>
+            </ul>
+          </li>
+          <li><a href="timeline.html">4</a></li>
+          <li><a href="mother.html">5</a></li>
+        </ul>
+      </nav>
+
+  <div class="main-container">
+    <h1>우리의 이야기</h1>
+
+    
+    <ul id="comment-list" class="comment-list"></ul>
+    <button id="load-more" class="load-more">더 보기</button>
+
+   
+    <form id="comment-form" class="comment-form">
+      <input type="text" id="comment-nick" placeholder="닉네임 (선택)"/>
+      <input type="password" id="comment-pw" placeholder="비밀번호 (수정/삭제용)" required/>
+      <textarea id="comment-text" rows="3" placeholder="이야기를 들려주세요…" required></textarea>
+      <button type="submit">등록</button>
+    </form>
+
+
+    <div class="comment-controls">
+      <label><input type="radio" name="sort" value="new" checked/> 최신순</label>
+      <label><input type="radio" name="sort" value="best"/> 좋아요순</label>
+      <label><input type="radio" name="sort" value="worst"/> 싫어요순</label>
+    </div>
+  </div>
+
+  <script src="story.js" type="module"></script>
+</body>
+</html>
