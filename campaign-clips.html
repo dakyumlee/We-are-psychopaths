@@ -1,60 +1,64 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>인터뷰 클립</title>
-  <link rel="stylesheet" href="community.css">
+  <link rel="stylesheet" href="community.css" />
+  <link rel="stylesheet" href="campaign.css" />
 </head>
 <body class="song-myung-regular">
 
-    <nav>
-        <ul class="nav-container">
-          <li><a href="../index.html">홈</a></li>
-          
-          <li class="dropdown">
-            <a href="#">1</a>
-            <ul class="dropdown-content">
-              <li><a href="diary-list.html">일기 게시판</a></li>
-              <li><a href="gallery.html">기록 갤러리</a></li>
-              <li><a href="community-list.html">커뮤니티</a></li>
-            </ul>
-          </li>
+  <nav>
+    <ul class="nav-container">
+      <li><a href="../index.html">홈</a></li>
       
-          <li class="dropdown">
-            <a href="#">2</a>
-            <ul class="dropdown-content">
-              <li><a href="campaign-clips.html">다큐 영상</a></li>
-              <li><a href="info.html">조현병 정보</a></li>
-              <li><a href="interview.html">인터뷰 클립</a></li>
-              <li><a href="story.html">우리의 이야기</a></li>
-            </ul>
-          </li>
-      
-          <li class="dropdown">
-            <a href="#">3</a>
-            <ul class="dropdown-content">
-              <li><a href="support.html">병원/정책/연락처</a></li>
-            </ul>
-          </li>
-      
-          <li><a href="timeline.html">4</a></li>
-          <li><a href="mother.html">5</a></li>
+      <li class="dropdown">
+        <a href="#">1</a>
+        <ul class="dropdown-content">
+          <li><a href="diary-list.html">일기 게시판</a></li>
+          <li><a href="gallery.html">기록 갤러리</a></li>
+          <li><a href="community-list.html">커뮤니티</a></li>
         </ul>
-    
-    
-    
+      </li>
+  
+      <li class="dropdown">
+        <a href="#">2</a>
+        <ul class="dropdown-content">
+          <li><a href="campaign-clips.html">다큐 영상</a></li>
+          <li><a href="info.html">조현병 정보</a></li>
+          <li><a href="interview.html">인터뷰 클립</a></li>
+          <li><a href="story.html">우리의 이야기</a></li>
         </ul>
-      </nav>
+      </li>
+  
+      <li class="dropdown">
+        <a href="#">3</a>
+        <ul class="dropdown-content">
+          <li><a href="support.html">병원/정책/연락처</a></li>
+        </ul>
+      </li>
+  
+      <li><a href="timeline.html">4</a></li>
+      <li><a href="mother.html">5</a></li>
+    </ul>
+
+
+
+    </ul>
+  </nav>
 
   <div class="main-container">
+    <h1>영상 모음</h1>
+
+    <div id="admin-check" class="admin-container">
+      <input id="admin-key" type="password" placeholder="관리자 키" />
+      <button id="admin-btn">관리자 모드</button>
+    </div>
 
     <div class="upload-btn-container">
       <a href="campaign-video.html" class="upload-btn">예고편 업로드</a>
     </div>
-    <br><br>
-
-    <h1>영상 모음</h1>
 
     <div id="clip-list" class="gallery-grid"></div>
   </div>
