@@ -4,7 +4,7 @@
     font-family: "Song Myung", serif;
     font-weight: 400;
     font-style: normal;
-  }
+}
   
 body {
     margin: 0;
@@ -24,7 +24,6 @@ body {
     max-width: 600px;
     margin: 0 auto;
 }
-
 
 h1 {
     font-size: 2.5em;
@@ -52,7 +51,6 @@ nav {
     align-items: center;
     gap: 20px;
 }
-
 
 .nav-container a {
     color: #f5f0e6;
@@ -84,8 +82,6 @@ nav {
 .nav-container a:hover::after {
     transform: scaleX(1);
 }
-
-
 
 footer {
     margin-top: 20px;
@@ -214,7 +210,6 @@ footer {
     background-color: #4b7c23;
 }
 
-
 .home-link {
     display: inline-block;
     margin-top: 20px;
@@ -299,4 +294,208 @@ footer {
 
 .nav-container .dropdown:hover .dropdown-content {
     display: block;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 20px 15px;
+    }
+    
+    nav {
+        margin-top: 20px;
+        padding: 15px 0;
+    }
+    
+    .nav-container {
+        gap: 15px;
+        flex-wrap: wrap;
+        padding: 0 15px;
+    }
+    
+    .nav-container > li > a {
+        padding: 15px 18px;
+        font-size: 1.2em;
+    }
+    
+    .nav-container .dropdown-content {
+        min-width: 180px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .nav-container .dropdown-content li a {
+        padding: 15px 20px;
+        font-size: 1.1em;
+    }
+    
+    .main-container {
+        padding: 140px 25px 50px;
+        max-width: 90%;
+    }
+    
+    h1 {
+        font-size: 3em; 
+        margin-bottom: 0.3em;
+        line-height: 1.2;
+    }
+    
+    h3 {
+        font-size: 1.4em;
+        margin-top: 0.5em;
+        line-height: 1.4;
+    }
+    
+    footer {
+        margin-top: 30px;
+        font-size: 1em;
+        opacity: 0.8;
+    }
+    
+    .timeline {
+        margin: 35px 0;
+        padding-left: 15px;
+        border-left: 4px solid #f5f0e6;
+    }
+    
+    .timeline-item {
+        margin-bottom: 30px;
+    }
+    
+    .timeline-item h3 {
+        font-size: 1.3em;
+        margin-bottom: 8px;
+    }
+    
+    .timeline-item p {
+        font-size: 1.1em;
+        margin: 8px 0 0 0;
+        line-height: 1.6;
+    }
+    
+    .music, .photo-gallery {
+        margin: 40px 0;
+    }
+    
+    .music h2, .photo-gallery h2 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
+    
+    .photo-gallery img {
+        max-width: 350px;
+        margin: 15px 0;
+        border-radius: 12px;
+    }
+    
+    .voices {
+        margin: 40px 0;
+        text-align: left;
+    }
+    
+    .voice-item {
+        padding: 18px 20px;
+        margin-bottom: 20px;
+        font-size: 1.1em;
+        line-height: 1.6;
+        border-radius: 8px;
+    }
+    
+    #voice-form {
+        margin: 30px 0;
+    }
+    
+    #voice-input {
+        max-width: 90%;
+        height: 120px;
+        padding: 18px;
+        font-size: 1.2em;
+        border-radius: 8px;
+    }
+    
+    #voice-form button {
+        margin-top: 20px;
+        padding: 18px 30px;
+        font-size: 1.2em;
+        border-radius: 8px;
+        min-width: 200px;
+    }
+    
+    .delete-btn, .edit-btn {
+        margin: 8px 5px;
+        padding: 10px 15px;
+        font-size: 1em;
+        border-radius: 6px;
+    }
+    
+    .home-link {
+        font-size: 1.2em;
+        margin-top: 30px;
+        padding: 8px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-container {
+        padding: 120px 20px 40px;
+    }
+    
+    h1 {
+        font-size: 2.6em;
+    }
+    
+    h3 {
+        font-size: 1.2em;
+    }
+    
+    .nav-container {
+        gap: 10px;
+        padding: 0 10px;
+    }
+    
+    .nav-container > li > a {
+        padding: 12px 15px;
+        font-size: 1.1em;
+    }
+    
+    .timeline-item h3 {
+        font-size: 1.2em;
+    }
+    
+    .timeline-item p {
+        font-size: 1em;
+    }
+    
+    .music h2, .photo-gallery h2 {
+        font-size: 1.6em;
+    }
+    
+    .photo-gallery img {
+        max-width: 100%;
+    }
+    
+    .voice-item {
+        padding: 15px 18px;
+        font-size: 1em;
+    }
+    
+    #voice-input {
+        height: 100px;
+        padding: 20px;
+        font-size: 1.1em;
+    }
+    
+    #voice-form button {
+        padding: 20px 25px;
+        font-size: 1.1em;
+        min-width: 180px;
+    }
+    
+    .delete-btn, .edit-btn {
+        padding: 12px 18px;
+        font-size: 0.95em;
+    }
+    
+    .home-link {
+        font-size: 1.1em;
+    }
 }
