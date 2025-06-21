@@ -1,0 +1,763 @@
+@import url('https://fonts.googleapis.com/css2?family=Song+Myung&display=swap');
+
+body {
+    margin: 0;
+    font-family: "Song Myung", serif;
+    background-color: #4e2e1e;
+    color: #f5f0e6;
+    min-height: 100vh;
+    text-align: center;
+    padding: 20px;
+}
+
+nav {
+    position: fixed;
+    margin-top: 20px;
+    top: 0;
+    width: 100%;
+    background-color: #4e2e1e;
+    padding: 10px 0;
+    z-index: 100;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-container > li {
+    position: relative;
+}
+
+.nav-container > li > a {
+    text-decoration: none;
+    color: #f5f0e6;
+    padding: 10px 15px;
+    display: block;
+    font-size: 1.1em;
+    transition: background-color 0.3s ease;
+}
+
+.nav-container > li > a:hover {
+    background-color: #3e2318;
+}
+
+.nav-container .dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #4e2e1e;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    min-width: 200px;
+    z-index: 999;
+    border: 1px solid #3e2318;
+}
+
+.nav-container .dropdown-content li a {
+    padding: 10px 15px;
+    display: block;
+    color: #f5f0e6;
+    text-decoration: none;
+}
+
+.nav-container .dropdown-content li a:hover {
+    background-color: #3e2318;
+}
+
+.nav-container .dropdown:hover .dropdown-content {
+    display: block;
+}
+
+h1 {
+    margin-top: 40px;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.main-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+#selected-date-title {
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    font-style: italic;
+    color: #f5f0e6;
+}
+
+#datepicker {
+    padding: 10px;
+    margin: 10px;
+    font-family: "Song Myung", serif;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+}
+
+#post-list {
+    list-style: none;
+    padding: 0;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#post-list li {
+    background-color: rgba(245, 240, 230, 0.1);
+    border-left: 4px solid #f5f0e6;
+    padding: 15px;
+    margin-bottom: 15px;
+    transition: background-color 0.2s ease;
+    border-radius: 4px;
+}
+
+#post-list li a {
+    text-decoration: none;
+    color: #f5f0e6;
+    font-size: 1.1em;
+}
+
+#post-list li:hover {
+    background-color: rgba(245, 240, 230, 0.2);
+}
+
+#pagination {
+    margin-top: 20px;
+}
+
+#pagination button {
+    background-color: #f5f0e6;
+    color: #4e2e1e;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 4px;
+    font-family: "Song Myung", serif;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#pagination button:hover:not(:disabled) {
+    background-color: #e0d8ce;
+}
+
+#pagination button:disabled {
+    background-color: #ccc;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.write-link {
+    display: inline-block;
+    margin: 20px 0;
+    padding: 10px 20px;
+    background-color: #f5f0e6;
+    color: #4e2e1e;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.write-link:hover {
+    background-color: #e0d8ce;
+}
+
+#post-content {
+    white-space: pre-wrap;
+    max-width: 700px;
+    margin: 20px auto;
+    font-size: 1.1em;
+    line-height: 1.6em;
+    text-align: left;
+    background-color: rgba(245, 240, 230, 0.1);
+    border-left: 4px solid #f5f0e6;
+    padding: 20px;
+    color: #f5f0e6;
+    border-radius: 4px;
+}
+
+#post-author {
+    font-size: 0.9em;
+    margin-top: 10px;
+    opacity: 0.8;
+}
+
+.button-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.button-wrapper button {
+    background-color: #f5f0e6;
+    color: #4e2e1e;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-family: "Song Myung", serif;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button-wrapper button:hover {
+    background-color: #e0d8ce;
+}
+
+.home-link {
+    display: inline-block;
+    margin: 20px 0;
+    padding: 10px 20px;
+    background-color: #f5f0e6;
+    color: #4e2e1e;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.home-link:hover {
+    background-color: #e0d8ce;
+}
+
+.main-container p {
+    font-size: 1em;
+    line-height: 1.5;
+    margin: 1.5rem 0;
+}
+
+.main-container > div {
+    background: rgba(245,240,230,0.1);
+    padding: 2rem;
+    border-left: 4px solid #f5f0e6;
+    margin: 2rem auto;
+    max-width: 600px;
+    border-radius: 4px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(245,240,230,0.1);
+    border-left: 4px solid #f5f0e6;
+    border-radius: 4px;
+}
+
+input[type="text"],
+textarea {
+    padding: 10px;
+    margin: 10px;
+    font-family: "Song Myung", serif;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    background-color: #f5f0e6;
+    color: #4e2e1e;
+}
+
+textarea {
+    height: 150px;
+    resize: vertical;
+}
+
+button {
+    background-color: #f5f0e6;
+    color: #4e2e1e;
+    border: none;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 4px;
+    font-family: "Song Myung", serif;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #e0d8ce;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-size: 1em;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+#password-input-field {
+    width: 200px;
+    padding: 5px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.8);
+}
+
+.modal-content {
+    background-color: #5d4037;
+    color: #f5f0e6;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    text-align: center;
+}
+
+.modal-content input,
+.modal-content textarea {
+    width: 90%;
+    margin: 8px 0;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    font-family: "Song Myung", serif;
+}
+
+.modal-content button {
+    background-color: #8d6e63;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: "Song Myung", serif;
+    margin: 10px;
+}
+
+.modal-content button:hover {
+    background-color: #a1887f;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: #f5f0e6;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #ccc;
+}
+
+.datepicker-picker,
+.datepicker-picker * {
+    color: #f5f0e6 !important;
+    background-color: #5d4037 !important;
+    border-color: #f5f0e6 !important;
+}
+
+.datepicker-picker .datepicker-cell:hover {
+    background-color: #8d6e63 !important;
+    color: #f5f0e6 !important;
+    cursor: pointer;
+}
+
+.datepicker-picker .datepicker-cell.selected {
+    background-color: #8d6e63 !important;
+    color: #f5f0e6 !important;
+}
+
+.datepicker-picker .datepicker-controls .button {
+    color: #f5f0e6 !important;
+    background-color: #8d6e63 !important;
+}
+
+.datepicker-picker .datepicker-cell.has-posts {
+    background-color: #a1887f !important;
+    color: #4e2e1e !important;
+    font-weight: bold !important;
+    position: relative;
+}
+
+.datepicker-picker .datepicker-cell.has-posts::after {
+    content: "●";
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    font-size: 8px;
+    color: #4e2e1e;
+}
+
+.datepicker-picker .datepicker-cell.has-posts.selected {
+    background-color: #8d6e63 !important;
+    color: #f5f0e6 !important;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 140px 20px 50px;
+    }
+    
+    nav {
+        margin-top: 20px;
+        padding: 15px 0;
+    }
+    
+    .nav-container {
+        gap: 15px;
+        flex-wrap: wrap;
+        padding: 0 15px;
+    }
+    
+    .nav-container > li > a {
+        padding: 18px 22px; /* 큰 터치 영역 */
+        font-size: 1.5em; /* 큰 네비 폰트 */
+    }
+    
+    .nav-container .dropdown-content {
+        min-width: 180px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .nav-container .dropdown-content li a {
+        padding: 15px 20px;
+        font-size: 1.2em;
+    }
+    
+    h1 {
+        font-size: 2.5em; /* 큰 제목 */
+        margin-top: 40px;
+        margin-bottom: 30px;
+    }
+    
+    #selected-date-title {
+        font-size: 1.6em; /* 큰 날짜 제목 */
+        margin: 25px 0;
+    }
+    
+    #datepicker {
+        width: 90%;
+        max-width: 400px;
+        padding: 20px;
+        font-size: 1.4em; /* 큰 폰트 */
+        margin: 25px auto;
+    }
+    
+    .main-container {
+        padding: 0 15px;
+    }
+    
+    #post-list li {
+        padding: 25px 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+    }
+    
+    #post-list li a {
+        font-size: 1.4em; /* 큰 폰트 */
+        line-height: 1.5;
+        display: block;
+        padding: 5px 0;
+    }
+    
+    #pagination button {
+        padding: 20px 30px;
+        margin: 12px 8px;
+        font-size: 1.3em;
+        min-width: 140px;
+        border-radius: 8px;
+    }
+    
+    .write-link {
+        padding: 20px 30px;
+        font-size: 1.4em;
+        margin: 40px auto;
+        display: block;
+        max-width: 250px;
+        border-radius: 8px;
+    }
+    
+    #post-content {
+        margin: 25px auto;
+        padding: 25px 20px;
+        font-size: 1.3em; /* 큰 본문 폰트 */
+        line-height: 1.7em;
+        border-radius: 8px;
+        max-width: 90%;
+    }
+    
+    #post-author {
+        font-size: 1em;
+        margin-top: 15px;
+    }
+    
+    .button-wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        margin-top: 30px;
+    }
+    
+    .button-wrapper button {
+        width: 100%;
+        max-width: 250px;
+        padding: 18px 25px;
+        font-size: 1.2em;
+        border-radius: 8px;
+    }
+    
+    .home-link {
+        width: 100%;
+        max-width: 250px;
+        padding: 18px 25px;
+        font-size: 1.2em;
+        margin: 30px auto;
+        display: block;
+        border-radius: 8px;
+    }
+    
+    .main-container p {
+        font-size: 1.1em;
+        line-height: 1.6;
+        margin: 1.8rem 0;
+    }
+    
+    .main-container > div {
+        padding: 2.5rem 2rem;
+        margin: 2.5rem auto;
+        border-radius: 8px;
+        max-width: 95%;
+    }
+    
+    form {
+        margin: 30px auto;
+        padding: 25px 20px;
+        border-radius: 8px;
+        max-width: 95%;
+    }
+    
+    input[type="text"],
+    textarea {
+        padding: 18px;
+        margin: 12px 0;
+        font-size: 1.2em;
+        border-radius: 8px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    textarea {
+        height: 180px;
+    }
+    
+    button {
+        padding: 18px 30px;
+        margin: 15px auto;
+        font-size: 1.2em;
+        border-radius: 8px;
+        min-width: 180px;
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .form-group {
+        width: 100%;
+        margin-bottom: 25px;
+    }
+    
+    .form-group label {
+        font-size: 1.1em;
+        margin-bottom: 8px;
+    }
+    
+    .checkbox-group {
+        justify-content: flex-start;
+        margin-top: 18px;
+        padding: 15px 0;
+        gap: 12px;
+    }
+    
+    #password-input-field {
+        width: 100%;
+        max-width: 300px;
+        padding: 15px;
+        font-size: 1.1em;
+        border-radius: 8px;
+    }
+    
+    .modal-content {
+        width: 90%;
+        max-width: 400px;
+        margin: 10% auto;
+        padding: 25px;
+    }
+    
+    .modal-content input,
+    .modal-content textarea {
+        width: 95%;
+        padding: 15px;
+        font-size: 1.1em;
+        margin: 12px 0;
+    }
+    
+    .modal-content button {
+        padding: 15px 25px;
+        font-size: 1.1em;
+        margin: 15px 10px;
+    }
+    
+    .datepicker-picker {
+        max-width: 90vw !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        font-size: 1.1em !important;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 120px 15px 40px;
+    }
+    
+    h1 {
+        font-size: 2.2em;
+        margin-top: 30px;
+    }
+    
+    .nav-container {
+        gap: 10px;
+        padding: 0 10px;
+    }
+    
+    .nav-container > li > a {
+        padding: 15px 18px;
+        font-size: 1.3em; /* 여전히 충분히 큰 네비 */
+    }
+    
+    #selected-date-title {
+        font-size: 1.4em;
+        margin: 20px 0;
+    }
+    
+    #datepicker {
+        width: 95%;
+        padding: 20px;
+        font-size: 1.2em;
+    }
+    
+    #post-list li {
+        padding: 20px 18px;
+        margin-bottom: 18px;
+    }
+    
+    #post-list li a {
+        font-size: 1.2em;
+        line-height: 1.4;
+    }
+    
+    #pagination button {
+        padding: 20px 25px;
+        margin: 8px 5px;
+        font-size: 1.1em;
+        min-width: 120px;
+    }
+    
+    .write-link {
+        padding: 22px 30px;
+        font-size: 1.2em;
+        max-width: 220px;
+    }
+    
+    #post-content {
+        padding: 22px 18px;
+        font-size: 1.2em;
+        line-height: 1.6em;
+    }
+    
+    #post-author {
+        font-size: 0.95em;
+    }
+    
+    .button-wrapper button {
+        padding: 20px 22px;
+        font-size: 1.1em;
+        max-width: 220px;
+    }
+    
+    .home-link {
+        padding: 20px 22px;
+        font-size: 1.1em;
+        max-width: 220px;
+    }
+    
+    .main-container > div {
+        padding: 2rem 1.5rem;
+        margin: 2rem auto;
+    }
+    
+    form {
+        padding: 20px 15px;
+    }
+    
+    input[type="text"],
+    textarea {
+        padding: 20px;
+        font-size: 1.1em;
+    }
+    
+    textarea {
+        height: 160px;
+    }
+    
+    button {
+        padding: 20px 25px;
+        font-size: 1.1em;
+        max-width: 280px;
+    }
+    
+    .form-group label {
+        font-size: 1em;
+    }
+    
+    #password-input-field {
+        padding: 18px;
+        font-size: 1em;
+    }
+    
+    .modal-content {
+        padding: 20px;
+        margin: 5% auto;
+    }
+}
