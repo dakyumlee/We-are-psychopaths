@@ -297,7 +297,7 @@ footer {
 }
 
  
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     body {
         padding: 20px 15px;
     }
@@ -469,4 +469,4 @@ footer {
     .home-link {
         font-size: 1.1em;
     }
-}
+} */
