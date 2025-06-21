@@ -26,7 +26,6 @@ nav {
     gap: 20px;
 }
 
-
 .nav-container a {
     color: #f5f0e6;
     text-decoration: none;
@@ -57,7 +56,6 @@ nav {
 .nav-container a:hover::after {
     transform: scaleX(1);
 }
-
 
 .nav-container {
     align-items: center;
@@ -178,8 +176,14 @@ h1 {
     transition: background-color 0.3s ease;
 }
 
-#pagination button:hover {
+#pagination button:hover:not(:disabled) {
     background-color: #e0d8ce;
+}
+
+#pagination button:disabled {
+    background-color: #ccc;
+    color: #999;
+    cursor: not-allowed;
 }
 
 a {
@@ -194,40 +198,39 @@ a:hover {
 }
 
 .write-link {
-  display: block;
-  text-align: center;
-  margin: 20px auto;
-  color: #f5f0e6;
-  text-decoration: none;
-  font-size: 1em;
-  font-family: "Song Myung", serif;
-  position: relative;
-  padding: 5px 0;
-  transition: color 0.3s ease;
-  width: fit-content;
+    display: block;
+    text-align: center;
+    margin: 20px auto;
+    color: #f5f0e6;
+    text-decoration: none;
+    font-size: 1em;
+    font-family: "Song Myung", serif;
+    position: relative;
+    padding: 5px 0;
+    transition: color 0.3s ease;
+    width: fit-content;
 }
 
 .write-link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 2px;
-  background-color: #f5f0e6;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s ease;
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #f5f0e6;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
 }
 
 .write-link:hover {
-  color: #ffffff;
+    color: #ffffff;
 }
 
 .write-link:hover::after {
-  transform: scaleX(1);
+    transform: scaleX(1);
 }
-
 
 .datepicker-picker,
 .datepicker-picker * {
@@ -249,4 +252,25 @@ a:hover {
 
 .datepicker-picker .datepicker-controls .button {
     color: #4e2e1e !important;
+}
+
+.datepicker-picker .datepicker-cell.has-posts {
+    background-color: #8d6e63 !important;
+    color: #f5f0e6 !important;
+    font-weight: bold !important;
+    position: relative;
+}
+
+.datepicker-picker .datepicker-cell.has-posts::after {
+    content: "●";
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    font-size: 8px;
+    color: #f5f0e6;
+}
+
+.datepicker-picker .datepicker-cell.has-posts.selected {
+    background-color: #5d4037 !important;
+    color: #f5f0e6 !important;
 }

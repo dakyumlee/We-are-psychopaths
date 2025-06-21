@@ -1,73 +1,83 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
-    <meta charset="UTF-8" />
-    <title>주은의 일기 쓰기</title>
-    <link rel="stylesheet" href="diary-write.css" />
-    <script type="module" src="diary-write.js"></script>
+  <meta charset="utf-8" />
+  <title>글 작성 / 수정</title>
+  <link rel="stylesheet" href="community.css" />
 </head>
 <body>
-    <nav>
-        <div class="nav-container">
-            <nav>
-                <ul class="nav-container">
-                  <li><a href="index.html">홈</a></li>
-              
-                  <li class="dropdown">
-                    <a href="#">1</a>
-                    <ul class="dropdown-content">
-                      <li><a href="diary-list.html">일기 게시판</a></li>
-                      <li><a href="gallery.html">기록 갤러리</a></li>
-                      <li><a href="community-list.html">커뮤니티</a></li>
-                    </ul>
-                  </li>
-              
-                  <li class="dropdown">
-                    <a href="#">2</a>
-                    <ul class="dropdown-content">
-                      <li><a href="campaign-clips.html">다큐 영상</a></li>
-                      <li><a href="info.html">조현병 정보</a></li>
-                      <li><a href="interview.html">인터뷰 클립</a></li>
-                      <li><a href="story.html">우리의 이야기</a></li>
-                    </ul>
-                  </li>
-              
-                  <li class="dropdown">
-                    <a href="#">3</a>
-                    <ul class="dropdown-content">
-                      <li><a href="support.html">병원/정책/연락처</a></li>
-                    </ul>
-                  </li>
-              
-                  <li><a href="timeline.html">4</a></li>
-                  <li><a href="mother.html">5</a></li>
-                </ul>
-              </nav>
-              
-        </div>
-    </nav> 
-    <h1>주은의 일기 쓰기</h1>
-
-    <div id="key-check">
-        <input type="password" id="master-key" placeholder="마스터키 입력" />
-        <button id="key-btn">확인</button>
+  <nav>
+    <ul class="nav-container">
+      <li><a href="index.html">홈</a></li>
+      
+      <li class="dropdown">
+        <a href="#">1</a>
+        <ul class="dropdown-content">
+          <li><a href="diary-list.html">일기 게시판</a></li>
+          <li><a href="gallery.html">기록 갤러리</a></li>
+          <li><a href="community-list.html">커뮤니티</a></li>
+        </ul>
+      </li>
+  
+      <li class="dropdown">
+        <a href="#">2</a>
+        <ul class="dropdown-content">
+          <li><a href="campaign-clips.html">다큐 영상</a></li>
+          <li><a href="info.html">조현병 정보</a></li>
+          <li><a href="interview.html">인터뷰 클립</a></li>
+          <li><a href="story.html">우리의 이야기</a></li>
+        </ul>
+      </li>
+  
+      <li class="dropdown">
+        <a href="#">3</a>
+        <ul class="dropdown-content">
+          <li><a href="support.html">병원/정책/연락처</a></li>
+        </ul>
+      </li>
+  
+      <li><a href="timeline.html">4</a></li>
+      <li><a href="mother.html">5</a></li>
+    </ul>
+  </nav>
+  
+  <div class="container">
+    <h1 id="form-title">새 글 작성</h1>
+    
+    <div style="background: rgba(245,240,230,0.05); padding: 1rem; border-left: 4px solid #8d6e63; margin-bottom: 2rem;">
+      <p style="margin: 0; color: #f5f0e6; font-style: italic; text-align: center;">
+        자유롭게 이야기를 나눠보세요. 서로를 배려하는 마음으로 소통해주세요.
+      </p>
     </div>
-
-    <form id="diary-form" style="display: none;">
-        <input type="text" id="title" placeholder="제목" /><br/><br><br>
-        <textarea id="content" placeholder="내용"></textarea><br/>
-        <div class="form-group">
-            <label>
-                <input type="checkbox" id="isPrivate"> 비공개 여부 (체크하면 비공개)
-            </label>
-        </div>
-        
-        <div class="form-group">
-            <label for="secret-password">비밀글 비밀번호 (비공개 시 사용):</label>
-            <input type="password" id="secret-password" placeholder="비밀번호" />
-        </div>
-        
-        <button type="submit">등록하기</button>
+    
+    <form id="post-form">
+      <input type="text" id="author-input" placeholder="작성자명 (선택사항)" style="margin-bottom: 10px;" />
+      <input type="text" id="title-input" placeholder="제목을 입력하세요" required />
+      <textarea id="content-input" rows="15" placeholder="내용을 입력하세요" required></textarea>
+      <div style="text-align: center; margin-top: 1rem;">
+        <button type="submit" style="
+          padding: 12px 24px;
+          background-color: #8d6e63;
+          color: #f5f0e6;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-family: 'Song Myung', serif;
+          font-size: 16px;
+        ">글 등록하기</button>
+        <a href="community-list.html" style="
+          display: inline-block;
+          margin-left: 10px;
+          padding: 12px 24px;
+          background-color: #666;
+          color: #f5f0e6;
+          border-radius: 4px;
+          text-decoration: none;
+          font-family: 'Song Myung', serif;
+        ">목록으로</a>
+      </div>
     </form>
+  </div>
+  <script type="module" src="community-write-fixed.js"></script>
 </body>
 </html>

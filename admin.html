@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>감독 관리 패널</title>
+    <link href="community.css" rel="stylesheet" />
+    <style>
+        .admin-panel {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 20px;
+        }
+        
+        .panel-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(245,240,230,0.1);
+            padding: 2rem;
+            border-left: 4px solid #8d6e63;
+        }
+        
+        .management-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .management-card {
+            background: rgba(245,240,230,0.05);
+            border: 1px solid rgba(245,240,230,0.2);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .management-card:hover {
+            background: rgba(245,240,230,0.1);
+            border-color: #8d6e63;
+        }
+        
+        .card-title {
+            color: #8d6e63;
+            font-size: 1.3em;
+            margin-bottom: 1rem;
+            text-align: center;
+            border-bottom: 2px solid #8d6e63;
+            padding-bottom: 0.5rem;
+        }
+        
+        .form-section {
+            margin-bottom: 2rem;
+        }
+        
+        .form-section input,
+        .form-section textarea,
+        .form-section select {
+            width: 100%;
+            padding: 8px 12px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 4px;
+            font-family: "Song Myung", serif;
+            box-sizing: border-box;
+        }
+        
+        .form-section button {
+            width: 100%;
+            padding: 10px;
+            background-color: #8d6e63;
+            color: #f5f0e6;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: "Song Myung", serif;
+            transition: background-color 0.3s ease;
+        }
+        
+        .form-section button:hover {
+            background-color: #a1887f;
+        }
+        
+        .login-section {
+            max-width: 400px;
+            margin: 200px auto;
+            text-align: center;
+            background: rgba(245,240,230,0.1);
+            padding: 2rem;
+            border-radius: 8px;
+            border-left: 4px solid #8d6e63;
+        }
+        
+        .login-section input {
+            width: 80%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .login-section button {
+            padding: 12px 24px;
+            background-color: #8d6e63;
+            color: #f5f0e6;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: "Song Myung", serif;
+            font-size: 16px;
+        }
+        
+        .logout-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            background-color: #a94442;
+            color: #f5f0e6;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: "Song Myung", serif;
+            z-index: 1000;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .status-message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .success {
+            background-color: rgba(92, 184, 92, 0.2);
+            color: #5cb85c;
+        }
+        
+        .error {
+            background-color: rgba(217, 83, 79, 0.2);
+            color: #d9534f;
+        }
+        
+        .management-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid rgba(245,240,230,0.2);
+        }
+        
+        .tab-button {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: #f5f0e6;
+            cursor: pointer;
+            font-family: "Song Myung", serif;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button.active {
+            color: #8d6e63;
+            border-bottom-color: #8d6e63;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="song-myung-regular">
+
+    <!-- 로그인 섹션 -->
+    <div id="login-section" class="login-section">
+        <h1>🎬 감독 관리 패널</h1>
+        <p style="margin-bottom: 2rem; color: #f5f0e6;">
+            이 페이지는 감독 전용입니다.<br>
+            마스터키를 입력해 주세요.
+        </p>
+        <input type="password" id="master-key" placeholder="마스터키 입력" />
+        <br>
+        <button id="login-btn">로그인</button>
+        <div id="login-message" style="margin-top: 1rem;"></div>
+    </div>
+
+    <!-- 관리자 패널 -->
+    <div id="admin-panel" class="admin-panel hidden">
+        <button class="logout-btn" id="logout-btn">로그아웃</button>
+        
+        <div class="panel-header">
+            <h1>🎬 감독 관리 패널</h1>
+            <p>모든 콘텐츠를 한 곳에서 관리하세요</p>
+        </div>
+
+        <!-- 탭 메뉴 -->
+        <div class="management-tabs">
+            <button class="tab-button active" onclick="showTab('diary')">일기 관리</button>
+            <button class="tab-button" onclick="showTab('timeline')">타임라인 관리</button>
+            <button class="tab-button" onclick="showTab('gallery')">갤러리 관리</button>
+            <button class="tab-button" onclick="showTab('video')">영상 관리</button>
+            <button class="tab-button" onclick="showTab('mother')">엄마의 이야기</button>
+        </div>
+
+        <!-- 일기 관리 -->
+        <div id="diary-tab" class="tab-content active">
+            <div class="management-card">
+                <h2 class="card-title">📝 일기 작성</h2>
+                <form id="diary-form" class="form-section">
+                    <input type="text" id="diary-title" placeholder="일기 제목" required />
+                    <textarea id="diary-content" rows="10" placeholder="일기 내용" required></textarea>
+                    <label>
+                        <input type="checkbox" id="diary-private"> 비공개 글로 작성
+                    </label>
+                    <button type="submit">일기 등록</button>
+                </form>
+                <div id="diary-message"></div>
+            </div>
+        </div>
+
+        <!-- 타임라인 관리 -->
+        <div id="timeline-tab" class="tab-content">
+            <div class="management-card">
+                <h2 class="card-title">⏰ 타임라인 이벤트 추가</h2>
+                <form id="timeline-form" class="form-section">
+                    <input type="date" id="timeline-date" required />
+                    <input type="text" id="timeline-content" placeholder="이벤트 내용" required />
+                    <button type="submit">이벤트 추가</button>
+                </form>
+                <div id="timeline-message"></div>
+            </div>
+        </div>
+
+        <!-- 갤러리 관리 -->
+        <div id="gallery-tab" class="tab-content">
+            <div class="management-card">
+                <h2 class="card-title">📸 사진 업로드</h2>
+                <form id="gallery-form" class="form-section">
+                    <input type="file" id="gallery-image" accept="image/*" required />
+                    <input type="text" id="gallery-caption" placeholder="사진 설명" required />
+                    <button type="submit">사진 업로드</button>
+                </form>
+                <div id="gallery-message"></div>
+            </div>
+        </div>
+
+        <!-- 영상 관리 -->
+        <div id="video-tab" class="tab-content">
+            <div class="management-card">
+                <h2 class="card-title">🎥 영상 업로드</h2>
+                <form id="video-form" class="form-section">
+                    <input type="text" id="video-title" placeholder="영상 제목" required />
+                    <textarea id="video-description" rows="3" placeholder="영상 설명"></textarea>
+                    
+                    <div style="margin: 15px 0;">
+                        <label style="margin-right: 20px;">
+                            <input type="radio" name="video-type" value="youtube" checked> YouTube 링크
+                        </label>
+                        <label>
+                            <input type="radio" name="video-type" value="file"> 파일 업로드
+                        </label>
+                    </div>
+                    
+                    <div id="youtube-input">
+                        <input type="url" id="youtube-url" placeholder="https://www.youtube.com/watch?v=..." />
+                    </div>
+                    
+                    <div id="file-input" style="display:none;">
+                        <input type="file" id="video-file" accept="video/*" />
+                    </div>
+                    
+                    <button type="submit">영상 업로드</button>
+                </form>
+                <div id="video-message"></div>
+            </div>
+        </div>
+
+        <!-- 엄마의 이야기 관리 -->
+        <div id="mother-tab" class="tab-content">
+            <div class="management-grid">
+                <div class="management-card">
+                    <h2 class="card-title">🎵 음악 추가</h2>
+                    <form id="mother-music-form" class="form-section">
+                        <input type="text" id="music-title" placeholder="곡 제목" required />
+                        <input type="url" id="music-url" placeholder="YouTube 링크" required />
+                        <button type="submit">음악 추가</button>
+                    </form>
+                    <div id="mother-music-message"></div>
+                </div>
+                
+                <div class="management-card">
+                    <h2 class="card-title">📷 사진 추가</h2>
+                    <form id="mother-photo-form" class="form-section">
+                        <input type="file" id="mother-photo" accept="image/*" required />
+                        <input type="text" id="photo-caption" placeholder="사진 설명" required />
+                        <button type="submit">사진 추가</button>
+                    </form>
+                    <div id="mother-photo-message"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+        // Firebase 설정
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+        
+        const firebaseConfig = {
+          apiKey: "AIzaSyAIU8q64ZB6g8D72SPcCxxkOQmhtREN9cg",
+          authDomain: "we-are-psychopath.firebaseapp.com",
+          projectId: "we-are-psychopath",
+          storageBucket: "we-are-psychopath.firebasestorage.app",
+          messagingSenderId: "1020831167882",
+          appId: "1:1020831167882:web:addcfd266307c3bb71c473",
+          measurementId: "G-MG2X69DDK8"
+        };
+        
+        const app = initializeApp(firebaseConfig);
+        window.db = getFirestore(app);
+        window.storage = getStorage(app);
+        
+        console.log("Firebase 초기화 완료");
+        
+        const MASTER_KEY = "3292";
+        
+        // 탭 전환 함수 (전역)
+        window.showTab = function(tabName) {
+            // 모든 탭 버튼에서 active 클래스 제거
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // 클릭된 탭 버튼에 active 클래스 추가
+            event.target.classList.add('active');
+            
+            // 해당 탭 콘텐츠 표시
+            document.getElementById(tabName + '-tab').classList.add('active');
+        };
+        
+        // 로그인 처리
+        document.getElementById("login-btn").addEventListener("click", () => {
+            const inputKey = document.getElementById("master-key").value.trim();
+            
+            if (inputKey === MASTER_KEY) {
+                showMessage(document.getElementById("login-message"), "로그인 성공!", "success");
+                setTimeout(() => {
+                    document.getElementById("login-section").classList.add("hidden");
+                    document.getElementById("admin-panel").classList.remove("hidden");
+                    initializeForms();
+                }, 500);
+            } else {
+                showMessage(document.getElementById("login-message"), "마스터키가 올바르지 않습니다.", "error");
+            }
+        });
+
+        // 엔터키 로그인
+        document.getElementById("master-key").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                document.getElementById("login-btn").click();
+            }
+        });
+
+        // 로그아웃
+        document.getElementById("logout-btn").addEventListener("click", () => {
+            if (confirm("로그아웃 하시겠습니까?")) {
+                document.getElementById("admin-panel").classList.add("hidden");
+                document.getElementById("login-section").classList.remove("hidden");
+                document.getElementById("master-key").value = "";
+            }
+        });
+
+        // 폼 초기화
+        function initializeForms() {
+            // 영상 타입 라디오 버튼
+            document.querySelectorAll('input[name="video-type"]').forEach(radio => {
+                radio.addEventListener("change", () => {
+                    if (radio.value === "youtube") {
+                        document.getElementById("youtube-input").style.display = "block";
+                        document.getElementById("file-input").style.display = "none";
+                    } else {
+                        document.getElementById("youtube-input").style.display = "none";
+                        document.getElementById("file-input").style.display = "block";
+                    }
+                });
+            });
+
+            // 일기 작성
+            document.getElementById("diary-form").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const title = document.getElementById("diary-title").value.trim();
+                const content = document.getElementById("diary-content").value.trim();
+                const isPrivate = document.getElementById("diary-private").checked;
+                
+                if (!title || !content) {
+                    showMessage(document.getElementById("diary-message"), "제목과 내용을 모두 입력해주세요.", "error");
+                    return;
+                }
+                
+                try {
+                    await addDoc(collection(window.db, "diaryPosts"), {
+                        title, content, author: "주은", isPublic: !isPrivate,
+                        timestamp: serverTimestamp(), secretPassword: isPrivate ? "3292" : ""
+                    });
+                    showMessage(document.getElementById("diary-message"), "일기가 성공적으로 등록되었습니다!", "success");
+                    document.getElementById("diary-form").reset();
+                } catch (error) {
+                    console.error("일기 등록 오류:", error);
+                    showMessage(document.getElementById("diary-message"), "일기 등록 중 오류가 발생했습니다.", "error");
+                }
+            });
+
+            // 타임라인 이벤트 추가
+            document.getElementById("timeline-form").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const date = document.getElementById("timeline-date").value;
+                const content = document.getElementById("timeline-content").value.trim();
+                
+                if (!date || !content) {
+                    showMessage(document.getElementById("timeline-message"), "날짜와 내용을 모두 입력해주세요.", "error");
+                    return;
+                }
+                
+                try {
+                    await addDoc(collection(window.db, "timelineEvents"), {
+                        start: date, content, timestamp: serverTimestamp()
+                    });
+                    showMessage(document.getElementById("timeline-message"), "타임라인 이벤트가 성공적으로 추가되었습니다!", "success");
+                    document.getElementById("timeline-form").reset();
+                } catch (error) {
+                    console.error("타임라인 이벤트 추가 오류:", error);
+                    showMessage(document.getElementById("timeline-message"), "이벤트 추가 중 오류가 발생했습니다.", "error");
+                }
+            });
+
+            // 갤러리 사진 업로드
+            document.getElementById("gallery-form").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const imageFile = document.getElementById("gallery-image").files[0];
+                const caption = document.getElementById("gallery-caption").value.trim();
+                
+                if (!imageFile || !caption) {
+                    showMessage(document.getElementById("gallery-message"), "이미지와 설명을 모두 입력해주세요.", "error");
+                    return;
+                }
+                
+                try {
+                    const storageRef = ref(window.storage, `gallery/${imageFile.name}_${Date.now()}`);
+                    await uploadBytes(storageRef, imageFile);
+                    const imageUrl = await getDownloadURL(storageRef);
+                    
+                    await addDoc(collection(window.db, "galleryPosts"), {
+                        imageUrl, caption, timestamp: serverTimestamp()
+                    });
+                    showMessage(document.getElementById("gallery-message"), "사진이 성공적으로 업로드되었습니다!", "success");
+                    document.getElementById("gallery-form").reset();
+                } catch (error) {
+                    console.error("사진 업로드 오류:", error);
+                    showMessage(document.getElementById("gallery-message"), "사진 업로드 중 오류가 발생했습니다.", "error");
+                }
+            });
+
+            // 영상 업로드
+            document.getElementById("video-form").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const title = document.getElementById("video-title").value.trim();
+                const description = document.getElementById("video-description").value.trim();
+                const videoType = document.querySelector('input[name="video-type"]:checked').value;
+                
+                if (!title) {
+                    showMessage(document.getElementById("video-message"), "영상 제목을 입력해주세요.", "error");
+                    return;
+                }
+                
+                try {
+                    let videoUrl = "";
+                    let isYoutube = false;
+                    
+                    if (videoType === "youtube") {
+                        const youtubeUrl = document.getElementById("youtube-url").value.trim();
+                        if (!youtubeUrl) {
+                            showMessage(document.getElementById("video-message"), "YouTube 링크를 입력해주세요.", "error");
+                            return;
+                        }
+                        videoUrl = youtubeUrl;
+                        isYoutube = true;
+                    } else {
+                        const videoFile = document.getElementById("video-file").files[0];
+                        if (!videoFile) {
+                            showMessage(document.getElementById("video-message"), "비디오 파일을 선택해주세요.", "error");
+                            return;
+                        }
+                        const storageRef = ref(window.storage, `campaignVideos/${videoFile.name}_${Date.now()}`);
+                        await uploadBytes(storageRef, videoFile);
+                        videoUrl = await getDownloadURL(storageRef);
+                    }
+                    
+                    await addDoc(collection(window.db, "campaignVideos"), {
+                        title, description, videoUrl, isYoutube, timestamp: serverTimestamp()
+                    });
+                    showMessage(document.getElementById("video-message"), "영상이 성공적으로 업로드되었습니다!", "success");
+                    document.getElementById("video-form").reset();
+                } catch (error) {
+                    console.error("영상 업로드 오류:", error);
+                    showMessage(document.getElementById("video-message"), "영상 업로드 중 오류가 발생했습니다.", "error");
+                }
+            });
+
+            // 엄마의 이야기 - 음악 추가
+            document.getElementById("mother-music-form").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const title = document.getElementById("music-title").value.trim();
+                const url = document.getElementById("music-url").value.trim();
+                
+                if (!title || !url) {
+                    showMessage(document.getElementById("mother-music-message"), "제목과 YouTube 링크를 모두 입력해주세요.", "error");
+                    return;
+                }
+                
+                try {
+                    await addDoc(collection(window.db, "motherMusic"), {
+                        title, url, timestamp: serverTimestamp()
+                    });
+                    showMessage(document.getElementById("mother-music-message"), "🎵 음악이 성공적으로 추가되었습니다!", "success");
+                    document.getElementById("mother-music-form").reset();
+                } catch (error) {
+                    console.error("음악 추가 오류:", error);
+                    showMessage(document.getElementById("mother-music-message"), "음악 추가 중 오류가 발생했습니다.", "error");
+                }
+            });
+
+            // 엄마의 이야기 - 사진 추가
+            document.getElementById("mother-photo-form").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const photoFile = document.getElementById("mother-photo").files[0];
+                const caption = document.getElementById("photo-caption").value.trim();
+                
+                if (!photoFile || !caption) {
+                    showMessage(document.getElementById("mother-photo-message"), "사진과 설명을 모두 입력해주세요.", "error");
+                    return;
+                }
+                
+                try {
+                    const storageRef = ref(window.storage, `motherPhotos/${photoFile.name}_${Date.now()}`);
+                    await uploadBytes(storageRef, photoFile);
+                    const photoUrl = await getDownloadURL(storageRef);
+                    
+                    await addDoc(collection(window.db, "motherPhotos"), {
+                        photoUrl, caption, timestamp: serverTimestamp()
+                    });
+                    showMessage(document.getElementById("mother-photo-message"), "📷 사진이 성공적으로 추가되었습니다!", "success");
+                    document.getElementById("mother-photo-form").reset();
+                } catch (error) {
+                    console.error("사진 추가 오류:", error);
+                    showMessage(document.getElementById("mother-photo-message"), "사진 추가 중 오류가 발생했습니다.", "error");
+                }
+            });
+        }
+
+        // 메시지 표시 함수
+        function showMessage(element, message, type) {
+            element.innerHTML = `<div class="status-message ${type}">${message}</div>`;
+            setTimeout(() => {
+                element.innerHTML = "";
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

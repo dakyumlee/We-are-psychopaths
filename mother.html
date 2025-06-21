@@ -52,6 +52,9 @@
 
   <div class="main-container">
     <h1>엄마의 이야기</h1>
+    <p style="text-align: center; color: #f5f0e6; font-style: italic; margin-bottom: 2rem;">
+      엄마와 함께한 소중한 추억들을 간직하는 공간입니다.
+    </p>
 
     <section class="timeline">
       <div class="timeline-item">
@@ -72,32 +75,9 @@
       </div>
     </section>
 
-    <div id="admin-check" class="admin-container">
-      <input id="admin-key" type="password" placeholder="관리자 키 입력" />
-      <button id="admin-btn">감독 권한</button>
-    </div>
-
-    <section id="music-section" style="display:none">
-      <h2>음악 추가</h2>
-      <form id="music-form">
-        <input type="url" id="music-url" placeholder="YouTube 링크 입력" />
-        <input type="text" id="music-title" placeholder="곡 제목 입력" />
-        <button type="submit">추가</button>
-      </form>
-    </section>
-
     <section class="music">
       <h2>엄마와 함께 듣던 음악</h2>
       <div id="music-items"></div>
-    </section>
-
-    <section id="photo-section" style="display:none">
-      <h2>사진 추가</h2>
-      <form id="photo-form">
-        <input type="file" id="photo-input" accept="image/*" />
-        <input type="text" id="photo-caption" placeholder="사진 캡션 입력" />
-        <button type="submit">추가</button>
-      </form>
     </section>
 
     <section class="photo-gallery">
@@ -109,8 +89,8 @@
       <h2>엄마에게 하고 싶은 말</h2>
       <ul id="mother-comments-list"></ul>
       <form id="mother-comment-form">
-        <textarea id="mother-comment-input" rows="4" placeholder="메시지를 입력하세요"></textarea>
-        <button type="submit">등록</button>
+        <textarea id="mother-comment-input" rows="4" placeholder="엄마에게 전하고 싶은 메시지를 남겨주세요..."></textarea>
+        <button type="submit">메시지 남기기</button>
       </form>
     </section>
 
@@ -118,6 +98,6 @@
   </div>
 
   <script type="module" src="firebase-config.js"></script>
-  <script type="module" src="mother.js"></script>
+  <script type="module" src="mother-clean.js"></script>
 </body>
 </html>

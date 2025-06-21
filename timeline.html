@@ -43,25 +43,134 @@
 
   <div class="main-container">
     <h1>인터랙티브 타임라인</h1>
-
-    <div id="admin-check" class="admin-container">
-      <input id="admin-key" type="password" placeholder="관리자 키 입력" />
-      <button id="admin-btn">감독 모드</button>
-    </div>
-
-    <section id="event-form-section" style="display:none; margin-bottom:1.5rem;">
-      <form id="event-form">
-        <input type="date" id="event-date" required />
-        <input type="text" id="event-content" placeholder="이벤트 내용" required />
-        <button type="submit">추가</button>
-      </form>
-    </section>
+    <p style="text-align: center; color: #f5f0e6; font-style: italic; margin-bottom: 2rem;">
+      우리의 여정을 시간순으로 살펴보세요.
+    </p>
 
     <div id="timeline"></div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
-  <script type="module" src="firebase-config.js"></script>
-  <script type="module" src="timeline.js"></script>
+  <script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    
+    const firebaseConfig = {
+      apiKey: "AIzaSyAIU8q64ZB6g8D72SPcCxxkOQmhtREN9cg",
+      authDomain: "we-are-psychopath.firebaseapp.com",
+      projectId: "we-are-psychopath",
+      storageBucket: "we-are-psychopath.firebasestorage.app",
+      messagingSenderId: "1020831167882",
+      appId: "1:1020831167882:web:addcfd266307c3bb71c473",
+      measurementId: "G-MG2X69DDK8"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const itemsDS  = new vis.DataSet();
+    const container = document.getElementById("timeline");
+    
+    const options = {
+      stack: false,
+      editable: false,
+      selectable: false,
+      margin: { item: 10, axis: 5 },
+      orientation: { axis: "bottom" },
+      showCurrentTime: true,
+      zoomMin: 1000 * 60 * 60 * 24,        
+      zoomMax: 1000 * 60 * 60 * 24 * 365,  
+      format: {
+        minorLabels: {
+          millisecond: 'SSS',
+          second: 's',
+          minute: 'HH:mm',
+          hour: 'HH:mm',
+          weekday: 'ddd D',
+          day: 'D',       
+          week: 'D MMM',    
+          month: 'MMM',
+          year: 'YYYY'
+        },
+        majorLabels: {
+          millisecond: 'HH:mm:ss',
+          second: 'D MMMM HH:mm',
+          minute: 'ddd D MMMM',
+          hour: 'ddd D MMMM',
+          weekday: 'MMMM YYYY',
+          day: 'MMMM YYYY',  
+          week: 'MMMM YYYY',
+          month: 'YYYY',
+          year: ''
+        }
+      },
+      zoomKey: 'ctrlKey'
+    };
+    
+    const timeline = new vis.Timeline(container, itemsDS, options);
+
+    async function loadEvents() {
+      try {
+        const snaps = await getDocs(
+          query(collection(db, "timelineEvents"), orderBy("timestamp", "asc"))
+        );
+        
+        itemsDS.clear();
+        const items = [];
+        
+        snaps.forEach(docSnap => {
+          const data = docSnap.data();
+          const { start, content } = data;
+          
+          try {
+            const startDate = new Date(start);
+            if (!isNaN(startDate.getTime())) {
+              const item = { 
+                id: docSnap.id, 
+                start: startDate, 
+                content: content || "내용 없음",
+                type: 'point'
+              };
+              items.push(item);
+            }
+          } catch (error) {
+            console.error("날짜 파싱 오류:", error);
+          }
+        });
+        
+        if (items.length > 0) {
+          itemsDS.add(items);
+
+          const dates = items.map(item => item.start);
+          const minDate = new Date(Math.min(...dates));
+          const maxDate = new Date(Math.max(...dates));
+          
+          const startRange = new Date(minDate);
+          startRange.setMonth(startRange.getMonth() - 1);
+          const endRange = new Date(maxDate);
+          endRange.setMonth(endRange.getMonth() + 1);
+          
+          timeline.setWindow(startRange, endRange);
+          
+          setTimeout(() => {
+            const currentRange = timeline.getWindow();
+            const dayRange = 1000 * 60 * 60 * 24 * 30; 
+            const center = new Date((currentRange.start.getTime() + currentRange.end.getTime()) / 2);
+            const newStart = new Date(center.getTime() - dayRange / 2);
+            const newEnd = new Date(center.getTime() + dayRange / 2);
+            timeline.setWindow(newStart, newEnd);
+          }, 100);
+        }
+        
+      } catch (error) {
+        console.error("타임라인 로드 오류:", error);
+      }
+    }
+
+    loadEvents();
+  </script>
+</body>
+</html>
 </body>
 </html>

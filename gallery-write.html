@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>사진 업로드</title>
+  <title>기록 갤러리</title>
   <link rel="stylesheet" href="gallery.css" />
 </head>
 <body>
@@ -45,22 +45,17 @@
           
     </div>
 </nav> 
-<br><br>
-  <h1>사진 업로드</h1>
 
-  <div id="key-check" class="container">
-    <input id="master-key" type="text" placeholder="마스터키 입력" />
-    <button id="key-btn">확인</button>
-  </div>
+<div class="main-container">
+    <h1>기록 갤러리</h1>
+    <p style="text-align: center; color: #f5f0e6; font-style: italic; margin: 2rem 0;">
+        소중한 순간들을 담은 사진들을 감상해 보세요.
+    </p>
+    
+    <div style="text-align: center; background: rgba(245,240,230,0.1); padding: 2rem; border-left: 4px solid #f5f0e6; margin: 2rem auto; max-width: 600px;">
+        <p>사진들을 보시려면 <a href="gallery.html" style="color: #f5f0e6; text-decoration: underline;">기록 갤러리</a>를 방문해 주세요.</p>
+    </div>
+</div>
 
-  <section id="upload-section" class="container" style="display:none">
-    <form id="upload-form">
-      <input type="file" id="image-input" />
-      <input type="text" id="caption-input" placeholder="설명 입력" />
-      <button type="submit">업로드</button>
-    </form>
-  </section>
-
-  <script type="module" src="./gallery-write.js"></script>
 </body>
 </html>

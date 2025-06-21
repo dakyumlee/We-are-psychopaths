@@ -28,7 +28,6 @@ async function loadPost() {
             console.log("docSnap data:", data);
 
             if (!data.isPublic) {
-               
                 const passwordModal = document.getElementById("password-modal");
                 passwordModal.style.display = "block";
 
@@ -47,7 +46,6 @@ async function loadPost() {
                 });
 
             } else {
-             
                 showPost(data);
             }
         } else {
@@ -67,12 +65,44 @@ function showPost(data) {
 
     document.getElementById("edit-title").value = data.title;
     document.getElementById("edit-content").value = data.content;
+  
+    updateAdminButtons();
 }
 
-document.getElementById("delete-btn").addEventListener("click", async () => {
-    const inputKey = prompt("마스터키 입력:");
+function updateAdminButtons() {
+    const editBtn = document.getElementById("edit-btn");
+    const deleteBtn = document.getElementById("delete-btn");
+    
+    const isAdminLoggedIn = window.isAdmin && window.isAdmin();
+    
+    if (isAdminLoggedIn) {
+        editBtn.style.display = "inline-block";
+        deleteBtn.style.display = "inline-block";
+    } else {
+        editBtn.style.display = "none";
+        deleteBtn.style.display = "none";
+    }
+}
 
-    if (inputKey === MASTER_KEY) {
+window.onAdminLogin = function() {
+    updateAdminButtons();
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    updateAdminButtons();
+});
+
+document.getElementById("delete-btn").addEventListener("click", async () => {
+    if (!window.isAdmin || !window.isAdmin()) {
+        if (window.adminSystem) {
+            window.adminSystem.createLoginModal();
+        } else {
+            alert("관리자 권한이 필요합니다.");
+        }
+        return;
+    }
+
+    if (confirm("정말 삭제하시겠습니까?")) {
         try {
             const docRef = doc(db, "diaryPosts", postId);
             await deleteDoc(docRef);
@@ -82,19 +112,20 @@ document.getElementById("delete-btn").addEventListener("click", async () => {
             console.error("deleteDoc 오류 발생:", err);
             alert("삭제 실패");
         }
-    } else {
-        alert("키가 틀렸습니다.");
     }
 });
 
 document.getElementById("edit-btn").addEventListener("click", () => {
-    const inputKey = prompt("마스터키 입력:");
-
-    if (inputKey === MASTER_KEY) {
-        editModal.style.display = "block";
-    } else {
-        alert("키가 틀립니다.");
+    if (!window.isAdmin || !window.isAdmin()) {
+        if (window.adminSystem) {
+            window.adminSystem.createLoginModal();
+        } else {
+            alert("관리자 권한이 필요합니다.");
+        }
+        return;
     }
+
+    editModal.style.display = "block";
 });
 
 modalClose.addEventListener("click", () => {
@@ -108,6 +139,11 @@ window.addEventListener("click", (event) => {
 });
 
 document.getElementById("save-btn").addEventListener("click", async () => {
+    if (!window.isAdmin || !window.isAdmin()) {
+        alert("관리자 권한이 필요합니다.");
+        return;
+    }
+
     const newTitle = document.getElementById("edit-title").value;
     const newContent = document.getElementById("edit-content").value;
 

@@ -1,29 +1,30 @@
 import { db } from "./firebase-config.js";
 import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const MASTER_KEY = "3292";
+window.onAdminLogin = function() {
+    document.getElementById("key-check").style.display = "none";
+    document.getElementById("diary-form").style.display = "block";
+};
 
-document.getElementById("key-btn").addEventListener("click", () => {
-    const inputKey = document.getElementById("master-key").value;
-    console.log("입력한 키:", inputKey);
-
-    if (inputKey === MASTER_KEY) {
-        alert("키 인증 성공! 글쓰기 가능");
-
-        document.getElementById("key-check").style.display = "none";
-        document.getElementById("diary-form").style.display = "block";
-    } else {
-        alert("키가 틀렸습니다.");
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.isAdmin && window.isAdmin()) {
+        window.onAdminLogin();
     }
 });
 
 document.getElementById("diary-form").addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    if (!window.isAdmin || !window.isAdmin()) {
+        alert("관리자 권한이 필요합니다.");
+        return;
+    }
+
     const title = document.getElementById("title").value.trim();
     const content = document.getElementById("content").value.trim();
-    const isPublic = document.getElementById("isPublic").checked;
-    const secretPassword = isPublic ? "" : "3292";
+    const isPrivate = document.getElementById("isPrivate").checked;
+    const isPublic = !isPrivate;
+    const secretPassword = isPrivate ? "3292" : "";
 
     if (!title || !content) {
         alert("제목과 내용을 모두 입력해주세요.");

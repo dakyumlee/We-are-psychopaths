@@ -46,28 +46,15 @@
               
         </div>
     </nav> 
-    <h1>주은의 일기 쓰기</h1>
-
-    <div id="key-check">
-        <input type="password" id="master-key" placeholder="마스터키 입력" />
-        <button id="key-btn">확인</button>
+    
+    <div class="main-container">
+        <h1>주은의 일기</h1>
+        <p style="text-align: center; color: #f5f0e6; font-style: italic; margin: 2rem 0;">
+            소중한 마음을 기록하는 공간입니다.
+        </p>
+        <div style="text-align: center; background: rgba(245,240,230,0.1); padding: 2rem; border-left: 4px solid #f5f0e6; margin: 2rem auto; max-width: 600px;">
+            <p>일기를 읽고 싶으시다면 <a href="diary-list.html" style="color: #f5f0e6; text-decoration: underline;">일기 게시판</a>을 방문해 주세요.</p>
+        </div>
     </div>
-
-    <form id="diary-form" style="display: none;">
-        <input type="text" id="title" placeholder="제목" /><br/><br><br>
-        <textarea id="content" placeholder="내용"></textarea><br/>
-        <div class="form-group">
-            <label>
-                <input type="checkbox" id="isPublic"> 공개 여부
-            </label>
-        </div>
-        
-        <div class="form-group">
-            <label for="secret-password">비밀글 비밀번호 (비공개 시 사용):</label>
-            <input type="password" id="secret-password" placeholder="비밀번호" />
-        </div>
-        
-        <button type="submit">등록하기</button>
-    </form>
 </body>
 </html>

@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>일기 상세</title>
   <link rel="stylesheet" href="diary-post.css" />
+  <script src="admin-system.js"></script>
   <script type="module" src="diary-post.js"></script>
 </head>
 <body>
@@ -53,11 +54,10 @@
 <p id="post-author"></p>
 
 <div class="button-wrapper">
-  <button id="edit-btn" class="edit-btn">수정하기</button>
-  <button id="delete-btn" class="delete-btn">삭제하기</button>
-  <button id="home-btn" class="home-link"><a href="/diary-list.html">목록으로</button></a>
+  <button id="edit-btn" class="edit-btn" style="display: none;">수정하기</button>
+  <button id="delete-btn" class="delete-btn" style="display: none;">삭제하기</button>
+  <button id="home-btn" class="home-link"><a href="/diary-list.html">목록으로</a></button>
 </div>
-
 
 <div id="edit-modal" class="modal">
   <div class="modal-content">
@@ -77,11 +77,6 @@
       <button id="password-submit-btn">확인</button>
   </div>
 </div>
-
-
-
-    </div>
-  </div>
 
 </body>
 </html>

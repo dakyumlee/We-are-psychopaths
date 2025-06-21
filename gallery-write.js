@@ -10,21 +10,28 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
-const MASTER_KEY = "3292";
 const keyChk = document.getElementById("key-check");
 const uplSec = document.getElementById("upload-section");
 
-document.getElementById("key-btn").addEventListener("click", () => {
-  if (document.getElementById("master-key").value === MASTER_KEY) {
+window.onAdminLogin = function() {
     keyChk.style.display = "none";
     uplSec.style.display = "block";
-  } else {
-    alert("마스터키가 틀렸음");
-  }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.isAdmin && window.isAdmin()) {
+        window.onAdminLogin();
+    }
 });
 
 document.getElementById("upload-form").addEventListener("submit", async (e) => {
   e.preventDefault();
+  
+  if (!window.isAdmin || !window.isAdmin()) {
+    alert("관리자 권한이 필요합니다.");
+    return;
+  }
+  
   const file = document.getElementById("image-input").files[0];
   const caption = document.getElementById("caption-input").value.trim();
   if (!file || !caption) return alert("이미지와 설명을 모두 입력해주세요");

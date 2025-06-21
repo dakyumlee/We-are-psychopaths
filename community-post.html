@@ -8,7 +8,7 @@
 <body>
   <nav>
     <ul class="nav-container">
-      <li><a href="../index.html">홈</a></li>
+      <li><a href="index.html">홈</a></li>
       
       <li class="dropdown">
         <a href="#">1</a>
@@ -39,30 +39,95 @@
       <li><a href="timeline.html">4</a></li>
       <li><a href="mother.html">5</a></li>
     </ul>
-
-
-
-    </ul>
   </nav>
+  
   <div class="container">
-    <h1 id="post-title"></h1>
-    <p id="post-content"></p>
-    <p>
-      조회수: <span id="view-count">0</span>  
-      좋아요: <span id="like-count">0</span>
-    </p>
-    <button id="like-btn">좋아요</button>
-    <button id="edit-btn">수정</button>
-    <button id="delete-btn">삭제</button>
-    <hr />
-    <h2>댓글</h2>
-    <ul id="comments-list"></ul>
-    <form id="comment-form">
-      <input type="text" id="comment-input" placeholder="댓글 입력" />
-      <button type="submit">등록</button>
-    </form>
-    <a href="community-list.html"><button>목록으로</button></a>
+    <article style="margin-bottom: 2rem;">
+      <h1 id="post-title" style="margin-bottom: 1rem;"></h1>
+      
+      <div style="border-bottom: 1px solid rgba(245,240,230,0.2); padding-bottom: 1rem; margin-bottom: 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; color: #b0b0b0; font-size: 0.9em;">
+          <span id="post-author">작성자: 로딩중...</span>
+          <span id="post-date">작성일: 로딩중...</span>
+        </div>
+        <div style="margin-top: 0.5rem; color: #b0b0b0; font-size: 0.9em;">
+          👀 <span id="view-count">0</span> &nbsp;&nbsp; ❤️ <span id="like-count">0</span>
+        </div>
+      </div>
+      
+      <div id="post-content" style="white-space: pre-wrap; line-height: 1.6; margin-bottom: 2rem;"></div>
+      
+      <div style="text-align: center; margin: 2rem 0;">
+        <button id="like-btn" style="
+          padding: 8px 16px;
+          background-color: #8d6e63;
+          color: #f5f0e6;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-family: 'Song Myung', serif;
+          margin-right: 10px;
+        ">👍 좋아요</button>
+        
+        <button id="edit-btn" style="
+          padding: 8px 16px;
+          background-color: #5b8f29;
+          color: #f5f0e6;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-family: 'Song Myung', serif;
+          margin-right: 10px;
+          display: none;
+        ">수정</button>
+        
+        <button id="delete-btn" style="
+          padding: 8px 16px;
+          background-color: #a94442;
+          color: #f5f0e6;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-family: 'Song Myung', serif;
+          margin-right: 10px;
+          display: none;
+        ">삭제</button>
+        
+        <a href="community-list.html" style="
+          display: inline-block;
+          padding: 8px 16px;
+          background-color: #666;
+          color: #f5f0e6;
+          border-radius: 4px;
+          text-decoration: none;
+          font-family: 'Song Myung', serif;
+        ">목록으로</a>
+      </div>
+    </article>
+    
+    <hr style="border: 1px solid rgba(245,240,230,0.2); margin: 2rem 0;">
+    
+    <section>
+      <h2 style="margin-bottom: 1rem;">댓글 <span id="comment-count">(0)</span></h2>
+      
+      <form id="comment-form" style="margin-bottom: 2rem; background: rgba(245,240,230,0.05); padding: 1rem; border-radius: 4px;">
+        <input type="text" id="comment-author" placeholder="이름 (선택사항)" style="margin-bottom: 10px;" />
+        <textarea id="comment-input" rows="3" placeholder="댓글을 입력하세요..." required style="margin-bottom: 10px;"></textarea>
+        <button type="submit" style="
+          padding: 8px 16px;
+          background-color: #8d6e63;
+          color: #f5f0e6;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-family: 'Song Myung', serif;
+        ">댓글 등록</button>
+      </form>
+      
+      <ul id="comments-list"></ul>
+    </section>
   </div>
-  <script type="module" src="./community-post.js"></script>
+  
+  <script type="module" src="./community-post-fixed.js"></script>
 </body>
 </html>
