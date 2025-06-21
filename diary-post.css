@@ -242,6 +242,7 @@ h1 {
     color: #ccc;
 }
 
+
 @media (max-width: 768px) {
     body {
         padding: 140px 20px 50px;
@@ -259,8 +260,8 @@ h1 {
     }
     
     .nav-container > li > a {
-        padding: 15px 18px;
-        font-size: 1.2em;
+        padding: 20px 25px;
+        font-size: 1.8em;
     }
     
     .nav-container .dropdown-content {

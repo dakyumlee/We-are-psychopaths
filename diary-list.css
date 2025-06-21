@@ -207,6 +207,7 @@ h1 {
     background-color: #e0d8ce;
 }
 
+/* 달력 스타일 */
 .datepicker-picker,
 .datepicker-picker * {
     color: #f5f0e6 !important;
@@ -268,8 +269,8 @@ h1 {
     }
     
     .nav-container > li > a {
-        padding: 15px 18px;
-        font-size: 1.2em;
+        padding: 20px 25px; 
+        font-size: 1.8em;
     }
     
     .nav-container .dropdown-content {
@@ -279,21 +280,21 @@ h1 {
     }
     
     h1 {
-        font-size: 2.2em;
+        font-size: 3em;
         margin-top: 40px;
         margin-bottom: 30px;
     }
     
     #selected-date-title {
-        font-size: 1.4em;
+        font-size: 1.8em;
         margin: 25px 0;
     }
     
     #datepicker {
         width: 90%;
         max-width: 400px;
-        padding: 18px;
-        font-size: 1.3em;
+        padding: 25px;
+        font-size: 1.6em;
         margin: 25px auto;
     }
     
@@ -312,7 +313,7 @@ h1 {
     }
     
     #post-list li a {
-        font-size: 1.3em;
+        font-size: 1.6em;
         line-height: 1.5;
         display: block;
         padding: 5px 0;
@@ -323,38 +324,38 @@ h1 {
     }
     
     #pagination button {
-        padding: 18px 30px;
+        padding: 25px 40px;
         margin: 12px 8px;
-        font-size: 1.2em;
-        min-width: 140px;
+        font-size: 1.5em;
+        min-width: 160px;
         border-radius: 8px;
     }
     
     #current-page {
         display: block;
         margin: 20px 0;
-        font-size: 1.2em;
+        font-size: 1.4em;
         font-weight: bold;
     }
     
     .write-link {
-        padding: 20px 35px;
-        font-size: 1.3em;
+        padding: 25px 45px;
+        font-size: 1.6em;
         margin: 40px auto;
         display: block;
-        max-width: 250px;
+        max-width: 280px;
         border-radius: 8px;
     }
-    
+
     .datepicker-picker {
         max-width: 90vw !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
         font-size: 1.1em !important;
     }
-}
 
-@media (max-width: 480px) {
+@media (max-width: 480px)
+{
     body {
         padding: 120px 15px 40px;
     }
@@ -407,4 +408,5 @@ h1 {
         font-size: 1.2em;
         max-width: 220px;
     }
+}
 }

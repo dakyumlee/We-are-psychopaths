@@ -210,7 +210,7 @@ button:hover {
   background-color: #922d2d;
 }
 
-/* 8. Comments */
+/* Comments */
 #comments-list {
   list-style: none;
   padding: 0;
@@ -257,7 +257,6 @@ button:hover {
   transform: scaleX(1);
 }
 
-
 .upload-btn-container {
   text-align: right;
   margin-bottom: 1rem;
@@ -278,3 +277,185 @@ button:hover {
   background-color: #a1887f;
 }
 
+@media (max-width: 768px) {
+    body {
+        padding: 20px 15px;
+    }
+    
+    nav {
+        padding: 15px 0;
+    }
+    
+    .nav-container {
+        gap: 15px;
+        flex-wrap: wrap;
+        padding: 0 15px;
+    }
+    
+    .nav-container > li > a {
+        padding: 20px 25px;
+        font-size: 1.8em; 
+        border-radius: 6px;
+    }
+    
+    .nav-container .dropdown-content {
+        min-width: 200px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .nav-container .dropdown-content li a {
+        padding: 15px 20px;
+        font-size: 1.1em;
+    }
+    
+    h1 {
+        font-size: 2.8em;
+        margin-bottom: 0.6em;
+    }
+    
+    h3 {
+        font-size: 1.4em;
+        margin-top: 1.2em;
+    }
+    
+    .main-container,
+    .container {
+        padding: 140px 20px 50px; 
+    }
+    
+    .post-item {
+        padding: 1.8rem;
+        margin-bottom: 1.5rem;
+        border-radius: 8px;
+    }
+    
+    .post-item h3 {
+        font-size: 1.5em;
+        margin-bottom: 0.8rem;
+        line-height: 1.4;
+    }
+    
+    .post-item p {
+        font-size: 1.1em;
+        line-height: 1.6;
+        margin: 0.5em 0;
+    }
+    
+    .post-item button {
+        padding: 12px 20px;
+        font-size: 1.1em;
+        margin-top: 1rem;
+        border-radius: 6px;
+    }
+    
+    form {
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    
+    input[type="text"],
+    textarea {
+        padding: 18px;
+        font-size: 1.2em;
+        border-radius: 8px;
+    }
+    
+    textarea {
+        min-height: 150px;
+    }
+    
+    button {
+        padding: 18px 30px;
+        font-size: 1.2em;
+        border-radius: 8px;
+        min-width: 180px;
+    }
+    
+    #post-content {
+        font-size: 1.2em;
+        line-height: 1.7;
+        margin: 1.5rem 0;
+    }
+    
+    #comments-list li {
+        padding: 18px;
+        margin-bottom: 1rem;
+        font-size: 1.1em;
+        line-height: 1.6;
+        border-radius: 8px;
+    }
+    
+    .home-link {
+        font-size: 1.1em;
+        margin-top: 2.5rem;
+        padding: 8px 0;
+    }
+    
+    .upload-btn-container {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .upload-btn {
+        padding: 15px 25px;
+        font-size: 1.2em;
+        border-radius: 8px;
+    }
+    
+    .edit-btn,
+    .delete-btn {
+        padding: 12px 20px;
+        font-size: 1.1em;
+        margin: 0.5rem 0.3rem;
+        border-radius: 6px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-container,
+    .container {
+        padding: 120px 15px 40px;
+    }
+    
+    h1 {
+        font-size: 2.4em;
+    }
+    
+    .nav-container {
+        gap: 10px;
+        padding: 0 10px;
+    }
+    
+    .nav-container > li > a {
+        padding: 12px 15px;
+        font-size: 1.1em;
+    }
+    
+    .post-item {
+        padding: 1.5rem;
+    }
+    
+    .post-item h3 {
+        font-size: 1.3em;
+    }
+    
+    .post-item p {
+        font-size: 1em;
+    }
+    
+    input[type="text"],
+    textarea {
+        padding: 20px;
+        font-size: 1.1em;
+    }
+    
+    button {
+        padding: 20px 25px;
+        font-size: 1.1em;
+    }
+    
+    #post-content {
+        font-size: 1.1em;
+    }
+}
