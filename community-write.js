@@ -1,53 +1,49 @@
 import { db } from "./firebase-config.js";
-import {
-  collection,
-  addDoc,
-  doc,
-  getDoc,
-  updateDoc,
-  serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const params = new URLSearchParams(window.location.search);
-const postId = params.get("id");
-const form = document.getElementById("post-form");
-const titleInput = document.getElementById("title-input");
-const contentInput = document.getElementById("content-input");
+const MASTER_KEY = "3292";
 
-if (postId) {
-  getDoc(doc(db, "posts", postId)).then(snapshot => {
-    if (snapshot.exists()) {
-      const data = snapshot.data();
-      titleInput.value = data.title;
-      contentInput.value = data.content;
+document.getElementById("key-btn").addEventListener("click", () => {
+    const inputKey = document.getElementById("master-key").value;
+    console.log("입력한 키:", inputKey);
+
+    if (inputKey === MASTER_KEY) {
+        alert("키 인증 성공! 글쓰기 가능");
+
+        document.getElementById("key-check").style.display = "none";
+        document.getElementById("diary-form").style.display = "block";
+    } else {
+        alert("키가 틀렸습니다.");
     }
-  });
-}
-
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const title = titleInput.value.trim();
-  const content = contentInput.value.trim();
-  if (!title || !content) return alert("제목과 내용을 입력해주세요");
-
-  if (postId) {
-    await updateDoc(doc(db, "posts", postId), {
-      title,
-      content
-    });
-  } else {
-    await addDoc(collection(db, "posts"), {
-      title,
-      content,
-      timestamp: serverTimestamp(),
-      viewCount: 0,
-      likeCount: 0
-    });
-  }
-
-  alert("저장 완료!");
-  location.href = postId
-    ? `community-post.html?id=${postId}`
-    : "community-list.html";
 });
-s
+
+document.getElementById("diary-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const title = document.getElementById("title").value.trim();
+    const content = document.getElementById("content").value.trim();
+    const isPrivate = document.getElementById("isPrivate").checked;
+    const isPublic = !isPrivate;
+    const secretPassword = isPrivate ? "3292" : "";
+
+    if (!title || !content) {
+        alert("제목과 내용을 모두 입력해주세요.");
+        return;
+    }
+
+    try {
+        await addDoc(collection(db, "diaryPosts"), {
+            title,
+            content,
+            author: "주은",
+            isPublic,
+            timestamp: serverTimestamp(),
+            secretPassword
+        });
+        alert("등록 완료!");
+        window.location.href = "/diary-list.html";
+    } catch (err) {
+        console.error(err);
+        alert("에러 발생");
+    }
+});
