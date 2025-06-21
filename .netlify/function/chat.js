@@ -1,22 +1,36 @@
-export default async function handler(req, res) {
-
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+exports.handler = async (event, context) => {
+    const headers = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Content-Type': 'application/json'
+    };
   
-    if (req.method === 'OPTIONS') {
-      return res.status(200).end();
+    if (event.httpMethod === 'OPTIONS') {
+      return {
+        statusCode: 200,
+        headers,
+        body: ''
+      };
     }
   
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Method not allowed' });
+    if (event.httpMethod !== 'POST') {
+      return {
+        statusCode: 405,
+        headers,
+        body: JSON.stringify({ error: 'Method not allowed' })
+      };
     }
   
     try {
-      const { messages, userId } = req.body;
+      const { messages, userId } = JSON.parse(event.body);
   
       if (!messages || !Array.isArray(messages)) {
-        return res.status(400).json({ error: 'Messages array is required' });
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ error: 'Messages array is required' })
+        };
       }
   
       const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -55,26 +69,37 @@ export default async function handler(req, res) {
       if (!response.ok) {
         const errorData = await response.text();
         console.error('Claude API Error:', errorData);
-        return res.status(response.status).json({ 
-          error: 'Claude API request failed',
-          details: errorData
-        });
+        return {
+          statusCode: response.status,
+          headers,
+          body: JSON.stringify({ 
+            error: 'Claude API request failed',
+            details: errorData
+          })
+        };
       }
   
       const data = await response.json();
-      
       const assistantMessage = data.content[0]?.text || '죄송해요, 응답을 생성할 수 없었어요.';
   
-      return res.status(200).json({
-        message: assistantMessage,
-        userId: userId
-      });
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          message: assistantMessage,
+          userId: userId
+        })
+      };
   
     } catch (error) {
       console.error('Chat API Error:', error);
-      return res.status(500).json({ 
-        error: 'Internal server error',
-        details: error.message 
-      });
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ 
+          error: 'Internal server error',
+          details: error.message 
+        })
+      };
     }
-  }
+  };
