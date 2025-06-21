@@ -1,0 +1,14 @@
+{
+    "name": "we-are-psychopaths",
+    "version": "1.0.0",
+    "description": "조현병 정보 사이트",
+    "main": "index.html",
+    "scripts": {
+      "build": "echo 'Build completed'"
+    },
+    "engines": {
+      "node": "18.x"
+    },
+    "dependencies": {},
+    "devDependencies": {}
+  }
