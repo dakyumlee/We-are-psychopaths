@@ -274,3 +274,123 @@ a:hover {
     background-color: #5d4037 !important;
     color: #f5f0e6 !important;
 }
+
+@media (max-width: 768px) {
+    body {
+        padding: 80px 10px 20px;
+    }
+    
+    nav {
+        margin-top: 10px;
+        padding: 5px 0;
+    }
+    
+    .nav-container {
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .nav-container > li > a {
+        padding: 8px 10px;
+        font-size: 0.9em;
+    }
+    
+    .nav-container .dropdown-content {
+        min-width: 150px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    h1 {
+        font-size: 1.8em;
+        margin-bottom: 15px;
+    }
+    
+    #selected-date-title {
+        font-size: 1em;
+        margin-bottom: 10px;
+    }
+    
+    #datepicker {
+        width: 90%;
+        max-width: 300px;
+        padding: 10px;
+        font-size: 1em;
+    }
+    
+    #post-list {
+        margin: 0 5px;
+    }
+    
+    #post-list li {
+        padding: 12px 10px;
+    }
+    
+    #post-list li a {
+        font-size: 1em;
+        word-break: keep-all;
+        line-height: 1.4;
+    }
+    
+    #pagination {
+        margin-top: 30px;
+    }
+    
+    #pagination button {
+        margin: 5px;
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
+    
+    #current-page {
+        display: block;
+        margin: 10px 0;
+        font-size: 0.9em;
+    }
+    
+    .write-link {
+        font-size: 1.1em;
+        margin: 25px auto;
+    }
+
+    .datepicker-picker {
+        max-width: 90vw !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 70px 5px 20px;
+    }
+    
+    h1 {
+        font-size: 1.6em;
+    }
+    
+    .nav-container {
+        gap: 5px;
+    }
+    
+    .nav-container > li > a {
+        padding: 6px 8px;
+        font-size: 0.8em;
+    }
+    
+    #datepicker {
+        width: 95%;
+        padding: 12px;
+    }
+    
+    #post-list li {
+        padding: 15px 8px;
+    }
+    
+    #pagination button {
+        margin: 3px;
+        padding: 10px 15px;
+        font-size: 0.85em;
+    }
+}

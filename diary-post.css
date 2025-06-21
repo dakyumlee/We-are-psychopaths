@@ -111,7 +111,6 @@ nav {
   gap: 20px;
 }
 
-
 .nav-container a {
   color: #f5f0e6;
   text-decoration: none;
@@ -142,7 +141,6 @@ nav {
 .nav-container a:hover::after {
   transform: scaleX(1);
 }
-
 
 .nav-container {
   align-items: center;
@@ -197,4 +195,118 @@ nav {
 
 .nav-container .dropdown:hover .dropdown-content {
   display: block;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 80px 15px 20px;
+    }
+    
+    nav {
+        margin-top: 10px;
+        padding: 5px 0;
+    }
+    
+    .nav-container {
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .nav-container > li > a {
+        padding: 8px 10px;
+        font-size: 0.9em;
+    }
+    
+    .nav-container .dropdown-content {
+        min-width: 150px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    h1 {
+        font-size: 1.8em;
+        margin-bottom: 20px;
+    }
+    
+    #post-content {
+        max-width: 100%;
+        margin: 15px auto;
+        padding: 0 10px;
+        font-size: 1em;
+        line-height: 1.5em;
+    }
+    
+    #post-author {
+        font-size: 0.85em;
+        margin-top: 15px;
+    }
+    
+    .button-wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        margin-top: 25px;
+    }
+    
+    .button-wrapper button {
+        width: 100%;
+        max-width: 200px;
+        padding: 12px 20px;
+        font-size: 1em;
+    }
+    
+    .modal-content {
+        width: 90%;
+        max-width: 350px;
+        margin: 5% auto;
+        padding: 15px;
+    }
+    
+    .modal-content input,
+    .modal-content textarea {
+        width: 95%;
+        margin: 10px 0;
+        padding: 10px;
+        font-size: 1em;
+    }
+    
+    .modal-content textarea {
+        height: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 70px 10px 20px;
+    }
+    
+    h1 {
+        font-size: 1.6em;
+    }
+    
+    .nav-container {
+        gap: 5px;
+    }
+    
+    .nav-container > li > a {
+        padding: 6px 8px;
+        font-size: 0.8em;
+    }
+    
+    #post-content {
+        padding: 0 5px;
+        font-size: 0.95em;
+    }
+    
+    .button-wrapper button {
+        padding: 15px 20px;
+        font-size: 0.95em;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 3% auto;
+        padding: 12px;
+    }
 }
