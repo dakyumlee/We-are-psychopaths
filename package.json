@@ -1,0 +1,11 @@
+{
+    "name": "psychopath-diary-chatbot",
+    "version": "1.0.0",
+    "description": "조현병 지원 사이트 챗봇",
+    "scripts": {
+      "dev": "vercel dev",
+      "build": "echo 'Static site - no build needed'"
+    },
+    "dependencies": {},
+    "devDependencies": {}
+  }
