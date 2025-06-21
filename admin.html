@@ -306,6 +306,17 @@
                     </form>
                     <div id="mother-photo-message"></div>
                 </div>
+                
+                <div class="management-card">
+                    <h2 class="card-title">💬 댓글 관리</h2>
+                    <div id="mother-comments-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;">
+                        <!-- 댓글 목록이 여기에 로드됩니다 -->
+                    </div>
+                    <button type="button" id="refresh-comments-btn" style="width: 100%; padding: 10px; background-color: #8d6e63; color: #f5f0e6; border: none; border-radius: 4px; cursor: pointer;">
+                        댓글 새로고침
+                    </button>
+                    <div id="mother-comments-message"></div>
+                </div>
             </div>
         </div>
 
@@ -314,7 +325,7 @@
     <script type="module">
         // Firebase 설정
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
         
         const firebaseConfig = {
@@ -565,7 +576,71 @@
                     showMessage(document.getElementById("mother-photo-message"), "사진 추가 중 오류가 발생했습니다.", "error");
                 }
             });
+
+            // 댓글 새로고침 버튼
+            document.getElementById("refresh-comments-btn").addEventListener("click", loadMotherComments);
+
+            // 페이지 로드 시 댓글 불러오기
+            loadMotherComments();
         }
+
+        // 엄마 댓글 로드 함수
+        async function loadMotherComments() {
+            try {
+                const listEl = document.getElementById("mother-comments-list");
+                listEl.innerHTML = "<p style='text-align: center; color: #8d6e63;'>댓글을 불러오는 중...</p>";
+                
+                const snaps = await getDocs(query(collection(window.db, "motherComments"), orderBy("timestamp", "desc")));
+                listEl.innerHTML = "";
+                
+                if (snaps.empty) {
+                    listEl.innerHTML = "<p style='text-align: center; color: #f5f0e6; font-style: italic;'>아직 등록된 댓글이 없습니다.</p>";
+                    return;
+                }
+                
+                snaps.forEach(docSnap => {
+                    const { text } = docSnap.data();
+                    const id = docSnap.id;
+
+                    const commentDiv = document.createElement("div");
+                    commentDiv.style.cssText = `
+                        background: rgba(245,240,230,0.1);
+                        border-left: 4px solid #8d6e63;
+                        padding: 12px;
+                        margin-bottom: 10px;
+                        border-radius: 4px;
+                        position: relative;
+                    `;
+                    
+                    commentDiv.innerHTML = `
+                        <p style="margin: 0; padding-right: 60px; color: #f5f0e6; font-style: italic;">${text}</p>
+                        <button onclick="deleteMotherComment('${id}')" 
+                                style="position: absolute; top: 8px; right: 8px; background: #dc3545; color: white; border: none; border-radius: 3px; padding: 4px 8px; cursor: pointer; font-size: 12px;">
+                            삭제
+                        </button>
+                    `;
+                    
+                    listEl.appendChild(commentDiv);
+                });
+            } catch (error) {
+                console.error("댓글 로드 오류:", error);
+                document.getElementById("mother-comments-list").innerHTML = "<p style='color: #dc3545;'>댓글을 불러오는 중 오류가 발생했습니다.</p>";
+            }
+        }
+
+        // 댓글 삭제 함수 (전역)
+        window.deleteMotherComment = async function(commentId) {
+            if (!confirm("정말 이 댓글을 삭제하시겠습니까?")) return;
+            
+            try {
+                await deleteDoc(doc(window.db, "motherComments", commentId));
+                showMessage(document.getElementById("mother-comments-message"), "댓글이 성공적으로 삭제되었습니다!", "success");
+                loadMotherComments(); // 목록 새로고침
+            } catch (error) {
+                console.error("댓글 삭제 오류:", error);
+                showMessage(document.getElementById("mother-comments-message"), "댓글 삭제 중 오류가 발생했습니다.", "error");
+            }
+        };
 
         // 메시지 표시 함수
         function showMessage(element, message, type) {
