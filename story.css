@@ -270,7 +270,7 @@ h1 {
     background-color: #e0d8ce;
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     body {
         padding: 120px 15px 40px;
     }
@@ -418,4 +418,4 @@ h1 {
         padding: 0.8rem;
         font-size: 0.95em;
     }
-}
+} */

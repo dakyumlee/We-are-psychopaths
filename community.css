@@ -277,7 +277,7 @@ button:hover {
   background-color: #a1887f;
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     body {
         padding: 20px 15px;
     }
@@ -458,4 +458,4 @@ button:hover {
     #post-content {
         font-size: 1.1em;
     }
-}
+} */
