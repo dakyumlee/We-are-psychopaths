@@ -6,7 +6,8 @@ body {
     background-color: #4e2e1e;
     color: #f5f0e6;
     min-height: 100vh;
-    padding: 100px 20px 20px;
+    text-align: center;
+    padding: 20px;
 }
 
 nav {
@@ -58,7 +59,6 @@ nav {
 }
 
 .nav-container {
-    align-items: center;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -113,27 +113,30 @@ nav {
 }
 
 h1 {
-    font-size: 2.2em;
-    margin-bottom: 20px;
-    text-align: center;
+    margin-top: 40px;
+    font-size: 2em;
 }
 
 #selected-date-title {
     font-size: 1.2em;
-    text-align: center;
     margin-bottom: 15px;
     font-style: italic;
     color: #f5f0e6;
 }
 
 #datepicker {
-    display: block;
-    margin: 0 auto 20px;
-    padding: 8px 10px;
-    border-radius: 5px;
-    border: none;
+    padding: 10px;
+    margin: 10px;
     font-family: "Song Myung", serif;
     font-size: 1em;
+    border: none;
+    border-radius: 5px;
+}
+
+.main-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
 }
 
 #post-list {
@@ -144,8 +147,10 @@ h1 {
 }
 
 #post-list li {
-    padding: 10px 15px;
-    border-bottom: 1px solid rgba(245, 240, 230, 0.2);
+    background-color: rgba(245, 240, 230, 0.1);
+    border-left: 4px solid #f5f0e6;
+    padding: 15px;
+    margin-bottom: 15px;
     transition: background-color 0.2s ease;
 }
 
@@ -156,22 +161,22 @@ h1 {
 }
 
 #post-list li:hover {
-    background-color: rgba(245, 240, 230, 0.1);
+    background-color: rgba(245, 240, 230, 0.2);
 }
 
 #pagination {
-    text-align: center;
     margin-top: 20px;
 }
 
 #pagination button {
-    margin: 0 10px;
-    padding: 6px 12px;
     background-color: #f5f0e6;
     color: #4e2e1e;
     border: none;
-    border-radius: 3px;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 4px;
     font-family: "Song Myung", serif;
+    font-size: 1em;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -186,77 +191,48 @@ h1 {
     cursor: not-allowed;
 }
 
-a {
-    margin: 0;
-    align-items: center;
-    color: #f5f0e6;
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
 .write-link {
-    display: block;
-    text-align: center;
-    margin: 20px auto;
-    color: #f5f0e6;
-    text-decoration: none;
-    font-size: 1em;
-    font-family: "Song Myung", serif;
-    position: relative;
-    padding: 5px 0;
-    transition: color 0.3s ease;
-    width: fit-content;
-}
-
-.write-link::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 2px;
+    display: inline-block;
+    margin: 20px 0;
+    padding: 10px 20px;
     background-color: #f5f0e6;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s ease;
+    color: #4e2e1e;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
 }
 
 .write-link:hover {
-    color: #ffffff;
-}
-
-.write-link:hover::after {
-    transform: scaleX(1);
+    background-color: #e0d8ce;
 }
 
 .datepicker-picker,
 .datepicker-picker * {
     color: #f5f0e6 !important;
-    background-color: #b69686 !important;
+    background-color: #5d4037 !important;
     border-color: #f5f0e6 !important;
 }
 
 .datepicker-picker .datepicker-cell:hover {
-    background-color: #b69686 !important;
-    color: #4e2e1e !important;
+    background-color: #8d6e63 !important;
+    color: #f5f0e6 !important;
     cursor: pointer;
 }
 
 .datepicker-picker .datepicker-cell.selected {
-    background-color: #b69686 !important;
-    color: #4e2e1e !important;
+    background-color: #8d6e63 !important;
+    color: #f5f0e6 !important;
 }
 
 .datepicker-picker .datepicker-controls .button {
-    color: #4e2e1e !important;
+    color: #f5f0e6 !important;
+    background-color: #8d6e63 !important;
 }
 
 .datepicker-picker .datepicker-cell.has-posts {
-    background-color: #8d6e63 !important;
-    color: #f5f0e6 !important;
+    background-color: #a1887f !important;
+    color: #4e2e1e !important;
     font-weight: bold !important;
     position: relative;
 }
@@ -267,11 +243,11 @@ a:hover {
     bottom: 2px;
     right: 2px;
     font-size: 8px;
-    color: #f5f0e6;
+    color: #4e2e1e;
 }
 
 .datepicker-picker .datepicker-cell.has-posts.selected {
-    background-color: #5d4037 !important;
+    background-color: #8d6e63 !important;
     color: #f5f0e6 !important;
 }
 
@@ -288,7 +264,6 @@ a:hover {
     .nav-container {
         gap: 10px;
         flex-wrap: wrap;
-        justify-content: center;
     }
     
     .nav-container > li > a {
@@ -304,56 +279,34 @@ a:hover {
     
     h1 {
         font-size: 1.8em;
-        margin-bottom: 15px;
-    }
-    
-    #selected-date-title {
-        font-size: 1em;
-        margin-bottom: 10px;
+        margin-top: 20px;
     }
     
     #datepicker {
         width: 90%;
         max-width: 300px;
-        padding: 10px;
-        font-size: 1em;
-    }
-    
-    #post-list {
-        margin: 0 5px;
     }
     
     #post-list li {
-        padding: 12px 10px;
+        padding: 12px;
+        margin-bottom: 10px;
     }
     
     #post-list li a {
         font-size: 1em;
-        word-break: keep-all;
-        line-height: 1.4;
-    }
-    
-    #pagination {
-        margin-top: 30px;
     }
     
     #pagination button {
+        padding: 8px 15px;
         margin: 5px;
-        padding: 8px 12px;
-        font-size: 0.9em;
-    }
-    
-    #current-page {
-        display: block;
-        margin: 10px 0;
         font-size: 0.9em;
     }
     
     .write-link {
-        font-size: 1.1em;
-        margin: 25px auto;
+        padding: 12px 20px;
+        font-size: 1em;
     }
-
+    
     .datepicker-picker {
         max-width: 90vw !important;
         left: 50% !important;
@@ -379,18 +332,7 @@ a:hover {
         font-size: 0.8em;
     }
     
-    #datepicker {
-        width: 95%;
-        padding: 12px;
-    }
-    
     #post-list li {
-        padding: 15px 8px;
-    }
-    
-    #pagination button {
-        margin: 3px;
-        padding: 10px 15px;
-        font-size: 0.85em;
+        padding: 10px;
     }
 }

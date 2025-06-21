@@ -6,257 +6,242 @@ body {
     background-color: #4e2e1e;
     color: #f5f0e6;
     min-height: 100vh;
-    padding: 100px 20px 20px;
     text-align: center;
+    padding: 20px;
+}
+
+nav {
+    position: fixed;
+    margin-top: 20px;
+    top: 0;
+    width: 100%;
+    background-color: #4e2e1e;
+    padding: 10px 0;
+    z-index: 100;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-container a {
+    color: #f5f0e6;
+    text-decoration: none;
+    font-size: 1.1em;
+    position: relative;
+    display: inline-block;
+    padding: 5px 0;
+    transition: color 0.3s ease;
+}
+
+.nav-container a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #f5f0e6;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.nav-container a:hover {
+    color: #ffffff;
+}
+
+.nav-container a:hover::after {
+    transform: scaleX(1);
+}
+
+.nav-container {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+    background-color: #4e2e1e;
+}
+
+.nav-container > li {
+    position: relative;
+}
+
+.nav-container > li > a {
+    text-decoration: none;
+    color: #f5f0e6;
+    padding: 10px 15px;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.nav-container > li > a:hover {
+    background-color: #3e2318;
+}
+
+.nav-container .dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #4e2e1e;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    min-width: 200px;
+    z-index: 999;
+    border: 1px solid #3e2318;
+}
+
+.nav-container .dropdown-content li a {
+    padding: 10px 15px;
+    display: block;
+    color: #f5f0e6;
+    text-decoration: none;
+}
+
+.nav-container .dropdown-content li a:hover {
+    background-color: #3e2318;
+}
+
+.nav-container .dropdown:hover .dropdown-content {
+    display: block;
 }
 
 h1 {
-    font-size: 2.2em;
+    margin-top: 40px;
+    font-size: 2em;
     margin-bottom: 20px;
 }
 
-form {
-    max-width: 600px;
+.main-container {
+    max-width: 800px;
     margin: 0 auto;
+    padding: 1rem;
+}
+
+.main-container p {
+    font-size: 1em;
+    line-height: 1.5;
+    margin: 1.5rem 0;
+}
+
+.main-container > div {
+    background: rgba(245,240,230,0.1);
+    padding: 2rem;
+    border-left: 4px solid #f5f0e6;
+    margin: 2rem auto;
+    max-width: 600px;
+}
+
+.main-container a {
+    color: #f5f0e6;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+    padding: 2px 0;
+    transition: color 0.3s ease;
+}
+
+.main-container a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #f5f0e6;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.main-container a:hover {
+    color: #ffffff;
+}
+
+.main-container a:hover::after {
+    transform: scaleX(1);
+}
+
+form {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 0.5rem;
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgba(245,240,230,0.1);
+    border-left: 4px solid #f5f0e6;
 }
 
 input[type="text"],
 textarea {
-    width: 100%;
     padding: 10px;
-    border: none;
-    border-radius: 5px;
+    margin: 10px;
     font-family: "Song Myung", serif;
     font-size: 1em;
+    border: none;
+    border-radius: 5px;
     background-color: #f5f0e6;
     color: #4e2e1e;
-    box-sizing: border-box;
 }
 
 textarea {
-    height: 200px;
+    height: 150px;
     resize: vertical;
 }
 
-button[type="submit"] {
-    padding: 10px 20px;
+button {
     background-color: #f5f0e6;
     color: #4e2e1e;
     border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    padding: 10px 20px;
+    margin: 10px;
+    border-radius: 4px;
     font-family: "Song Myung", serif;
     font-size: 1em;
+    cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-button[type="submit"]:hover {
+button:hover {
     background-color: #e0d8ce;
 }
 
-a {
-    color: #f5f0e6;
-    text-decoration: none;
-    display: inline-block;
-    margin-top: 20px;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  max-width: 400px;
-  margin: 20px auto 0;
-}
-
-form label {
-  align-self: flex-start;
-  margin-bottom: 5px;
-  font-size: 1em;
-}
-
-form input[type="text"],
-form textarea {
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  font-family: "Song Myung", serif;
-  font-size: 1em;
-  box-sizing: border-box;
-  background-color: #f5f0e6;
-  color: #4e2e1e;
-}
-
-form textarea {
-  height: 150px;
-  resize: vertical;
-}
-
-.checkbox-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  align-self: flex-start; 
-  margin-top: 10px;
-}
-
-form button {
-  margin-top: 15px;
-  padding: 8px 20px;
-  background-color: #f5f0e6;
-  color: #4e2e1e;
-  border: none;
-  border-radius: 5px;
-  font-family: "Song Myung", serif;
-  font-size: 1em;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-form button:hover {
-  background-color: #e0d8ce;
-}
-
 .form-group {
-  margin-bottom: 15px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .form-group label {
-  margin-bottom: 5px;
-  font-size: 1em;
+    margin-bottom: 5px;
+    font-size: 1em;
 }
 
-#isPublic {
-  margin-right: 5px;
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
 }
 
 #password-input-field {
-  margin-top: 10px;
-  width: 200px;
-  padding: 5px;
-  border-radius: 3px;
-  border: 1px solid #ccc;
-}
-
-nav {
-  position: fixed;
-  margin-top: 20px;
-  top: 0;
-  width: 100%;
-  background-color: #4e2e1e;
-  padding: 10px 0;
-  z-index: 100;
-}
-
-.nav-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-}
-
-.nav-container a {
-  color: #f5f0e6;
-  text-decoration: none;
-  font-size: 1.1em;
-  position: relative;
-  display: inline-block;
-  padding: 5px 0;
-  transition: color 0.3s ease;
-}
-
-.nav-container a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  height: 2px;
-  background-color: #f5f0e6;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s ease;
-}
-
-.nav-container a:hover {
-  color: #ffffff;
-}
-
-.nav-container a:hover::after {
-  transform: scaleX(1);
-}
-
-.nav-container {
-  align-items: center;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  gap: 20px;
-  background-color: #4e2e1e;
-}
-
-.nav-container > li {
-  position: relative;
-}
-
-.nav-container > li > a {
-  text-decoration: none;
-  color: #f5f0e6;
-  padding: 10px 15px;
-  display: block;
-  transition: background-color 0.3s ease;
-}
-
-.nav-container > li > a:hover {
-  background-color: #3e2318;
-}
-
-.nav-container .dropdown-content {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: #4e2e1e;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  min-width: 200px;
-  z-index: 999;
-  border: 1px solid #3e2318;
-}
-
-.nav-container .dropdown-content li a {
-  padding: 10px 15px;
-  display: block;
-  color: #f5f0e6;
-  text-decoration: none;
-}
-
-.nav-container .dropdown-content li a:hover {
-  background-color: #3e2318;
-}
-
-.nav-container .dropdown:hover .dropdown-content {
-  display: block;
+    width: 200px;
+    padding: 5px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
 }
 
 @media (max-width: 768px) {
     body {
-        padding: 80px 15px 20px;
+        padding: 80px 10px 20px;
     }
     
     nav {
@@ -267,7 +252,6 @@ nav {
     .nav-container {
         gap: 10px;
         flex-wrap: wrap;
-        justify-content: center;
     }
     
     .nav-container > li > a {
@@ -283,16 +267,11 @@ nav {
     
     h1 {
         font-size: 1.8em;
-        margin-bottom: 15px;
+        margin-top: 20px;
     }
     
     .main-container {
-        padding: 0 10px;
-    }
-    
-    .main-container p {
-        font-size: 0.95em;
-        line-height: 1.4;
+        padding: 0.5rem;
     }
     
     .main-container > div {
@@ -301,47 +280,33 @@ nav {
     }
     
     form {
-        max-width: 100%;
-        margin: 15px auto 0;
-        gap: 15px;
+        padding: 15px;
     }
     
-    form input[type="text"],
-    form textarea {
+    input[type="text"],
+    textarea {
+        margin: 5px;
         padding: 12px;
-        font-size: 1em;
     }
     
-    form textarea {
+    textarea {
         height: 120px;
     }
     
-    form button {
-        padding: 12px 25px;
-        font-size: 1em;
-        margin-top: 20px;
-    }
-    
-    .form-group {
-        width: 100%;
-        margin-bottom: 20px;
-    }
-    
-    .checkbox-group {
-        justify-content: flex-start;
-        margin-top: 15px;
+    button {
+        padding: 12px 20px;
+        margin: 5px;
     }
     
     #password-input-field {
         width: 100%;
         max-width: 250px;
-        padding: 8px;
     }
 }
 
 @media (max-width: 480px) {
     body {
-        padding: 70px 10px 20px;
+        padding: 70px 5px 20px;
     }
     
     h1 {
@@ -363,17 +328,6 @@ nav {
     }
     
     form {
-        gap: 12px;
-    }
-    
-    form input[type="text"],
-    form textarea {
-        padding: 15px;
-        font-size: 0.95em;
-    }
-    
-    form button {
-        padding: 15px 30px;
-        font-size: 0.95em;
+        padding: 10px;
     }
 }
