@@ -229,6 +229,7 @@
             <button class="tab-button" onclick="showTab('timeline')">타임라인 관리</button>
             <button class="tab-button" onclick="showTab('gallery')">갤러리 관리</button>
             <button class="tab-button" onclick="showTab('video')">영상 관리</button>
+            <button class="tab-button" onclick="showTab('interview')">인터뷰 클립</button>
             <button class="tab-button" onclick="showTab('mother')">엄마의 이야기</button>
         </div>
 
@@ -303,6 +304,46 @@
             </div>
         </div>
 
+        <div id="interview-tab" class="tab-content">
+            <div class="management-card">
+                <h2 class="card-title">🎤 인터뷰 클립 업로드</h2>
+                <form id="interview-form" class="form-section">
+                    <input type="text" id="interview-title" placeholder="인터뷰 제목" required />
+                    <textarea id="interview-description" rows="3" placeholder="인터뷰 설명"></textarea>
+                    
+                    <div style="margin: 15px 0;">
+                        <label style="margin-right: 20px;">
+                            <input type="radio" name="interview-type" value="youtube" checked> YouTube 링크
+                        </label>
+                        <label>
+                            <input type="radio" name="interview-type" value="file"> 파일 업로드
+                        </label>
+                    </div>
+                    
+                    <div id="interview-youtube-input">
+                        <input type="url" id="interview-youtube-url" placeholder="https://www.youtube.com/watch?v=..." />
+                    </div>
+                    
+                    <div id="interview-file-input" style="display:none;">
+                        <input type="file" id="interview-video-file" accept="video/*" />
+                        <div id="interview-file-info" class="file-info"></div>
+                    </div>
+                    
+                    <button type="submit">인터뷰 업로드</button>
+                </form>
+                <div id="interview-message"></div>
+                
+                <div style="margin-top: 30px; border-top: 1px solid rgba(245,240,230,0.2); padding-top: 20px;">
+                    <h3 style="color: #8d6e63; margin-bottom: 15px;">📋 인터뷰 클립 관리</h3>
+                    <div id="interview-list" style="max-height: 400px; overflow-y: auto; margin-bottom: 15px;">
+                    </div>
+                    <button type="button" id="refresh-interviews-btn" style="width: 100%; padding: 10px; background-color: #8d6e63; color: #f5f0e6; border: none; border-radius: 4px; cursor: pointer;">
+                        인터뷰 목록 새로고침
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div id="mother-tab" class="tab-content">
             <div class="management-grid">
                 <div class="management-card">
@@ -373,10 +414,10 @@
         
         class FileUploadManager {
             constructor() {
-                this.maxFileSize = 100 * 1024 * 1024;
+                this.maxFileSize = 1024 * 1024 * 1024; // 1GB
                 this.allowedTypes = {
                     image: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
-                    video: ['video/mp4', 'video/webm', 'video/mov', 'video/avi']
+                    video: ['video/mp4', 'video/webm', 'video/mov', 'video/avi', 'video/mkv', 'video/flv']
                 };
             }
 
@@ -422,17 +463,37 @@
 
             async uploadWithProgress(file, path, onProgress) {
                 const storageRef = ref(window.storage, path);
-                const uploadTask = uploadBytesResumable(storageRef, file);
+                const uploadTask = uploadBytesResumable(storageRef, file, {
+                    cacheControl: 'public,max-age=3600'
+                });
                 
                 return new Promise((resolve, reject) => {
                     uploadTask.on('state_changed',
                         (snapshot) => {
                             const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                            onProgress?.(progress);
+                            onProgress?.(progress, snapshot.bytesTransferred, snapshot.totalBytes);
                         },
                         (error) => {
                             console.error('업로드 오류:', error);
-                            reject(error);
+                            let errorMessage = "업로드 중 오류가 발생했습니다.";
+                            switch (error.code) {
+                                case 'storage/unauthorized':
+                                    errorMessage = "업로드 권한이 없습니다.";
+                                    break;
+                                case 'storage/canceled':
+                                    errorMessage = "업로드가 취소되었습니다.";
+                                    break;
+                                case 'storage/quota-exceeded':
+                                    errorMessage = "저장 공간이 부족합니다.";
+                                    break;
+                                case 'storage/retry-limit-exceeded':
+                                    errorMessage = "업로드 재시도 한도를 초과했습니다. 네트워크 연결을 확인해주세요.";
+                                    break;
+                                case 'storage/invalid-checksum':
+                                    errorMessage = "파일이 손상되었습니다. 다시 시도해주세요.";
+                                    break;
+                            }
+                            reject(new Error(errorMessage));
                         },
                         async () => {
                             try {
@@ -525,6 +586,18 @@
                 });
             });
 
+            document.querySelectorAll('input[name="interview-type"]').forEach(radio => {
+                radio.addEventListener("change", () => {
+                    if (radio.value === "youtube") {
+                        document.getElementById("interview-youtube-input").style.display = "block";
+                        document.getElementById("interview-file-input").style.display = "none";
+                    } else {
+                        document.getElementById("interview-youtube-input").style.display = "none";
+                        document.getElementById("interview-file-input").style.display = "block";
+                    }
+                });
+            });
+
             document.getElementById("gallery-image").addEventListener("change", (e) => {
                 const file = e.target.files[0];
                 if (file) {
@@ -538,6 +611,14 @@
                 if (file) {
                     const fileInfo = `파일: ${file.name} (${uploadManager.formatFileSize(file.size)})`;
                     document.getElementById("video-file-info").textContent = fileInfo;
+                }
+            });
+
+            document.getElementById("interview-video-file").addEventListener("change", (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const fileInfo = `파일: ${file.name} (${uploadManager.formatFileSize(file.size)})`;
+                    document.getElementById("interview-file-info").textContent = fileInfo;
                 }
             });
 
@@ -634,9 +715,12 @@
                     const imageUrl = await uploadManager.uploadWithProgress(
                         processedFile, 
                         `gallery/${fileName}`,
-                        (progress) => {
+                        (progress, bytesTransferred, totalBytes) => {
                             document.getElementById("gallery-upload-progress").style.width = `${progress}%`;
-                            document.getElementById("gallery-upload-status").textContent = `업로드 중... ${Math.round(progress)}%`;
+                            const transferred = uploadManager.formatFileSize(bytesTransferred);
+                            const total = uploadManager.formatFileSize(totalBytes);
+                            document.getElementById("gallery-upload-status").textContent = 
+                                `업로드 중... ${Math.round(progress)}% (${transferred}/${total})`;
                         }
                     );
                     
@@ -712,9 +796,12 @@
                         videoUrl = await uploadManager.uploadWithProgress(
                             videoFile,
                             `campaignVideos/${fileName}`,
-                            (progress) => {
+                            (progress, bytesTransferred, totalBytes) => {
                                 document.getElementById("video-upload-progress").style.width = `${progress}%`;
-                                document.getElementById("video-upload-status").textContent = `업로드 중... ${Math.round(progress)}%`;
+                                const transferred = uploadManager.formatFileSize(bytesTransferred);
+                                const total = uploadManager.formatFileSize(totalBytes);
+                                document.getElementById("video-upload-status").textContent = 
+                                    `업로드 중... ${Math.round(progress)}% (${transferred}/${total})`;
                             }
                         );
                     }
@@ -730,6 +817,93 @@
                 } catch (error) {
                     console.error("영상 업로드 오류:", error);
                     let errorMessage = "영상 업로드 중 오류가 발생했습니다.";
+                    if (error.code === 'storage/quota-exceeded') {
+                        errorMessage = "저장 공간이 부족합니다.";
+                    } else if (error.code === 'storage/unauthorized') {
+                        errorMessage = "업로드 권한이 없습니다.";
+                    }
+                    showMessage(messageEl, errorMessage, "error");
+                }
+            });
+
+            document.getElementById("interview-form").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const title = document.getElementById("interview-title").value.trim();
+                const description = document.getElementById("interview-description").value.trim();
+                const interviewType = document.querySelector('input[name="interview-type"]:checked').value;
+                const messageEl = document.getElementById("interview-message");
+                
+                if (!title) {
+                    showMessage(messageEl, "인터뷰 제목을 입력해주세요.", "error");
+                    return;
+                }
+                
+                try {
+                    let videoUrl = "";
+                    let isYoutube = false;
+                    
+                    if (interviewType === "youtube") {
+                        const youtubeUrl = document.getElementById("interview-youtube-url").value.trim();
+                        if (!youtubeUrl) {
+                            showMessage(messageEl, "YouTube 링크를 입력해주세요.", "error");
+                            return;
+                        }
+                        videoUrl = convertToEmbedUrl(youtubeUrl);
+                        isYoutube = true;
+                    } else {
+                        const videoFile = document.getElementById("interview-video-file").files[0];
+                        if (!videoFile) {
+                            showMessage(messageEl, "비디오 파일을 선택해주세요.", "error");
+                            return;
+                        }
+
+                        const validation = uploadManager.validateFile(videoFile, 'video');
+                        if (!validation.isValid) {
+                            showMessage(messageEl, validation.errors.join('<br>'), "error");
+                            return;
+                        }
+
+                        const progressContainer = document.createElement('div');
+                        progressContainer.innerHTML = `
+                            <div class="progress-container">
+                                <div class="progress-bar">
+                                    <div id="interview-upload-progress" class="progress-fill"></div>
+                                </div>
+                                <p id="interview-upload-status" style="margin: 5px 0; font-size: 14px; color: #f5f0e6;">업로드 시작 중...</p>
+                            </div>
+                        `;
+                        messageEl.appendChild(progressContainer);
+
+                        const fileName = `${Date.now()}_${videoFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+                        videoUrl = await uploadManager.uploadWithProgress(
+                            videoFile,
+                            `interviewVideos/${fileName}`,
+                            (progress, bytesTransferred, totalBytes) => {
+                                document.getElementById("interview-upload-progress").style.width = `${progress}%`;
+                                const transferred = uploadManager.formatFileSize(bytesTransferred);
+                                const total = uploadManager.formatFileSize(totalBytes);
+                                document.getElementById("interview-upload-status").textContent = 
+                                    `업로드 중... ${Math.round(progress)}% (${transferred}/${total})`;
+                            }
+                        );
+                    }
+                    
+                    await addDoc(collection(window.db, "interviewVideos"), {
+                        title, 
+                        description: description || "",
+                        youtubeUrl: isYoutube ? videoUrl : "",
+                        videoUrl: isYoutube ? "" : videoUrl,
+                        timestamp: serverTimestamp()
+                    });
+                    
+                    showMessage(messageEl, "인터뷰가 성공적으로 업로드되었습니다!", "success");
+                    document.getElementById("interview-form").reset();
+                    document.getElementById("interview-file-info").textContent = "";
+                    loadInterviews();
+                    
+                } catch (error) {
+                    console.error("인터뷰 업로드 오류:", error);
+                    let errorMessage = "인터뷰 업로드 중 오류가 발생했습니다.";
                     if (error.code === 'storage/quota-exceeded') {
                         errorMessage = "저장 공간이 부족합니다.";
                     } else if (error.code === 'storage/unauthorized') {
@@ -806,9 +980,12 @@
                     const photoUrl = await uploadManager.uploadWithProgress(
                         processedFile,
                         `motherPhotos/${fileName}`,
-                        (progress) => {
+                        (progress, bytesTransferred, totalBytes) => {
                             document.getElementById("mother-photo-progress").style.width = `${progress}%`;
-                            document.getElementById("mother-photo-status").textContent = `업로드 중... ${Math.round(progress)}%`;
+                            const transferred = uploadManager.formatFileSize(bytesTransferred);
+                            const total = uploadManager.formatFileSize(totalBytes);
+                            document.getElementById("mother-photo-status").textContent = 
+                                `업로드 중... ${Math.round(progress)}% (${transferred}/${total})`;
                         }
                     );
                     
@@ -836,9 +1013,75 @@
             document.getElementById("refresh-comments-btn").addEventListener("click", loadMotherComments);
             document.getElementById("refresh-music-btn").addEventListener("click", loadMotherMusic);
             document.getElementById("refresh-photos-btn").addEventListener("click", loadMotherPhotos);
+            document.getElementById("refresh-interviews-btn").addEventListener("click", loadInterviews);
             loadMotherComments();
             loadMotherMusic();
             loadMotherPhotos();
+            loadInterviews();
+        }
+
+        async function loadInterviews() {
+            try {
+                const listEl = document.getElementById("interview-list");
+                listEl.innerHTML = "<p style='text-align: center; color: #8d6e63;'>인터뷰를 불러오는 중...</p>";
+                
+                const snaps = await getDocs(query(collection(window.db, "interviewVideos"), orderBy("timestamp", "desc")));
+                listEl.innerHTML = "";
+                
+                if (snaps.empty) {
+                    listEl.innerHTML = "<p style='text-align: center; color: #f5f0e6; font-style: italic;'>아직 등록된 인터뷰가 없습니다.</p>";
+                    return;
+                }
+                
+                snaps.forEach(docSnap => {
+                    const { title, description, youtubeUrl, videoUrl } = docSnap.data();
+                    const id = docSnap.id;
+
+                    const interviewDiv = document.createElement("div");
+                    interviewDiv.style.cssText = `
+                        background: rgba(245,240,230,0.1);
+                        border-left: 4px solid #8d6e63;
+                        padding: 12px;
+                        margin-bottom: 15px;
+                        border-radius: 4px;
+                        position: relative;
+                    `;
+                    
+                    const videoPreview = youtubeUrl ? 
+                        `<iframe width="200" height="120" src="${youtubeUrl}" frameborder="0" allowfullscreen style="border-radius: 4px; margin-top: 8px;"></iframe>` :
+                        `<video width="200" height="120" controls style="border-radius: 4px; margin-top: 8px;"><source src="${videoUrl}" type="video/mp4"></video>`;
+                    
+                    interviewDiv.innerHTML = `
+                        <div style="display: flex; gap: 15px; padding-right: 120px;">
+                            <div>
+                                ${videoPreview}
+                            </div>
+                            <div style="flex: 1;">
+                                <h4 style="margin: 0 0 8px 0; color: #8d6e63;">${title}</h4>
+                                ${description ? `<p style="margin: 0 0 8px 0; color: #f5f0e6; font-size: 14px;">${description}</p>` : ''}
+                                <p style="margin: 0; font-size: 12px; color: #f5f0e6; opacity: 0.8;">
+                                    ${youtubeUrl ? 'YouTube 영상' : '업로드된 파일'}
+                                </p>
+                            </div>
+                        </div>
+                        <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 5px;">
+                            <button onclick="editInterview('${id}', '${title}', '${description || ''}')" 
+                                    style="background: #007bff; color: white; border: none; border-radius: 3px; padding: 4px 8px; cursor: pointer; font-size: 12px;">
+                                수정
+                            </button>
+                            <button onclick="deleteInterview('${id}')" 
+                                    style="background: #dc3545; color: white; border: none; border-radius: 3px; padding: 4px 8px; cursor: pointer; font-size: 12px;">
+                                삭제
+                            </button>
+                        </div>
+                    `;
+                    
+                    listEl.appendChild(interviewDiv);
+                });
+            } catch (error) {
+                console.error("인터뷰 로드 오류:", error);
+                document.getElementById("interview-list").innerHTML = "<p style='color: #dc3545;'>인터뷰를 불러오는 중 오류가 발생했습니다.</p>";
+            }
         }
 
         async function loadMotherMusic() {
@@ -980,6 +1223,40 @@
                 document.getElementById("mother-comments-list").innerHTML = "<p style='color: #dc3545;'>댓글을 불러오는 중 오류가 발생했습니다.</p>";
             }
         }
+
+        window.editInterview = async function(interviewId, currentTitle, currentDescription) {
+            const newTitle = prompt("새 제목을 입력하세요:", currentTitle);
+            if (newTitle === null) return;
+            
+            const newDescription = prompt("새 설명을 입력하세요:", currentDescription);
+            if (newDescription === null) return;
+            
+            try {
+                const { updateDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
+                await updateDoc(doc(window.db, "interviewVideos", interviewId), {
+                    title: newTitle,
+                    description: newDescription
+                });
+                showMessage(document.getElementById("interview-message"), "인터뷰가 성공적으로 수정되었습니다!", "success");
+                loadInterviews();
+            } catch (error) {
+                console.error("인터뷰 수정 오류:", error);
+                showMessage(document.getElementById("interview-message"), "인터뷰 수정 중 오류가 발생했습니다.", "error");
+            }
+        };
+
+        window.deleteInterview = async function(interviewId) {
+            if (!confirm("정말 이 인터뷰를 삭제하시겠습니까?")) return;
+            
+            try {
+                await deleteDoc(doc(window.db, "interviewVideos", interviewId));
+                showMessage(document.getElementById("interview-message"), "인터뷰가 성공적으로 삭제되었습니다!", "success");
+                loadInterviews();
+            } catch (error) {
+                console.error("인터뷰 삭제 오류:", error);
+                showMessage(document.getElementById("interview-message"), "인터뷰 삭제 중 오류가 발생했습니다.", "error");
+            }
+        };
 
         window.deleteMotherMusic = async function(musicId) {
             if (!confirm("정말 이 음악을 삭제하시겠습니까?")) return;
