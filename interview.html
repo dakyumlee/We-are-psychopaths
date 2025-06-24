@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>인터뷰이 모집 & 영상 업로드</title>
+  <title>인터뷰 클립</title>
   <link href="community.css" rel="stylesheet" />
   <link href="interview.css" rel="stylesheet" />
   <link rel="stylesheet" href="css/chatbot.css">
-<script src="js/chatbot.js"></script>
+  <script src="js/chatbot.js"></script>
 </head>
 <body class="song-myung-regular">
 
@@ -39,52 +39,152 @@
   </nav>
 
   <div class="main-container">
-    <h1>인터뷰이 모집 & 영상 업로드</h1>
+    <h1>인터뷰 클립</h1>
 
     <section class="call-section">
       <p>
         정신질환을 앓고 있는 당사자 혹은 가족분들 중 인터뷰이를 구하고 있습니다.<br>
-            다큐멘터리를 통해 자신 혹은 자신의 가족들의 이야기를 하고 싶으신 분들이 있다면<br>
-            아래 메일로 연락 남겨주시면 감사하겠습니다. (밑 주소 클릭시 메일 발송)<br><br>
-            <a href="mailto:we.are.psychopath2025@gmail.com" style="color: #f5f0e6; text-decoration: none;">we.are.psychopath2025@gmail.com</a>
+        다큐멘터리를 통해 자신 혹은 자신의 가족들의 이야기를 하고 싶으신 분들이 있다면<br>
+        아래 메일로 연락 남겨주시면 감사하겠습니다. (밑 주소 클릭시 메일 발송)<br><br>
+        <a href="mailto:we.are.psychopath2025@gmail.com" style="color: #f5f0e6; text-decoration: none;">we.are.psychopath2025@gmail.com</a>
       </p>
     </section>
 
-    <section id="admin-check" class="admin-section">
-      <input id="admin-key" type="password" placeholder="관리자 키 입력" />
-      <button id="admin-btn">감독 모드</button>
-    </section>
-
-    <section id="upload-section" class="upload-section" style="display:none;">
-      <h2>영상 업로드</h2>
-      <form id="upload-form">
-        <label>
-          제목
-          <input type="text" id="video-title" placeholder="영상 제목" required />
-        </label>
-        <div class="mode-toggle">
-          <label><input type="radio" name="mode" value="youtube" checked/> YouTube 링크</label>
-          <label><input type="radio" name="mode" value="file"/> 직접 업로드</label>
-        </div>
-        <div id="youtube-input">
-          <input type="url" id="youtube-url" placeholder="https://www.youtube.com/watch?v=…" />
-        </div>
-        <div id="file-input" style="display:none;">
-          <input type="file" id="video-file" accept="video/*" />
-        </div>
-        <button type="submit">업로드</button>
-      </form>
-    </section>
-
     <section class="list-section">
-      <h2>인터뷰 클립</h2>
+      <h2>인터뷰 영상</h2>
       <div id="video-list" class="video-list"></div>
     </section>
 
     <a href="index.html" class="home-link">홈으로</a>
   </div>
 
-  <script type="module" src="firebase-config.js"></script>
-  <script type="module" src="interview.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    
+    const firebaseConfig = {
+      apiKey: "AIzaSyAIU8q64ZB6g8D72SPcCxxkOQmhtREN9cg",
+      authDomain: "we-are-psychopath.firebaseapp.com",
+      projectId: "we-are-psychopath",
+      storageBucket: "we-are-psychopath.firebasestorage.app",
+      messagingSenderId: "1020831167882",
+      appId: "1:1020831167882:web:addcfd266307c3bb71c473",
+      measurementId: "G-MG2X69DDK8"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    
+    const listContainer = document.getElementById("video-list");
+
+    async function loadVideos() {
+      try {
+        listContainer.innerHTML = "<p style='text-align: center; color: #f5f0e6;'>인터뷰를 불러오는 중...</p>";
+        
+        const snaps = await getDocs(
+          query(collection(db, "interviewVideos"), orderBy("timestamp", "desc"))
+        );
+        
+        listContainer.innerHTML = "";
+        
+        if (snaps.empty) {
+          listContainer.innerHTML = "<p style='text-align: center; color: #f5f0e6; font-style: italic;'>아직 등록된 인터뷰가 없습니다.</p>";
+          return;
+        }
+        
+        snaps.forEach(docSnap => {
+          const data = docSnap.data();
+          const div = document.createElement("div");
+          div.className = "video-item";
+
+          const titleEl = document.createElement("h3");
+          titleEl.textContent = data.title;
+          titleEl.style.cssText = "margin: 0 0 10px 0; color: #f5f0e6; font-size: 1.2em;";
+          div.appendChild(titleEl);
+
+          if (data.description) {
+            const descEl = document.createElement("p");
+            descEl.textContent = data.description;
+            descEl.style.cssText = "margin: 0 0 15px 0; color: #f5f0e6; font-size: 14px; opacity: 0.9; line-height: 1.4;";
+            div.appendChild(descEl);
+          }
+
+          if (data.youtubeUrl) {
+            const iframe = document.createElement("iframe");
+            iframe.src = data.youtubeUrl;
+            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+            iframe.allowFullscreen = true;
+            iframe.style.cssText = "width: 100%; height: 250px; border: none; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);";
+            div.appendChild(iframe);
+          } else if (data.videoUrl) {
+            const video = document.createElement("video");
+            video.src = data.videoUrl;
+            video.controls = true;
+            video.preload = "metadata";
+            video.style.cssText = "width: 100%; height: 250px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.3); background: #000;";
+            
+            video.addEventListener('loadstart', () => {
+              console.log('비디오 로딩 시작:', data.title);
+            });
+            
+            video.addEventListener('error', (e) => {
+              console.error('비디오 로드 에러:', e);
+              const errorMsg = document.createElement('p');
+              errorMsg.textContent = '비디오를 로드할 수 없습니다.';
+              errorMsg.style.cssText = 'color: #dc3545; text-align: center; padding: 20px;';
+              div.replaceChild(errorMsg, video);
+            });
+            
+            div.appendChild(video);
+          }
+
+          const uploadDate = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('ko-KR') : '';
+          if (uploadDate) {
+            const dateEl = document.createElement("p");
+            dateEl.textContent = `업로드: ${uploadDate}`;
+            dateEl.style.cssText = "margin: 10px 0 0 0; color: #f5f0e6; font-size: 12px; opacity: 0.7; text-align: right;";
+            div.appendChild(dateEl);
+          }
+
+          div.style.cssText = `
+            background: rgba(245,240,230,0.1);
+            border-left: 4px solid #8d6e63;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+          `;
+
+          div.addEventListener('mouseenter', () => {
+            div.style.background = 'rgba(245,240,230,0.15)';
+            div.style.transform = 'translateY(-2px)';
+            div.style.boxShadow = '0 8px 16px rgba(0,0,0,0.2)';
+          });
+
+          div.addEventListener('mouseleave', () => {
+            div.style.background = 'rgba(245,240,230,0.1)';
+            div.style.transform = 'translateY(0)';
+            div.style.boxShadow = 'none';
+          });
+
+          listContainer.appendChild(div);
+        });
+      } catch (error) {
+        console.error("비디오 로드 오류:", error);
+        listContainer.innerHTML = `
+          <div style="text-align: center; padding: 40px;">
+            <p style="color: #dc3545; margin-bottom: 10px;">인터뷰를 불러오는 중 오류가 발생했습니다.</p>
+            <button onclick="loadVideos()" style="padding: 8px 16px; background: #8d6e63; color: #f5f0e6; border: none; border-radius: 4px; cursor: pointer;">
+              다시 시도
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    window.loadVideos = loadVideos;
+
+    loadVideos();
+  </script>
 </body>
 </html>
