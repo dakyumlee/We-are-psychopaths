@@ -306,23 +306,33 @@
         <div id="mother-tab" class="tab-content">
             <div class="management-grid">
                 <div class="management-card">
-                    <h2 class="card-title">🎵 음악 추가</h2>
+                    <h2 class="card-title">🎵 음악 관리</h2>
                     <form id="mother-music-form" class="form-section">
                         <input type="text" id="music-title" placeholder="곡 제목" required />
                         <input type="url" id="music-url" placeholder="YouTube 링크" required />
                         <button type="submit">음악 추가</button>
                     </form>
+                    <div id="mother-music-list" style="max-height: 300px; overflow-y: auto; margin: 15px 0; border-top: 1px solid rgba(245,240,230,0.2); padding-top: 15px;">
+                    </div>
+                    <button type="button" id="refresh-music-btn" style="width: 100%; padding: 10px; background-color: #8d6e63; color: #f5f0e6; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 10px;">
+                        음악 목록 새로고침
+                    </button>
                     <div id="mother-music-message"></div>
                 </div>
                 
                 <div class="management-card">
-                    <h2 class="card-title">📷 사진 추가</h2>
+                    <h2 class="card-title">📷 사진 관리</h2>
                     <form id="mother-photo-form" class="form-section">
                         <input type="file" id="mother-photo" accept="image/*" required />
                         <div id="mother-photo-file-info" class="file-info"></div>
                         <input type="text" id="photo-caption" placeholder="사진 설명" required />
                         <button type="submit">사진 추가</button>
                     </form>
+                    <div id="mother-photo-list" style="max-height: 300px; overflow-y: auto; margin: 15px 0; border-top: 1px solid rgba(245,240,230,0.2); padding-top: 15px;">
+                    </div>
+                    <button type="button" id="refresh-photos-btn" style="width: 100%; padding: 10px; background-color: #8d6e63; color: #f5f0e6; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 10px;">
+                        사진 목록 새로고침
+                    </button>
                     <div id="mother-photo-message"></div>
                 </div>
                 
@@ -750,6 +760,7 @@
                     });
                     showMessage(document.getElementById("mother-music-message"), "🎵 음악이 성공적으로 추가되었습니다!", "success");
                     document.getElementById("mother-music-form").reset();
+                    loadMotherMusic();
                 } catch (error) {
                     console.error("음악 추가 오류:", error);
                     showMessage(document.getElementById("mother-music-message"), "음악 추가 중 오류가 발생했습니다.", "error");
@@ -808,6 +819,7 @@
                     showMessage(messageEl, "📷 사진이 성공적으로 추가되었습니다!", "success");
                     document.getElementById("mother-photo-form").reset();
                     document.getElementById("mother-photo-file-info").textContent = "";
+                    loadMotherPhotos();
                     
                 } catch (error) {
                     console.error("사진 추가 오류:", error);
@@ -822,7 +834,108 @@
             });
 
             document.getElementById("refresh-comments-btn").addEventListener("click", loadMotherComments);
+            document.getElementById("refresh-music-btn").addEventListener("click", loadMotherMusic);
+            document.getElementById("refresh-photos-btn").addEventListener("click", loadMotherPhotos);
             loadMotherComments();
+            loadMotherMusic();
+            loadMotherPhotos();
+        }
+
+        async function loadMotherMusic() {
+            try {
+                const listEl = document.getElementById("mother-music-list");
+                listEl.innerHTML = "<p style='text-align: center; color: #8d6e63;'>음악을 불러오는 중...</p>";
+                
+                const snaps = await getDocs(query(collection(window.db, "motherMusic"), orderBy("timestamp", "desc")));
+                listEl.innerHTML = "";
+                
+                if (snaps.empty) {
+                    listEl.innerHTML = "<p style='text-align: center; color: #f5f0e6; font-style: italic;'>아직 등록된 음악이 없습니다.</p>";
+                    return;
+                }
+                
+                snaps.forEach(docSnap => {
+                    const { title, url, originalUrl } = docSnap.data();
+                    const id = docSnap.id;
+
+                    const musicDiv = document.createElement("div");
+                    musicDiv.style.cssText = `
+                        background: rgba(245,240,230,0.1);
+                        border-left: 4px solid #8d6e63;
+                        padding: 12px;
+                        margin-bottom: 10px;
+                        border-radius: 4px;
+                        position: relative;
+                    `;
+                    
+                    musicDiv.innerHTML = `
+                        <h4 style="margin: 0 0 8px 0; color: #8d6e63; padding-right: 60px;">${title}</h4>
+                        <p style="margin: 0; font-size: 12px; color: #f5f0e6; opacity: 0.8; word-break: break-all; padding-right: 60px;">${originalUrl || url}</p>
+                        <button onclick="deleteMotherMusic('${id}')" 
+                                style="position: absolute; top: 8px; right: 8px; background: #dc3545; color: white; border: none; border-radius: 3px; padding: 4px 8px; cursor: pointer; font-size: 12px;">
+                            삭제
+                        </button>
+                    `;
+                    
+                    listEl.appendChild(musicDiv);
+                });
+            } catch (error) {
+                console.error("음악 로드 오류:", error);
+                document.getElementById("mother-music-list").innerHTML = "<p style='color: #dc3545;'>음악을 불러오는 중 오류가 발생했습니다.</p>";
+            }
+        }
+
+        async function loadMotherPhotos() {
+            try {
+                const listEl = document.getElementById("mother-photo-list");
+                listEl.innerHTML = "<p style='text-align: center; color: #8d6e63;'>사진을 불러오는 중...</p>";
+                
+                const snaps = await getDocs(query(collection(window.db, "motherPhotos"), orderBy("timestamp", "desc")));
+                listEl.innerHTML = "";
+                
+                if (snaps.empty) {
+                    listEl.innerHTML = "<p style='text-align: center; color: #f5f0e6; font-style: italic;'>아직 등록된 사진이 없습니다.</p>";
+                    return;
+                }
+                
+                snaps.forEach(docSnap => {
+                    const { photoUrl, caption } = docSnap.data();
+                    const id = docSnap.id;
+
+                    const photoDiv = document.createElement("div");
+                    photoDiv.style.cssText = `
+                        background: rgba(245,240,230,0.1);
+                        border-left: 4px solid #8d6e63;
+                        padding: 12px;
+                        margin-bottom: 10px;
+                        border-radius: 4px;
+                        position: relative;
+                    `;
+                    
+                    photoDiv.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 10px; padding-right: 60px;">
+                            <img src="${photoUrl}" alt="${caption}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">
+                            <div>
+                                <p style="margin: 0; color: #f5f0e6; font-weight: bold;">${caption}</p>
+                                <p style="margin: 5px 0 0 0; font-size: 12px; color: #f5f0e6; opacity: 0.8;">클릭하여 원본 보기</p>
+                            </div>
+                        </div>
+                        <button onclick="deleteMotherPhoto('${id}')" 
+                                style="position: absolute; top: 8px; right: 8px; background: #dc3545; color: white; border: none; border-radius: 3px; padding: 4px 8px; cursor: pointer; font-size: 12px;">
+                            삭제
+                        </button>
+                    `;
+                    
+                    photoDiv.querySelector('img').addEventListener('click', () => {
+                        window.open(photoUrl, '_blank');
+                    });
+                    
+                    listEl.appendChild(photoDiv);
+                });
+            } catch (error) {
+                console.error("사진 로드 오류:", error);
+                document.getElementById("mother-photo-list").innerHTML = "<p style='color: #dc3545;'>사진을 불러오는 중 오류가 발생했습니다.</p>";
+            }
         }
 
         async function loadMotherComments() {
@@ -867,6 +980,32 @@
                 document.getElementById("mother-comments-list").innerHTML = "<p style='color: #dc3545;'>댓글을 불러오는 중 오류가 발생했습니다.</p>";
             }
         }
+
+        window.deleteMotherMusic = async function(musicId) {
+            if (!confirm("정말 이 음악을 삭제하시겠습니까?")) return;
+            
+            try {
+                await deleteDoc(doc(window.db, "motherMusic", musicId));
+                showMessage(document.getElementById("mother-music-message"), "음악이 성공적으로 삭제되었습니다!", "success");
+                loadMotherMusic();
+            } catch (error) {
+                console.error("음악 삭제 오류:", error);
+                showMessage(document.getElementById("mother-music-message"), "음악 삭제 중 오류가 발생했습니다.", "error");
+            }
+        };
+
+        window.deleteMotherPhoto = async function(photoId) {
+            if (!confirm("정말 이 사진을 삭제하시겠습니까?")) return;
+            
+            try {
+                await deleteDoc(doc(window.db, "motherPhotos", photoId));
+                showMessage(document.getElementById("mother-photo-message"), "사진이 성공적으로 삭제되었습니다!", "success");
+                loadMotherPhotos();
+            } catch (error) {
+                console.error("사진 삭제 오류:", error);
+                showMessage(document.getElementById("mother-photo-message"), "사진 삭제 중 오류가 발생했습니다.", "error");
+            }
+        };
 
         window.deleteMotherComment = async function(commentId) {
             if (!confirm("정말 이 댓글을 삭제하시겠습니까?")) return;
