@@ -295,7 +295,7 @@
             </div>
             
             <div id="file-input" style="display:none;">
-                <input type="file" id="video-file" accept="video/*" />
+                <input type="file" id="video-file" accept=".mp4,.webm,.mov,.avi,.mkv,.flv,video/*" />
                 <div id="video-file-info" class="file-info"></div>
             </div>
             
@@ -326,7 +326,7 @@
             </div>
             
             <div id="interview-file-input" style="display:none;">
-                <input type="file" id="interview-video-file" accept="video/*" />
+                <input type="file" id="interview-video-file" accept=".mp4,.webm,.mov,.avi,.mkv,.flv,video/*" />
                 <div id="interview-file-info" class="file-info"></div>
             </div>
             
@@ -493,7 +493,7 @@ class FileUploadManager {
         this.maxFileSize = 1024 * 1024 * 1024; // 1GB
         this.allowedTypes = {
             image: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
-            video: ['video/mp4', 'video/webm', 'video/mov', 'video/avi', 'video/mkv', 'video/flv']
+            video: ['video/mp4', 'video/webm', 'video/mov', 'video/quicktime', 'video/x-quicktime', 'video/avi', 'video/mkv', 'video/flv', 'video/x-msvideo']
         };
     }
 
@@ -504,8 +504,20 @@ class FileUploadManager {
             errors.push(`파일 크기가 너무 큽니다. 최대 ${this.maxFileSize / 1024 / 1024}MB까지 업로드 가능합니다.`);
         }
         
-        if (!this.allowedTypes[type].includes(file.type)) {
-            errors.push(`지원하지 않는 파일 형식입니다. ${this.allowedTypes[type].join(', ')}만 업로드 가능합니다.`);
+        // 비디오 파일의 경우 확장자도 함께 체크
+        if (type === 'video') {
+            const fileName = file.name.toLowerCase();
+            const videoExtensions = ['.mp4', '.webm', '.mov', '.avi', '.mkv', '.flv'];
+            const hasValidExtension = videoExtensions.some(ext => fileName.endsWith(ext));
+            const hasValidMimeType = this.allowedTypes[type].includes(file.type);
+            
+            if (!hasValidMimeType && !hasValidExtension) {
+                errors.push(`지원하지 않는 파일 형식입니다. MP4, MOV, AVI, MKV, WEBM, FLV 파일만 업로드 가능합니다.`);
+            }
+        } else {
+            if (!this.allowedTypes[type].includes(file.type)) {
+                errors.push(`지원하지 않는 파일 형식입니다. ${this.allowedTypes[type].join(', ')}만 업로드 가능합니다.`);
+            }
         }
         
         return {
