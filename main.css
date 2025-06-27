@@ -1,0 +1,451 @@
+@import url('https://fonts.googleapis.com/css2?family=Song+Myung&display=swap');
+
+.song-myung-regular {
+    font-family: "Song Myung", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Song Myung", serif;
+    background-color: #4e2e1e;
+    color: #f5f0e6;
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: rgba(78, 46, 30, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 15px 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(245, 240, 230, 0.1);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    list-style: none;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    flex-wrap: wrap;
+}
+
+.nav-container li a {
+    color: #f5f0e6;
+    text-decoration: none;
+    font-size: 1.1em;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    position: relative;
+    white-space: nowrap;
+}
+
+.nav-container li a:hover {
+    background-color: rgba(245, 240, 230, 0.1);
+    transform: translateY(-2px);
+}
+
+.nav-container li a::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: #f5f0e6;
+    transform: translateX(-50%);
+    transition: width 0.3s ease;
+}
+
+.nav-container li a:hover::after {
+    width: 80%;
+}
+
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 20px 40px;
+}
+
+.hero-section {
+    text-align: center;
+    margin-bottom: 60px;
+    padding: 60px 0;
+}
+
+.hero-section h1 {
+    font-size: 3.5em;
+    margin-bottom: 30px;
+    background: linear-gradient(135deg, #f5f0e6, #d4c4a8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.project-info {
+    margin-top: 20px;
+}
+
+.project-info p {
+    margin: 8px 0;
+    font-size: 1.2em;
+}
+
+.period {
+    color: #d4c4a8;
+    font-weight: bold;
+}
+
+.slogan {
+    color: #f5f0e6;
+    font-style: italic;
+    font-size: 1.4em !important;
+    margin: 15px 0 !important;
+}
+
+.support {
+    color: #b8a082;
+    font-size: 1em !important;
+    background: rgba(245, 240, 230, 0.1);
+    padding: 10px 20px;
+    border-radius: 25px;
+    display: inline-block;
+    margin-top: 15px;
+}
+
+.intro-section {
+    text-align: center;
+    margin-bottom: 60px;
+    padding: 40px;
+    background: rgba(245, 240, 230, 0.05);
+    border-left: 4px solid #f5f0e6;
+    border-radius: 8px;
+}
+
+.intro-text {
+    font-size: 1.3em;
+    line-height: 1.8;
+    color: #f5f0e6;
+}
+
+.contact-section {
+    margin-bottom: 60px;
+    padding: 40px;
+    background: rgba(245, 240, 230, 0.08);
+    border-radius: 12px;
+}
+
+.contact-section h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2em;
+    color: #f5f0e6;
+}
+
+.contact-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.contact-item {
+    background: rgba(245, 240, 230, 0.1);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(245, 240, 230, 0.1);
+}
+
+.contact-item:hover {
+    background: rgba(245, 240, 230, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.contact-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #d4c4a8;
+}
+
+.contact-item a {
+    color: #f5f0e6;
+    text-decoration: none;
+    font-size: 1.1em;
+    transition: color 0.3s ease;
+}
+
+.contact-item a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.navigation-section {
+    margin-bottom: 60px;
+}
+
+.navigation-section h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 2.2em;
+    color: #f5f0e6;
+}
+
+.nav-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+}
+
+.nav-card {
+    background: rgba(245, 240, 230, 0.08);
+    padding: 30px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #f5f0e6;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(245, 240, 230, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(245, 240, 230, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.nav-card:hover::before {
+    left: 100%;
+}
+
+.nav-card:hover {
+    background: rgba(245, 240, 230, 0.12);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    border-color: rgba(245, 240, 230, 0.2);
+}
+
+.nav-card h3 {
+    font-size: 1.4em;
+    margin-bottom: 15px;
+    color: #f5f0e6;
+}
+
+.nav-card p {
+    color: #d4c4a8;
+    line-height: 1.6;
+}
+
+.interview-call {
+    margin-bottom: 60px;
+}
+
+.call-box {
+    background: linear-gradient(135deg, rgba(141, 110, 99, 0.2), rgba(109, 76, 65, 0.2));
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    border: 2px solid rgba(245, 240, 230, 0.2);
+    position: relative;
+}
+
+.call-box::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, #f5f0e6, transparent, #f5f0e6);
+    border-radius: 15px;
+    z-index: -1;
+    opacity: 0.3;
+}
+
+.call-box h3 {
+    font-size: 1.8em;
+    margin-bottom: 20px;
+    color: #f5f0e6;
+}
+
+.call-box p {
+    font-size: 1.1em;
+    line-height: 1.8;
+    margin-bottom: 25px;
+    color: #f5f0e6;
+}
+
+.contact-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #8d6e63, #a1887f);
+    color: #f5f0e6;
+    padding: 15px 30px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.contact-btn:hover {
+    background: linear-gradient(135deg, #a1887f, #8d6e63);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+footer {
+    text-align: center;
+    padding: 40px 0;
+    border-top: 1px solid rgba(245, 240, 230, 0.2);
+    margin-top: 60px;
+}
+
+footer p {
+    margin: 8px 0;
+    color: #b8a082;
+}
+
+footer p:first-child {
+    font-weight: bold;
+    color: #d4c4a8;
+}
+
+@media (max-width: 768px) {
+    .nav-container {
+        gap: 15px;
+        justify-content: center;
+    }
+    
+    .nav-container li a {
+        font-size: 1em;
+        padding: 6px 12px;
+    }
+    
+    .main-container {
+        padding: 120px 15px 30px;
+    }
+    
+    .hero-section h1 {
+        font-size: 2.5em;
+    }
+    
+    .hero-section {
+        padding: 40px 0;
+        margin-bottom: 40px;
+    }
+    
+    .project-info p {
+        font-size: 1.1em;
+    }
+    
+    .slogan {
+        font-size: 1.2em !important;
+    }
+    
+    .intro-section,
+    .contact-section,
+    .call-box {
+        padding: 25px;
+        margin-bottom: 40px;
+    }
+    
+    .intro-text {
+        font-size: 1.1em;
+    }
+    
+    .contact-links {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .nav-cards {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .nav-card {
+        padding: 25px;
+    }
+    
+    .navigation-section h2,
+    .contact-section h2 {
+        font-size: 1.8em;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-container {
+        flex-direction: column;
+        gap: 10px;
+        padding: 0 10px;
+    }
+    
+    .nav-container li a {
+        font-size: 0.95em;
+        padding: 8px 15px;
+    }
+    
+    .main-container {
+        padding: 140px 10px 25px;
+    }
+    
+    .hero-section h1 {
+        font-size: 2em;
+        line-height: 1.2;
+    }
+    
+    .project-info p {
+        font-size: 1em;
+    }
+    
+    .intro-text {
+        font-size: 1em;
+        line-height: 1.6;
+    }
+    
+    .contact-item,
+    .nav-card,
+    .call-box {
+        padding: 20px;
+    }
+    
+    .call-box h3 {
+        font-size: 1.5em;
+    }
+    
+    .call-box p {
+        font-size: 1em;
+        line-height: 1.6;
+    }
+    
+    .contact-btn {
+        padding: 12px 25px;
+        font-size: 1em;
+    }
+}

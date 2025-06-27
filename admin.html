@@ -6,167 +6,363 @@
 <title>감독 관리 패널</title>
 <link href="community.css" rel="stylesheet" />
 <style>
+body {
+    background-color: #4e2e1e;
+    color: #f5f0e6;
+    font-family: "Song Myung", serif;
+}
+
 .admin-panel {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 100px 20px 20px;
+    font-family: "Song Myung", serif;
+    background-color: #4e2e1e;
 }
 
 .panel-header {
     text-align: center;
     margin-bottom: 3rem;
-    background: rgba(245,240,230,0.1);
+    background: rgba(245, 240, 230, 0.05);
     padding: 2rem;
+    border-radius: 12px;
     border-left: 4px solid #8d6e63;
 }
 
-.management-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
+.panel-header h1 {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    color: #f5f0e6;
+}
+
+.panel-header p {
+    color: #d4c4a8;
+    font-size: 1.2em;
+    margin: 0;
+}
+
+.management-tabs {
+    display: flex;
+    justify-content: center;
     margin-bottom: 3rem;
+    background: rgba(245, 240, 230, 0.05);
+    border-radius: 12px;
+    padding: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tab-button {
+    padding: 12px 24px;
+    background: rgba(245, 240, 230, 0.1);
+    border: 1px solid rgba(245, 240, 230, 0.2);
+    border-radius: 25px;
+    color: #f5f0e6;
+    cursor: pointer;
+    font-family: "Song Myung", serif;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+}
+
+.tab-button:hover {
+    background: rgba(245, 240, 230, 0.15);
+    transform: translateY(-2px);
+}
+
+.tab-button.active {
+    background: #8d6e63;
+    border-color: #8d6e63;
+    color: #f5f0e6;
 }
 
 .management-card {
-    background: rgba(245,240,230,0.05);
-    border: 1px solid rgba(245,240,230,0.2);
-    border-radius: 8px;
-    padding: 1.5rem;
+    background: rgba(245, 240, 230, 0.05);
+    border: 1px solid rgba(245, 240, 230, 0.1);
+    border-left: 4px solid #8d6e63;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
     transition: all 0.3s ease;
 }
 
 .management-card:hover {
-    background: rgba(245,240,230,0.1);
-    border-color: #8d6e63;
+    background: rgba(245, 240, 230, 0.08);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .card-title {
-    color: #8d6e63;
-    font-size: 1.3em;
-    margin-bottom: 1rem;
+    color: #f5f0e6;
+    font-size: 1.5em;
+    margin-bottom: 1.5rem;
     text-align: center;
-    border-bottom: 2px solid #8d6e63;
-    padding-bottom: 0.5rem;
 }
 
 .form-section {
     margin-bottom: 2rem;
 }
 
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: #d4c4a8;
+    font-weight: bold;
+    margin-bottom: 8px;
+    font-size: 1.1em;
+}
+
 .form-section input,
 .form-section textarea,
 .form-section select {
     width: 100%;
-    padding: 8px 12px;
-    margin-bottom: 10px;
-    border: none;
-    border-radius: 4px;
+    padding: 12px 15px;
+    border: 1px solid rgba(245, 240, 230, 0.2);
+    border-radius: 8px;
+    background: rgba(245, 240, 230, 0.1);
+    color: #f5f0e6;
     font-family: "Song Myung", serif;
+    font-size: 1em;
+    transition: all 0.3s ease;
     box-sizing: border-box;
 }
 
-.form-section button {
-    width: 100%;
-    padding: 10px;
-    background-color: #8d6e63;
-    color: #f5f0e6;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: "Song Myung", serif;
-    transition: background-color 0.3s ease;
+.form-section input:focus,
+.form-section textarea:focus,
+.form-section select:focus {
+    outline: none;
+    border-color: #8d6e63;
+    background: rgba(245, 240, 230, 0.15);
+    box-shadow: 0 0 15px rgba(141, 110, 99, 0.3);
 }
 
-.form-section button:hover {
-    background-color: #a1887f;
+.form-section textarea {
+    resize: vertical;
+    min-height: 100px;
+    line-height: 1.6;
+}
+
+.form-section button,
+.action-btn {
+    padding: 12px 25px;
+    background: #8d6e63;
+    color: #f5f0e6;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: "Song Myung", serif;
+    font-size: 1.1em;
+    transition: all 0.3s ease;
+    min-width: 140px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.form-section button:hover,
+.action-btn:hover {
+    background: #a1887f;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(141, 110, 99, 0.4);
+}
+
+.danger-btn {
+    background: #dc3545 !important;
+}
+
+.danger-btn:hover {
+    background: #c82333 !important;
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4) !important;
+}
+
+.secondary-btn {
+    background: rgba(245, 240, 230, 0.1) !important;
+    border: 1px solid rgba(245, 240, 230, 0.2) !important;
+}
+
+.secondary-btn:hover {
+    background: rgba(245, 240, 230, 0.15) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
 }
 
 .login-section {
-    max-width: 400px;
+    max-width: 500px;
     margin: 200px auto;
     text-align: center;
-    background: rgba(245,240,230,0.1);
-    padding: 2rem;
-    border-radius: 8px;
+    background: rgba(245, 240, 230, 0.05);
+    padding: 3rem;
+    border-radius: 12px;
     border-left: 4px solid #8d6e63;
 }
 
+.login-section h1 {
+    color: #f5f0e6;
+    font-size: 2.2em;
+    margin-bottom: 20px;
+}
+
+.login-section p {
+    color: #d4c4a8;
+    font-size: 1.1em;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
 .login-section input {
-    width: 80%;
-    padding: 12px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
+    width: 100%;
+    max-width: 300px;
+    padding: 15px 20px;
+    margin: 15px 0;
+    border: 1px solid rgba(245, 240, 230, 0.3);
+    border-radius: 25px;
+    background: rgba(245, 240, 230, 0.1);
+    color: #f5f0e6;
+    font-size: 1.1em;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.login-section input:focus {
+    outline: none;
+    border-color: #8d6e63;
+    background: rgba(245, 240, 230, 0.15);
+    box-shadow: 0 0 15px rgba(141, 110, 99, 0.3);
 }
 
 .login-section button {
-    padding: 12px 24px;
-    background-color: #8d6e63;
-    color: #f5f0e6;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-family: "Song Myung", serif;
-    font-size: 16px;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    margin-top: 10px;
 }
 
 .logout-btn {
     position: fixed;
     top: 20px;
     right: 20px;
-    padding: 8px 16px;
-    background-color: #a94442;
+    padding: 10px 20px;
+    background: #dc3545;
     color: #f5f0e6;
     border: none;
-    border-radius: 4px;
+    border-radius: 20px;
     cursor: pointer;
     font-family: "Song Myung", serif;
+    font-size: 1em;
     z-index: 1000;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.hidden {
-    display: none;
+.logout-btn:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
 }
 
 .status-message {
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 4px;
+    padding: 15px 20px;
+    margin: 15px 0;
+    border-radius: 8px;
     text-align: center;
+    font-weight: bold;
+    border-left: 4px solid;
 }
 
 .success {
-    background-color: rgba(92, 184, 92, 0.2);
+    background: rgba(92, 184, 92, 0.2);
     color: #5cb85c;
+    border-color: #5cb85c;
 }
 
 .error {
-    background-color: rgba(217, 83, 79, 0.2);
+    background: rgba(217, 83, 79, 0.2);
     color: #d9534f;
+    border-color: #d9534f;
 }
 
-.management-tabs {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 2rem;
-    border-bottom: 2px solid rgba(245,240,230,0.2);
+.management-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
 }
 
-.tab-button {
-    padding: 10px 20px;
-    background: none;
-    border: none;
-    color: #f5f0e6;
-    cursor: pointer;
-    font-family: "Song Myung", serif;
-    border-bottom: 2px solid transparent;
+.content-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin: 20px 0;
+    border-top: 1px solid rgba(245, 240, 230, 0.2);
+    padding-top: 20px;
+}
+
+.content-item {
+    background: rgba(245, 240, 230, 0.05);
+    border-left: 4px solid #8d6e63;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    position: relative;
     transition: all 0.3s ease;
 }
 
-.tab-button.active {
-    color: #8d6e63;
-    border-bottom-color: #8d6e63;
+.content-item:hover {
+    background: rgba(245, 240, 230, 0.1);
+    transform: translateX(5px);
+}
+
+.content-item h4 {
+    color: #f5f0e6;
+    margin: 0 0 8px 0;
+    padding-right: 120px;
+}
+
+.content-item p {
+    color: #d4c4a8;
+    margin: 5px 0 0 0;
+    font-size: 0.9em;
+    padding-right: 120px;
+}
+
+.content-actions {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    gap: 8px;
+}
+
+.content-actions button {
+    padding: 6px 12px;
+    font-size: 0.85em;
+    min-width: auto;
+}
+
+.progress-container {
+    margin: 15px 0;
+}
+
+.progress-bar {
+    background: rgba(245, 240, 230, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    height: 8px;
+}
+
+.progress-fill {
+    background: #8d6e63;
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.file-info {
+    font-size: 0.9em;
+    color: #d4c4a8;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+.hidden {
+    display: none !important;
 }
 
 .tab-content {
@@ -175,30 +371,99 @@
 
 .tab-content.active {
     display: block;
+    animation: fadeIn 0.3s ease-in-out;
 }
 
-.progress-container {
-    margin: 10px 0;
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
 }
 
-.progress-bar {
-    background: #ddd;
-    border-radius: 4px;
-    overflow: hidden;
-    height: 20px;
+@media (max-width: 768px) {
+    .admin-panel {
+        padding: 120px 15px 20px;
+    }
+    
+    .panel-header {
+        padding: 1.5rem;
+    }
+    
+    .panel-header h1 {
+        font-size: 2em;
+    }
+    
+    .management-tabs {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .tab-button {
+        width: 100%;
+        max-width: 300px;
+        text-align: center;
+    }
+    
+    .management-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .management-card {
+        padding: 1.5rem;
+    }
+    
+    .content-item h4,
+    .content-item p {
+        padding-right: 80px;
+    }
+    
+    .content-actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .login-section {
+        margin: 120px auto;
+        padding: 2rem;
+    }
+    
+    .login-section h1 {
+        font-size: 1.8em;
+    }
 }
 
-.progress-fill {
-    background: #8d6e63;
-    height: 100%;
-    width: 0%;
-    transition: width 0.3s;
-}
-
-.file-info {
-    font-size: 12px;
-    color: #f5f0e6;
-    margin-top: 5px;
+@media (max-width: 480px) {
+    .management-card {
+        padding: 1rem;
+    }
+    
+    .card-title {
+        font-size: 1.3em;
+    }
+    
+    .content-item h4,
+    .content-item p {
+        padding-right: 60px;
+    }
+    
+    .content-actions button {
+        padding: 4px 8px;
+        font-size: 0.8em;
+    }
+    
+    .logout-btn {
+        top: 15px;
+        right: 15px;
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
 }
 </style>
 </head>
@@ -206,7 +471,7 @@
 
 <div id="login-section" class="login-section">
 <h1>🎬 감독 관리 패널</h1>
-<p style="margin-bottom: 2rem; color: #f5f0e6;">
+<p>
     이 페이지는 감독 전용입니다.<br>
     마스터키를 입력해 주세요.
 </p>
@@ -225,24 +490,32 @@
 </div>
 
 <div class="management-tabs">
-    <button class="tab-button active" onclick="showTab('diary')">일기 관리</button>
-    <button class="tab-button" onclick="showTab('timeline')">타임라인 관리</button>
-    <button class="tab-button" onclick="showTab('gallery')">갤러리 관리</button>
-    <button class="tab-button" onclick="showTab('video')">영상 관리</button>
-    <button class="tab-button" onclick="showTab('interview')">인터뷰 클립</button>
-    <button class="tab-button" onclick="showTab('chatbot')">챗봇 분석</button>
-    <button class="tab-button" onclick="showTab('mother')">엄마의 이야기</button>
+    <button class="tab-button active" onclick="showTab('diary')">📝 일기</button>
+    <button class="tab-button" onclick="showTab('timeline')">⏰ 타임라인</button>
+    <button class="tab-button" onclick="showTab('gallery')">📸 갤러리</button>
+    <button class="tab-button" onclick="showTab('video')">🎥 영상</button>
+    <button class="tab-button" onclick="showTab('archive')">📂 아카이브</button>
+    <button class="tab-button" onclick="showTab('mother')">👩‍👧 엄마의 이야기</button>
+    <button class="tab-button" onclick="showTab('chatbot')">💬 챗봇 분석</button>
 </div>
 
 <div id="diary-tab" class="tab-content active">
     <div class="management-card">
         <h2 class="card-title">📝 일기 작성</h2>
         <form id="diary-form" class="form-section">
-            <input type="text" id="diary-title" placeholder="일기 제목" required />
-            <textarea id="diary-content" rows="10" placeholder="일기 내용" required></textarea>
-            <label>
-                <input type="checkbox" id="diary-private"> 비공개 글로 작성
-            </label>
+            <div class="form-group">
+                <label for="diary-title">일기 제목</label>
+                <input type="text" id="diary-title" placeholder="일기 제목을 입력하세요" required />
+            </div>
+            <div class="form-group">
+                <label for="diary-content">일기 내용</label>
+                <textarea id="diary-content" rows="10" placeholder="오늘의 일기를 써보세요..." required></textarea>
+            </div>
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="diary-private"> 비공개 글로 작성
+                </label>
+            </div>
             <button type="submit">일기 등록</button>
         </form>
         <div id="diary-message"></div>
@@ -253,8 +526,14 @@
     <div class="management-card">
         <h2 class="card-title">⏰ 타임라인 이벤트 추가</h2>
         <form id="timeline-form" class="form-section">
-            <input type="date" id="timeline-date" required />
-            <input type="text" id="timeline-content" placeholder="이벤트 내용" required />
+            <div class="form-group">
+                <label for="timeline-date">날짜</label>
+                <input type="date" id="timeline-date" required />
+            </div>
+            <div class="form-group">
+                <label for="timeline-content">이벤트 내용</label>
+                <textarea id="timeline-content" rows="4" placeholder="타임라인에 추가할 이벤트 내용을 입력하세요" required></textarea>
+            </div>
             <button type="submit">이벤트 추가</button>
         </form>
         <div id="timeline-message"></div>
@@ -265,9 +544,15 @@
     <div class="management-card">
         <h2 class="card-title">📸 사진 업로드</h2>
         <form id="gallery-form" class="form-section">
-            <input type="file" id="gallery-image" accept="image/*" required />
-            <div id="gallery-file-info" class="file-info"></div>
-            <input type="text" id="gallery-caption" placeholder="사진 설명" required />
+            <div class="form-group">
+                <label for="gallery-image">사진 선택</label>
+                <input type="file" id="gallery-image" accept="image/*" required />
+                <div id="gallery-file-info" class="file-info"></div>
+            </div>
+            <div class="form-group">
+                <label for="gallery-caption">사진 설명</label>
+                <textarea id="gallery-caption" rows="3" placeholder="사진에 대한 설명을 입력하세요" required></textarea>
+            </div>
             <button type="submit">사진 업로드</button>
         </form>
         <div id="gallery-message"></div>
@@ -278,23 +563,34 @@
     <div class="management-card">
         <h2 class="card-title">🎥 영상 업로드</h2>
         <form id="video-form" class="form-section">
-            <input type="text" id="video-title" placeholder="영상 제목" required />
-            <textarea id="video-description" rows="3" placeholder="영상 설명"></textarea>
-            
-            <div style="margin: 15px 0;">
-                <label style="margin-right: 20px;">
-                    <input type="radio" name="video-type" value="youtube" checked> YouTube 링크
-                </label>
-                <label>
-                    <input type="radio" name="video-type" value="file"> 파일 업로드
-                </label>
+            <div class="form-group">
+                <label for="video-title">영상 제목</label>
+                <input type="text" id="video-title" placeholder="영상 제목을 입력하세요" required />
+            </div>
+            <div class="form-group">
+                <label for="video-description">영상 설명</label>
+                <textarea id="video-description" rows="3" placeholder="영상에 대한 설명을 입력하세요"></textarea>
             </div>
             
-            <div id="youtube-input">
+            <div class="form-group">
+                <label>영상 업로드 방식</label>
+                <div style="margin: 10px 0;">
+                    <label style="margin-right: 20px;">
+                        <input type="radio" name="video-type" value="youtube" checked> YouTube 링크
+                    </label>
+                    <label>
+                        <input type="radio" name="video-type" value="file"> 파일 업로드
+                    </label>
+                </div>
+            </div>
+            
+            <div id="youtube-input" class="form-group">
+                <label for="youtube-url">YouTube URL</label>
                 <input type="url" id="youtube-url" placeholder="https://www.youtube.com/watch?v=..." />
             </div>
             
-            <div id="file-input" style="display:none;">
+            <div id="file-input" class="form-group" style="display:none;">
+                <label for="video-file">비디오 파일</label>
                 <input type="file" id="video-file" accept=".mp4,.webm,.mov,.avi,.mkv,.flv,video/*" />
                 <div id="video-file-info" class="file-info"></div>
             </div>
@@ -305,116 +601,95 @@
     </div>
 </div>
 
-<div id="interview-tab" class="tab-content">
-    <div class="management-card">
-        <h2 class="card-title">🎤 인터뷰 클립 업로드</h2>
-        <form id="interview-form" class="form-section">
-            <input type="text" id="interview-title" placeholder="인터뷰 제목" required />
-            <textarea id="interview-description" rows="3" placeholder="인터뷰 설명"></textarea>
-            
-            <div style="margin: 15px 0;">
-                <label style="margin-right: 20px;">
-                    <input type="radio" name="interview-type" value="youtube" checked> YouTube 링크
-                </label>
-                <label>
-                    <input type="radio" name="interview-type" value="file"> 파일 업로드
-                </label>
-            </div>
-            
-            <div id="interview-youtube-input">
-                <input type="url" id="interview-youtube-url" placeholder="https://www.youtube.com/watch?v=..." />
-            </div>
-            
-            <div id="interview-file-input" style="display:none;">
-                <input type="file" id="interview-video-file" accept=".mp4,.webm,.mov,.avi,.mkv,.flv,video/*" />
-                <div id="interview-file-info" class="file-info"></div>
-            </div>
-            
-            <button type="submit">인터뷰 업로드</button>
-        </form>
-        <div id="interview-message"></div>
-        
-        <div style="margin-top: 30px; border-top: 1px solid rgba(245,240,230,0.2); padding-top: 20px;">
-            <h3 style="color: #8d6e63; margin-bottom: 15px;">📋 인터뷰 클립 관리</h3>
-            <div id="interview-list" style="max-height: 400px; overflow-y: auto; margin-bottom: 15px;">
-            </div>
-            <button type="button" id="refresh-interviews-btn" style="width: 100%; padding: 10px; background-color: #8d6e63; color: #f5f0e6; border: none; border-radius: 4px; cursor: pointer;">
-                인터뷰 목록 새로고침
-            </button>
-        </div>
-    </div>
-</div>
-
-<div id="chatbot-tab" class="tab-content">
+<div id="archive-tab" class="tab-content">
     <div class="management-grid">
         <div class="management-card">
-            <h2 class="card-title">📊 대화 통계</h2>
-            <div id="chat-stats" style="padding: 15px;">
-                <div class="stat-item" style="margin-bottom: 15px; padding: 10px; background: rgba(245,240,230,0.1); border-radius: 4px;">
-                    <span style="color: #8d6e63;">총 대화 수:</span>
-                    <span id="total-chats" style="color: #f5f0e6; font-weight: bold;">로딩 중...</span>
+            <h2 class="card-title">📂 타임라인 이벤트</h2>
+            <form id="archive-timeline-form" class="form-section">
+                <div class="form-group">
+                    <label for="archive-event-date">날짜</label>
+                    <input type="date" id="archive-event-date" required />
                 </div>
-                <div class="stat-item" style="margin-bottom: 15px; padding: 10px; background: rgba(245,240,230,0.1); border-radius: 4px;">
-                    <span style="color: #8d6e63;">활성 사용자:</span>
-                    <span id="active-users" style="color: #f5f0e6; font-weight: bold;">로딩 중...</span>
+                <div class="form-group">
+                    <label for="archive-event-title">이벤트 제목</label>
+                    <input type="text" id="archive-event-title" placeholder="프로젝트 시작" required />
                 </div>
-                <div class="stat-item" style="margin-bottom: 15px; padding: 10px; background: rgba(245,240,230,0.1); border-radius: 4px;">
-                    <span style="color: #8d6e63;">오늘 대화:</span>
-                    <span id="today-chats" style="color: #f5f0e6; font-weight: bold;">로딩 중...</span>
+                <div class="form-group">
+                    <label for="archive-event-description">이벤트 설명</label>
+                    <textarea id="archive-event-description" rows="4" placeholder="이벤트에 대한 상세 설명을 입력하세요" required></textarea>
                 </div>
-            </div>
-            <button type="button" id="refresh-stats-btn" style="width: 100%; padding: 10px; background-color: #8d6e63; color: #f5f0e6; border: none; border-radius: 4px; cursor: pointer;">
-                통계 새로고침
-            </button>
+                <button type="submit">타임라인 이벤트 추가</button>
+            </form>
+            <div id="archive-timeline-message"></div>
         </div>
 
         <div class="management-card">
-            <h2 class="card-title">😢 감정 분석</h2>
-            <div id="emotion-analysis" style="max-height: 300px; overflow-y: auto; padding: 15px;">
-                <p style="text-align: center; color: #8d6e63;">감정 데이터를 불러오는 중...</p>
-            </div>
-            <button type="button" id="refresh-emotions-btn" style="width: 100%; padding: 10px; background-color: #8d6e63; color: #f5f0e6; border: none; border-radius: 4px; cursor: pointer;">
-                감정 분석 새로고침
-            </button>
+            <h2 class="card-title">🎬 프로젝트 영상</h2>
+            <form id="archive-video-form" class="form-section">
+                <div class="form-group">
+                    <label for="archive-video-title">영상 제목</label>
+                    <input type="text" id="archive-video-title" placeholder="프로젝트 티저 영상" required />
+                </div>
+                <div class="form-group">
+                    <label for="archive-video-description">영상 설명</label>
+                    <textarea id="archive-video-description" rows="3" placeholder="영상에 대한 설명을 입력하세요" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="archive-video-url">YouTube URL</label>
+                    <input type="url" id="archive-video-url" placeholder="https://www.youtube.com/watch?v=..." required />
+                </div>
+                <div class="form-group">
+                    <label for="archive-video-duration">영상 길이</label>
+                    <input type="text" id="archive-video-duration" placeholder="2:30" required />
+                </div>
+                <button type="submit">영상 추가</button>
+            </form>
+            <div id="archive-video-message"></div>
         </div>
 
         <div class="management-card">
-            <h2 class="card-title">🚨 긴급 상황</h2>
-            <div id="urgent-messages" style="max-height: 300px; overflow-y: auto; padding: 15px;">
-                <p style="text-align: center; color: #8d6e63;">긴급 메시지를 확인하는 중...</p>
-            </div>
-            <button type="button" id="refresh-urgent-btn" style="width: 100%; padding: 10px; background-color: #dc3545; color: #f5f0e6; border: none; border-radius: 4px; cursor: pointer;">
-                긴급 상황 새로고침
-            </button>
+            <h2 class="card-title">📸 아카이브 갤러리</h2>
+            <form id="archive-gallery-form" class="form-section">
+                <div class="form-group">
+                    <label for="archive-gallery-image">사진 선택</label>
+                    <input type="file" id="archive-gallery-image" accept="image/*" required />
+                    <div id="archive-gallery-file-info" class="file-info"></div>
+                </div>
+                <div class="form-group">
+                    <label for="archive-gallery-title">사진 제목</label>
+                    <input type="text" id="archive-gallery-title" placeholder="첫 번째 촬영 현장" required />
+                </div>
+                <div class="form-group">
+                    <label for="archive-gallery-description">사진 설명</label>
+                    <textarea id="archive-gallery-description" rows="3" placeholder="사진에 대한 설명을 입력하세요" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="archive-gallery-category">카테고리</label>
+                    <select id="archive-gallery-category" required>
+                        <option value="">카테고리 선택</option>
+                        <option value="production">제작 현장</option>
+                        <option value="interview">인터뷰</option>
+                        <option value="daily">일상</option>
+                        <option value="document">자료</option>
+                    </select>
+                </div>
+                <button type="submit">갤러리에 추가</button>
+            </form>
+            <div id="archive-gallery-message"></div>
         </div>
+    </div>
 
-        <div class="management-card">
-            <h2 class="card-title">💬 최근 대화</h2>
-            <div id="recent-chats" style="max-height: 300px; overflow-y: auto; padding: 15px;">
-                <p style="text-align: center; color: #8d6e63;">최근 대화를 불러오는 중...</p>
-            </div>
-            <button type="button" id="refresh-chats-btn" style="width: 100%; padding: 10px; background-color: #8d6e63; color: #f5f0e6; border: none; border-radius: 4px; cursor: pointer;">
-                대화 기록 새로고침
-            </button>
-        </div>
-
-        <div class="management-card">
-            <h2 class="card-title">📈 주제별 분석</h2>
-            <div id="topic-analysis" style="max-height: 300px; overflow-y: auto; padding: 15px;">
-                <p style="text-align: center; color: #8d6e63;">주제 분석 중...</p>
-            </div>
-            <button type="button" id="refresh-topics-btn" style="width: 100%; padding: 10px; background-color: #8d6e63; color: #f5f0e6; border: none; border-radius: 4px; cursor: pointer;">
-                주제 분석 새로고침
-            </button>
-        </div>
-
-        <div class="management-card">
-            <h2 class="card-title">🔧 시스템 로그</h2>
-            <div id="system-logs" style="max-height: 300px; overflow-y: auto; padding: 15px;">
-                <p style="text-align: center; color: #8d6e63;">시스템 로그를 불러오는 중...</p>
-            </div>
-            <button type="button" id="refresh-logs-btn" style="width: 100%; padding: 10px; background-color: #8d6e63; color: #f5f0e6; border: none; border-radius: 4px; cursor: pointer;">
-                로그 새로고침
+    <div class="management-card">
+        <h2 class="card-title">📊 아카이브 컨텐츠 관리</h2>
+        <div class="content-list">
+            <h4 style="color: #8d6e63;">타임라인 이벤트</h4>
+            <div id="archive-timeline-list"></div>
+            <h4 style="color: #8d6e63; margin-top: 30px;">프로젝트 영상</h4>
+            <div id="archive-video-list"></div>
+            <h4 style="color: #8d6e63; margin-top: 30px;">갤러리 이미지</h4>
+            <div id="archive-gallery-list"></div>
+            <button type="button" id="refresh-archive-btn" class="action-btn secondary-btn" style="width: 100%; margin-top: 20px;">
+                아카이브 컨텐츠 새로고침
             </button>
         </div>
     </div>
@@ -425,42 +700,134 @@
         <div class="management-card">
             <h2 class="card-title">🎵 음악 관리</h2>
             <form id="mother-music-form" class="form-section">
-                <input type="text" id="music-title" placeholder="곡 제목" required />
-                <input type="url" id="music-url" placeholder="YouTube 링크" required />
+                <div class="form-group">
+                    <label for="music-title">곡 제목</label>
+                    <input type="text" id="music-title" placeholder="곡 제목을 입력하세요" required />
+                </div>
+                <div class="form-group">
+                    <label for="music-url">YouTube 링크</label>
+                    <input type="url" id="music-url" placeholder="https://www.youtube.com/watch?v=..." required />
+                </div>
                 <button type="submit">음악 추가</button>
             </form>
-            <div id="mother-music-list" style="max-height: 300px; overflow-y: auto; margin: 15px 0; border-top: 1px solid rgba(245,240,230,0.2); padding-top: 15px;">
+            <div class="content-list">
+                <div id="mother-music-list"></div>
+                <button type="button" id="refresh-music-btn" class="action-btn secondary-btn" style="width: 100%;">
+                    음악 목록 새로고침
+                </button>
             </div>
-            <button type="button" id="refresh-music-btn" style="width: 100%; padding: 10px; background-color: #8d6e63; color: #f5f0e6; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 10px;">
-                음악 목록 새로고침
-            </button>
             <div id="mother-music-message"></div>
         </div>
         
         <div class="management-card">
             <h2 class="card-title">📷 사진 관리</h2>
             <form id="mother-photo-form" class="form-section">
-                <input type="file" id="mother-photo" accept="image/*" required />
-                <div id="mother-photo-file-info" class="file-info"></div>
-                <input type="text" id="photo-caption" placeholder="사진 설명" required />
+                <div class="form-group">
+                    <label for="mother-photo">사진 선택</label>
+                    <input type="file" id="mother-photo" accept="image/*" required />
+                    <div id="mother-photo-file-info" class="file-info"></div>
+                </div>
+                <div class="form-group">
+                    <label for="photo-caption">사진 설명</label>
+                    <textarea id="photo-caption" rows="3" placeholder="사진에 대한 설명을 입력하세요" required></textarea>
+                </div>
                 <button type="submit">사진 추가</button>
             </form>
-            <div id="mother-photo-list" style="max-height: 300px; overflow-y: auto; margin: 15px 0; border-top: 1px solid rgba(245,240,230,0.2); padding-top: 15px;">
+            <div class="content-list">
+                <div id="mother-photo-list"></div>
+                <button type="button" id="refresh-photos-btn" class="action-btn secondary-btn" style="width: 100%;">
+                    사진 목록 새로고침
+                </button>
             </div>
-            <button type="button" id="refresh-photos-btn" style="width: 100%; padding: 10px; background-color: #8d6e63; color: #f5f0e6; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 10px;">
-                사진 목록 새로고침
-            </button>
             <div id="mother-photo-message"></div>
         </div>
         
         <div class="management-card">
             <h2 class="card-title">💬 댓글 관리</h2>
-            <div id="mother-comments-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;">
+            <div class="content-list">
+                <div id="mother-comments-list"></div>
+                <button type="button" id="refresh-comments-btn" class="action-btn secondary-btn" style="width: 100%;">
+                    댓글 새로고침
+                </button>
             </div>
-            <button type="button" id="refresh-comments-btn" style="width: 100%; padding: 10px; background-color: #8d6e63; color: #f5f0e6; border: none; border-radius: 4px; cursor: pointer;">
-                댓글 새로고침
-            </button>
             <div id="mother-comments-message"></div>
+        </div>
+    </div>
+</div>
+
+<div id="chatbot-tab" class="tab-content">
+    <div class="management-grid">
+        <div class="management-card">
+            <h2 class="card-title">📊 대화 통계</h2>
+            <div style="padding: 15px;">
+                <div class="content-item">
+                    <span style="color: #8d6e63;">총 대화 수:</span>
+                    <span id="total-chats" style="color: #f5f0e6; font-weight: bold; float: right;">로딩 중...</span>
+                </div>
+                <div class="content-item">
+                    <span style="color: #8d6e63;">활성 사용자:</span>
+                    <span id="active-users" style="color: #f5f0e6; font-weight: bold; float: right;">로딩 중...</span>
+                </div>
+                <div class="content-item">
+                    <span style="color: #8d6e63;">오늘 대화:</span>
+                    <span id="today-chats" style="color: #f5f0e6; font-weight: bold; float: right;">로딩 중...</span>
+                </div>
+            </div>
+            <button type="button" id="refresh-stats-btn" class="action-btn secondary-btn" style="width: 100%;">
+                통계 새로고침
+            </button>
+        </div>
+
+        <div class="management-card">
+            <h2 class="card-title">😢 감정 분석</h2>
+            <div id="emotion-analysis" class="content-list">
+                <p style="text-align: center; color: #8d6e63;">감정 데이터를 불러오는 중...</p>
+            </div>
+            <button type="button" id="refresh-emotions-btn" class="action-btn secondary-btn" style="width: 100%;">
+                감정 분석 새로고침
+            </button>
+        </div>
+
+        <div class="management-card">
+            <h2 class="card-title">🚨 긴급 상황</h2>
+            <div id="urgent-messages" class="content-list">
+                <p style="text-align: center; color: #8d6e63;">긴급 메시지를 확인하는 중...</p>
+            </div>
+            <button type="button" id="refresh-urgent-btn" class="action-btn danger-btn" style="width: 100%;">
+                긴급 상황 새로고침
+            </button>
+        </div>
+    </div>
+
+    <div class="management-grid">
+        <div class="management-card">
+            <h2 class="card-title">💬 최근 대화</h2>
+            <div id="recent-chats" class="content-list">
+                <p style="text-align: center; color: #8d6e63;">최근 대화를 불러오는 중...</p>
+            </div>
+            <button type="button" id="refresh-chats-btn" class="action-btn secondary-btn" style="width: 100%;">
+                대화 기록 새로고침
+            </button>
+        </div>
+
+        <div class="management-card">
+            <h2 class="card-title">📈 주제별 분석</h2>
+            <div id="topic-analysis" class="content-list">
+                <p style="text-align: center; color: #8d6e63;">주제 분석 중...</p>
+            </div>
+            <button type="button" id="refresh-topics-btn" class="action-btn secondary-btn" style="width: 100%;">
+                주제 분석 새로고침
+            </button>
+        </div>
+
+        <div class="management-card">
+            <h2 class="card-title">🔧 시스템 로그</h2>
+            <div id="system-logs" class="content-list">
+                <p style="text-align: center; color: #8d6e63;">시스템 로그를 불러오는 중...</p>
+            </div>
+            <button type="button" id="refresh-logs-btn" class="action-btn secondary-btn" style="width: 100%;">
+                로그 새로고침
+            </button>
         </div>
     </div>
 </div>
@@ -488,140 +855,6 @@ window.storage = getStorage(app);
 
 const MASTER_KEY = "3292";
 
-class FileUploadManager {
-    constructor() {
-        this.maxFileSize = 1024 * 1024 * 1024; // 1GB
-        this.allowedTypes = {
-            image: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
-            video: ['video/mp4', 'video/webm', 'video/mov', 'video/quicktime', 'video/x-quicktime', 'video/avi', 'video/mkv', 'video/flv', 'video/x-msvideo']
-        };
-    }
-
-    validateFile(file, type = 'image') {
-        const errors = [];
-        
-        if (file.size > this.maxFileSize) {
-            errors.push(`파일 크기가 너무 큽니다. 최대 ${this.maxFileSize / 1024 / 1024}MB까지 업로드 가능합니다.`);
-        }
-        
-        // 비디오 파일의 경우 확장자도 함께 체크
-        if (type === 'video') {
-            const fileName = file.name.toLowerCase();
-            const videoExtensions = ['.mp4', '.webm', '.mov', '.avi', '.mkv', '.flv'];
-            const hasValidExtension = videoExtensions.some(ext => fileName.endsWith(ext));
-            const hasValidMimeType = this.allowedTypes[type].includes(file.type);
-            
-            if (!hasValidMimeType && !hasValidExtension) {
-                errors.push(`지원하지 않는 파일 형식입니다. MP4, MOV, AVI, MKV, WEBM, FLV 파일만 업로드 가능합니다.`);
-            }
-        } else {
-            if (!this.allowedTypes[type].includes(file.type)) {
-                errors.push(`지원하지 않는 파일 형식입니다. ${this.allowedTypes[type].join(', ')}만 업로드 가능합니다.`);
-            }
-        }
-        
-        return {
-            isValid: errors.length === 0,
-            errors
-        };
-    }
-
-    async compressImage(file, maxWidth = 1920, quality = 0.8) {
-        return new Promise((resolve) => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            const img = new Image();
-            
-            img.onload = () => {
-                let { width, height } = img;
-                if (width > maxWidth) {
-                    height = (height * maxWidth) / width;
-                    width = maxWidth;
-                }
-                
-                canvas.width = width;
-                canvas.height = height;
-                ctx.drawImage(img, 0, 0, width, height);
-                canvas.toBlob(resolve, 'image/jpeg', quality);
-            };
-            
-            img.src = URL.createObjectURL(file);
-        });
-    }
-
-    async uploadWithProgress(file, path, onProgress) {
-        const storageRef = ref(window.storage, path);
-        const uploadTask = uploadBytesResumable(storageRef, file, {
-            cacheControl: 'public,max-age=3600'
-        });
-        
-        return new Promise((resolve, reject) => {
-            uploadTask.on('state_changed',
-                (snapshot) => {
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    onProgress?.(progress, snapshot.bytesTransferred, snapshot.totalBytes);
-                },
-                (error) => {
-                    console.error('업로드 오류:', error);
-                    let errorMessage = "업로드 중 오류가 발생했습니다.";
-                    switch (error.code) {
-                        case 'storage/unauthorized':
-                            errorMessage = "업로드 권한이 없습니다.";
-                            break;
-                        case 'storage/canceled':
-                            errorMessage = "업로드가 취소되었습니다.";
-                            break;
-                        case 'storage/quota-exceeded':
-                            errorMessage = "저장 공간이 부족합니다.";
-                            break;
-                        case 'storage/retry-limit-exceeded':
-                            errorMessage = "업로드 재시도 한도를 초과했습니다. 네트워크 연결을 확인해주세요.";
-                            break;
-                        case 'storage/invalid-checksum':
-                            errorMessage = "파일이 손상되었습니다. 다시 시도해주세요.";
-                            break;
-                    }
-                    reject(new Error(errorMessage));
-                },
-                async () => {
-                    try {
-                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                        resolve(downloadURL);
-                    } catch (error) {
-                        reject(error);
-                    }
-                }
-            );
-        });
-    }
-
-    formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-}
-
-function convertToEmbedUrl(url) {
-    let videoId = '';
-    
-    if (url.includes('youtube.com/watch?v=')) {
-        videoId = url.split('v=')[1].split('&')[0];
-    } else if (url.includes('youtu.be/')) {
-        videoId = url.split('youtu.be/')[1].split('?')[0];
-    } else if (url.includes('youtube.com/embed/')) {
-        return url;
-    }
-    
-    if (videoId) {
-        return `https://www.youtube.com/embed/${videoId}`;
-    }
-    
-    return url;
-}
-
 window.showTab = function(tabName) {
     document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -639,6 +872,7 @@ document.getElementById("login-btn").addEventListener("click", () => {
             document.getElementById("login-section").classList.add("hidden");
             document.getElementById("admin-panel").classList.remove("hidden");
             initializeForms();
+            loadAllContent();
         }, 500);
     } else {
         showMessage(document.getElementById("login-message"), "마스터키가 올바르지 않습니다.", "error");
@@ -660,1042 +894,279 @@ document.getElementById("logout-btn").addEventListener("click", () => {
 });
 
 function initializeForms() {
-    const uploadManager = new FileUploadManager();
-
-    document.querySelectorAll('input[name="video-type"]').forEach(radio => {
-        radio.addEventListener("change", () => {
-            if (radio.value === "youtube") {
-                document.getElementById("youtube-input").style.display = "block";
-                document.getElementById("file-input").style.display = "none";
-            } else {
-                document.getElementById("youtube-input").style.display = "none";
-                document.getElementById("file-input").style.display = "block";
-            }
-        });
-    });
-
-    document.querySelectorAll('input[name="interview-type"]').forEach(radio => {
-        radio.addEventListener("change", () => {
-            if (radio.value === "youtube") {
-                document.getElementById("interview-youtube-input").style.display = "block";
-                document.getElementById("interview-file-input").style.display = "none";
-            } else {
-                document.getElementById("interview-youtube-input").style.display = "none";
-                document.getElementById("interview-file-input").style.display = "block";
-            }
-        });
-    });
-
-    document.getElementById("gallery-image").addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const fileInfo = `파일: ${file.name} (${uploadManager.formatFileSize(file.size)})`;
-            document.getElementById("gallery-file-info").textContent = fileInfo;
-        }
-    });
-
-    document.getElementById("video-file").addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const fileInfo = `파일: ${file.name} (${uploadManager.formatFileSize(file.size)})`;
-            document.getElementById("video-file-info").textContent = fileInfo;
-        }
-    });
-
-    document.getElementById("interview-video-file").addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const fileInfo = `파일: ${file.name} (${uploadManager.formatFileSize(file.size)})`;
-            document.getElementById("interview-file-info").textContent = fileInfo;
-        }
-    });
-
-    document.getElementById("mother-photo").addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const fileInfo = `파일: ${file.name} (${uploadManager.formatFileSize(file.size)})`;
-            document.getElementById("mother-photo-file-info").textContent = fileInfo;
-        }
-    });
-
-    document.getElementById("diary-form").addEventListener("submit", async (e) => {
+    document.getElementById("archive-timeline-form").addEventListener("submit", async (e) => {
         e.preventDefault();
-        const title = document.getElementById("diary-title").value.trim();
-        const content = document.getElementById("diary-content").value.trim();
-        const isPrivate = document.getElementById("diary-private").checked;
+        const date = document.getElementById("archive-event-date").value;
+        const title = document.getElementById("archive-event-title").value.trim();
+        const description = document.getElementById("archive-event-description").value.trim();
         
-        if (!title || !content) {
-            showMessage(document.getElementById("diary-message"), "제목과 내용을 모두 입력해주세요.", "error");
+        if (!date || !title || !description) {
+            showMessage(document.getElementById("archive-timeline-message"), "모든 필드를 입력해주세요.", "error");
             return;
         }
         
         try {
-            await addDoc(collection(window.db, "diaryPosts"), {
-                title, content, author: "주은", isPublic: !isPrivate,
-                timestamp: serverTimestamp(), secretPassword: isPrivate ? "3292" : ""
+            await addDoc(collection(window.db, "archiveTimeline"), {
+                date, title, description, timestamp: serverTimestamp()
             });
-            showMessage(document.getElementById("diary-message"), "일기가 성공적으로 등록되었습니다!", "success");
-            document.getElementById("diary-form").reset();
-        } catch (error) {
-            console.error("일기 등록 오류:", error);
-            showMessage(document.getElementById("diary-message"), "일기 등록 중 오류가 발생했습니다.", "error");
-        }
-    });
-
-    document.getElementById("timeline-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const date = document.getElementById("timeline-date").value;
-        const content = document.getElementById("timeline-content").value.trim();
-        
-        if (!date || !content) {
-            showMessage(document.getElementById("timeline-message"), "날짜와 내용을 모두 입력해주세요.", "error");
-            return;
-        }
-        
-        try {
-            await addDoc(collection(window.db, "timelineEvents"), {
-                start: date, content, timestamp: serverTimestamp()
-            });
-            showMessage(document.getElementById("timeline-message"), "타임라인 이벤트가 성공적으로 추가되었습니다!", "success");
-            document.getElementById("timeline-form").reset();
+            showMessage(document.getElementById("archive-timeline-message"), "타임라인 이벤트가 추가되었습니다!", "success");
+            document.getElementById("archive-timeline-form").reset();
+            loadArchiveTimeline();
         } catch (error) {
             console.error("타임라인 이벤트 추가 오류:", error);
-            showMessage(document.getElementById("timeline-message"), "이벤트 추가 중 오류가 발생했습니다.", "error");
+            showMessage(document.getElementById("archive-timeline-message"), "이벤트 추가 중 오류가 발생했습니다.", "error");
         }
     });
 
-    document.getElementById("gallery-form").addEventListener("submit", async (e) => {
+    document.getElementById("archive-video-form").addEventListener("submit", async (e) => {
         e.preventDefault();
-        const imageFile = document.getElementById("gallery-image").files[0];
-        const caption = document.getElementById("gallery-caption").value.trim();
-        const messageEl = document.getElementById("gallery-message");
+        const title = document.getElementById("archive-video-title").value.trim();
+        const description = document.getElementById("archive-video-description").value.trim();
+        const url = document.getElementById("archive-video-url").value.trim();
+        const duration = document.getElementById("archive-video-duration").value.trim();
         
-        if (!imageFile || !caption) {
-            showMessage(messageEl, "이미지와 설명을 모두 입력해주세요.", "error");
-            return;
-        }
-        
-        const validation = uploadManager.validateFile(imageFile, 'image');
-        if (!validation.isValid) {
-            showMessage(messageEl, validation.errors.join('<br>'), "error");
+        if (!title || !description || !url || !duration) {
+            showMessage(document.getElementById("archive-video-message"), "모든 필드를 입력해주세요.", "error");
             return;
         }
         
         try {
-            const progressContainer = document.createElement('div');
-            progressContainer.innerHTML = `
-                <div class="progress-container">
-                    <div class="progress-bar">
-                        <div id="gallery-upload-progress" class="progress-fill"></div>
-                    </div>
-                    <p id="gallery-upload-status" style="margin: 5px 0; font-size: 14px; color: #f5f0e6;">업로드 준비 중...</p>
-                </div>
-            `;
-            messageEl.appendChild(progressContainer);
-            
-            let processedFile = imageFile;
-            if (imageFile.size > 5 * 1024 * 1024) {
-                document.getElementById("gallery-upload-status").textContent = "이미지 압축 중...";
-                processedFile = await uploadManager.compressImage(imageFile);
-            }
-            
+            const embedUrl = convertToEmbedUrl(url);
+            await addDoc(collection(window.db, "archiveVideos"), {
+                title, description, embedUrl, originalUrl: url, duration, timestamp: serverTimestamp()
+            });
+            showMessage(document.getElementById("archive-video-message"), "영상이 추가되었습니다!", "success");
+            document.getElementById("archive-video-form").reset();
+            loadArchiveVideos();
+        } catch (error) {
+            console.error("영상 추가 오류:", error);
+            showMessage(document.getElementById("archive-video-message"), "영상 추가 중 오류가 발생했습니다.", "error");
+        }
+    });
+
+    document.getElementById("archive-gallery-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const imageFile = document.getElementById("archive-gallery-image").files[0];
+        const title = document.getElementById("archive-gallery-title").value.trim();
+        const description = document.getElementById("archive-gallery-description").value.trim();
+        const category = document.getElementById("archive-gallery-category").value;
+        const messageEl = document.getElementById("archive-gallery-message");
+        
+        if (!imageFile || !title || !description || !category) {
+            showMessage(messageEl, "모든 필드를 입력해주세요.", "error");
+            return;
+        }
+        
+        try {
             const fileName = `${Date.now()}_${imageFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-            const imageUrl = await uploadManager.uploadWithProgress(
-                processedFile, 
-                `gallery/${fileName}`,
-                (progress, bytesTransferred, totalBytes) => {
-                    document.getElementById("gallery-upload-progress").style.width = `${progress}%`;
-                    const transferred = uploadManager.formatFileSize(bytesTransferred);
-                    const total = uploadManager.formatFileSize(totalBytes);
-                    document.getElementById("gallery-upload-status").textContent = 
-                        `업로드 중... ${Math.round(progress)}% (${transferred}/${total})`;
+            const storageRef = ref(window.storage, `archiveGallery/${fileName}`);
+            const uploadTask = uploadBytesResumable(storageRef, imageFile);
+            
+            uploadTask.on('state_changed', 
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    showMessage(messageEl, `업로드 중... ${Math.round(progress)}%`, "success");
+                },
+                (error) => {
+                    showMessage(messageEl, "업로드 중 오류가 발생했습니다.", "error");
+                },
+                async () => {
+                    const imageUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                    await addDoc(collection(window.db, "archiveGallery"), {
+                        imageUrl, title, description, category, timestamp: serverTimestamp()
+                    });
+                    showMessage(messageEl, "갤러리에 추가되었습니다!", "success");
+                    document.getElementById("archive-gallery-form").reset();
+                    document.getElementById("archive-gallery-file-info").textContent = "";
+                    loadArchiveGallery();
                 }
             );
-            
-            await addDoc(collection(window.db, "galleryPosts"), {
-                imageUrl, caption, timestamp: serverTimestamp()
-            });
-            
-            showMessage(messageEl, "사진이 성공적으로 업로드되었습니다!", "success");
-            document.getElementById("gallery-form").reset();
-            document.getElementById("gallery-file-info").textContent = "";
-            
         } catch (error) {
-            console.error("사진 업로드 오류:", error);
-            let errorMessage = "사진 업로드 중 오류가 발생했습니다.";
-            if (error.code === 'storage/quota-exceeded') {
-                errorMessage = "저장 공간이 부족합니다.";
-            } else if (error.code === 'storage/unauthorized') {
-                errorMessage = "업로드 권한이 없습니다.";
-            }
-            showMessage(messageEl, errorMessage, "error");
+            console.error("갤러리 추가 오류:", error);
+            showMessage(messageEl, "갤러리 추가 중 오류가 발생했습니다.", "error");
         }
     });
 
-    document.getElementById("video-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const title = document.getElementById("video-title").value.trim();
-        const description = document.getElementById("video-description").value.trim();
-        const videoType = document.querySelector('input[name="video-type"]:checked').value;
-        const messageEl = document.getElementById("video-message");
-        
-        if (!title) {
-            showMessage(messageEl, "영상 제목을 입력해주세요.", "error");
-            return;
-        }
-        
-        try {
-            let videoUrl = "";
-            let isYoutube = false;
-            
-            if (videoType === "youtube") {
-                const youtubeUrl = document.getElementById("youtube-url").value.trim();
-                if (!youtubeUrl) {
-                    showMessage(messageEl, "YouTube 링크를 입력해주세요.", "error");
-                    return;
-                }
-                videoUrl = convertToEmbedUrl(youtubeUrl);
-                isYoutube = true;
-            } else {
-                const videoFile = document.getElementById("video-file").files[0];
-                if (!videoFile) {
-                    showMessage(messageEl, "비디오 파일을 선택해주세요.", "error");
-                    return;
-                }
-
-                const validation = uploadManager.validateFile(videoFile, 'video');
-                if (!validation.isValid) {
-                    showMessage(messageEl, validation.errors.join('<br>'), "error");
-                    return;
-                }
-
-                const progressContainer = document.createElement('div');
-                progressContainer.innerHTML = `
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div id="video-upload-progress" class="progress-fill"></div>
-                        </div>
-                        <p id="video-upload-status" style="margin: 5px 0; font-size: 14px; color: #f5f0e6;">업로드 시작 중...</p>
-                    </div>
-                `;
-                messageEl.appendChild(progressContainer);
-
-                const fileName = `${Date.now()}_${videoFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-                videoUrl = await uploadManager.uploadWithProgress(
-                    videoFile,
-                    `campaignVideos/${fileName}`,
-                    (progress, bytesTransferred, totalBytes) => {
-                        document.getElementById("video-upload-progress").style.width = `${progress}%`;
-                        const transferred = uploadManager.formatFileSize(bytesTransferred);
-                        const total = uploadManager.formatFileSize(totalBytes);
-                        document.getElementById("video-upload-status").textContent = 
-                            `업로드 중... ${Math.round(progress)}% (${transferred}/${total})`;
-                    }
-                );
-            }
-            
-            await addDoc(collection(window.db, "campaignVideos"), {
-                title, description, videoUrl, isYoutube, timestamp: serverTimestamp()
-            });
-            
-            showMessage(messageEl, "영상이 성공적으로 업로드되었습니다!", "success");
-            document.getElementById("video-form").reset();
-            document.getElementById("video-file-info").textContent = "";
-            
-        } catch (error) {
-            console.error("영상 업로드 오류:", error);
-            let errorMessage = "영상 업로드 중 오류가 발생했습니다.";
-            if (error.code === 'storage/quota-exceeded') {
-                errorMessage = "저장 공간이 부족합니다.";
-            } else if (error.code === 'storage/unauthorized') {
-                errorMessage = "업로드 권한이 없습니다.";
-            }
-            showMessage(messageEl, errorMessage, "error");
+    document.getElementById("archive-gallery-image").addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            document.getElementById("archive-gallery-file-info").textContent = 
+                `파일: ${file.name} (${formatFileSize(file.size)})`;
         }
     });
 
-    document.getElementById("interview-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const title = document.getElementById("interview-title").value.trim();
-        const description = document.getElementById("interview-description").value.trim();
-        const interviewType = document.querySelector('input[name="interview-type"]:checked').value;
-        const messageEl = document.getElementById("interview-message");
-        
-        if (!title) {
-            showMessage(messageEl, "인터뷰 제목을 입력해주세요.", "error");
-            return;
-        }
-        
-        try {
-            let videoUrl = "";
-            let isYoutube = false;
-            
-            if (interviewType === "youtube") {
-                const youtubeUrl = document.getElementById("interview-youtube-url").value.trim();
-                if (!youtubeUrl) {
-                    showMessage(messageEl, "YouTube 링크를 입력해주세요.", "error");
-                    return;
-                }
-                videoUrl = convertToEmbedUrl(youtubeUrl);
-                isYoutube = true;
-            } else {
-                const videoFile = document.getElementById("interview-video-file").files[0];
-                if (!videoFile) {
-                    showMessage(messageEl, "비디오 파일을 선택해주세요.", "error");
-                    return;
-                }
-
-                const validation = uploadManager.validateFile(videoFile, 'video');
-                if (!validation.isValid) {
-                    showMessage(messageEl, validation.errors.join('<br>'), "error");
-                    return;
-                }
-
-                const progressContainer = document.createElement('div');
-                progressContainer.innerHTML = `
-                    <div class="progress-container">
-                        <div class="progress-bar">
-                            <div id="interview-upload-progress" class="progress-fill"></div>
-                        </div>
-                        <p id="interview-upload-status" style="margin: 5px 0; font-size: 14px; color: #f5f0e6;">업로드 시작 중...</p>
-                    </div>
-                `;
-                messageEl.appendChild(progressContainer);
-
-                const fileName = `${Date.now()}_${videoFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-                videoUrl = await uploadManager.uploadWithProgress(
-                    videoFile,
-                    `interviewVideos/${fileName}`,
-                    (progress, bytesTransferred, totalBytes) => {
-                        document.getElementById("interview-upload-progress").style.width = `${progress}%`;
-                        const transferred = uploadManager.formatFileSize(bytesTransferred);
-                        const total = uploadManager.formatFileSize(totalBytes);
-                        document.getElementById("interview-upload-status").textContent = 
-                            `업로드 중... ${Math.round(progress)}% (${transferred}/${total})`;
-                    }
-                );
-            }
-            
-            await addDoc(collection(window.db, "interviewVideos"), {
-                title, 
-                description: description || "",
-                youtubeUrl: isYoutube ? videoUrl : "",
-                videoUrl: isYoutube ? "" : videoUrl,
-                timestamp: serverTimestamp()
-            });
-            
-            showMessage(messageEl, "인터뷰가 성공적으로 업로드되었습니다!", "success");
-            document.getElementById("interview-form").reset();
-            document.getElementById("interview-file-info").textContent = "";
-            loadInterviews();
-            
-        } catch (error) {
-            console.error("인터뷰 업로드 오류:", error);
-            let errorMessage = "인터뷰 업로드 중 오류가 발생했습니다.";
-            if (error.code === 'storage/quota-exceeded') {
-                errorMessage = "저장 공간이 부족합니다.";
-            } else if (error.code === 'storage/unauthorized') {
-                errorMessage = "업로드 권한이 없습니다.";
-            }
-            showMessage(messageEl, errorMessage, "error");
-        }
+    document.getElementById("refresh-archive-btn").addEventListener("click", () => {
+        loadArchiveTimeline();
+        loadArchiveVideos();
+        loadArchiveGallery();
     });
-
-    document.getElementById("mother-music-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const title = document.getElementById("music-title").value.trim();
-        const originalUrl = document.getElementById("music-url").value.trim();
-        
-        if (!title || !originalUrl) {
-            showMessage(document.getElementById("mother-music-message"), "제목과 YouTube 링크를 모두 입력해주세요.", "error");
-            return;
-        }
-        
-        const embedUrl = convertToEmbedUrl(originalUrl);
-        
-        try {
-            await addDoc(collection(window.db, "motherMusic"), {
-                title,
-                url: embedUrl,
-                originalUrl,
-                timestamp: serverTimestamp()
-            });
-            showMessage(document.getElementById("mother-music-message"), "🎵 음악이 성공적으로 추가되었습니다!", "success");
-            document.getElementById("mother-music-form").reset();
-            loadMotherMusic();
-        } catch (error) {
-            console.error("음악 추가 오류:", error);
-            showMessage(document.getElementById("mother-music-message"), "음악 추가 중 오류가 발생했습니다.", "error");
-        }
-    });
-
-    document.getElementById("mother-photo-form").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const photoFile = document.getElementById("mother-photo").files[0];
-        const caption = document.getElementById("photo-caption").value.trim();
-        const messageEl = document.getElementById("mother-photo-message");
-        
-        if (!photoFile || !caption) {
-            showMessage(messageEl, "사진과 설명을 모두 입력해주세요.", "error");
-            return;
-        }
-        
-        const validation = uploadManager.validateFile(photoFile, 'image');
-        if (!validation.isValid) {
-            showMessage(messageEl, validation.errors.join('<br>'), "error");
-            return;
-        }
-        
-        try {
-            const progressContainer = document.createElement('div');
-            progressContainer.innerHTML = `
-                <div class="progress-container">
-                    <div class="progress-bar">
-                        <div id="mother-photo-progress" class="progress-fill"></div>
-                    </div>
-                    <p id="mother-photo-status" style="margin: 5px 0; font-size: 14px; color: #f5f0e6;">업로드 준비 중...</p>
-                </div>
-            `;
-            messageEl.appendChild(progressContainer);
-            
-            let processedFile = photoFile;
-            if (photoFile.size > 5 * 1024 * 1024) {
-                document.getElementById("mother-photo-status").textContent = "이미지 압축 중...";
-                processedFile = await uploadManager.compressImage(photoFile);
-            }
-            
-            const fileName = `${Date.now()}_${photoFile.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-            const photoUrl = await uploadManager.uploadWithProgress(
-                processedFile,
-                `motherPhotos/${fileName}`,
-                (progress, bytesTransferred, totalBytes) => {
-                    document.getElementById("mother-photo-progress").style.width = `${progress}%`;
-                    const transferred = uploadManager.formatFileSize(bytesTransferred);
-                    const total = uploadManager.formatFileSize(totalBytes);
-                    document.getElementById("mother-photo-status").textContent = 
-                        `업로드 중... ${Math.round(progress)}% (${transferred}/${total})`;
-                }
-            );
-            
-            await addDoc(collection(window.db, "motherPhotos"), {
-                photoUrl, caption, timestamp: serverTimestamp()
-            });
-            
-            showMessage(messageEl, "📷 사진이 성공적으로 추가되었습니다!", "success");
-            document.getElementById("mother-photo-form").reset();
-            document.getElementById("mother-photo-file-info").textContent = "";
-            loadMotherPhotos();
-            
-        } catch (error) {
-            console.error("사진 추가 오류:", error);
-            let errorMessage = "사진 추가 중 오류가 발생했습니다.";
-            if (error.code === 'storage/quota-exceeded') {
-                errorMessage = "저장 공간이 부족합니다.";
-            } else if (error.code === 'storage/unauthorized') {
-                errorMessage = "업로드 권한이 없습니다.";
-            }
-            showMessage(messageEl, errorMessage, "error");
-        }
-    });
-
-    document.getElementById("refresh-comments-btn").addEventListener("click", loadMotherComments);
-    document.getElementById("refresh-music-btn").addEventListener("click", loadMotherMusic);
-    document.getElementById("refresh-photos-btn").addEventListener("click", loadMotherPhotos);
-    document.getElementById("refresh-interviews-btn").addEventListener("click", loadInterviews);
-    document.getElementById("refresh-stats-btn").addEventListener("click", loadChatStats);
-    document.getElementById("refresh-emotions-btn").addEventListener("click", loadEmotionAnalysis);
-    document.getElementById("refresh-urgent-btn").addEventListener("click", loadUrgentMessages);
-    document.getElementById("refresh-chats-btn").addEventListener("click", loadRecentChats);
-    document.getElementById("refresh-topics-btn").addEventListener("click", loadTopicAnalysis);
-    document.getElementById("refresh-logs-btn").addEventListener("click", loadSystemLogs);
-    loadMotherComments();
-    loadMotherMusic();
-    loadMotherPhotos();
-    loadInterviews();
-    loadChatStats();
 }
 
-async function loadChatStats() {
+async function loadArchiveTimeline() {
     try {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        const totalChatsSnap = await getDocs(collection(window.db, "chatHistory"));
-        document.getElementById("total-chats").textContent = totalChatsSnap.size;
-
-        const uniqueUsers = new Set();
-        totalChatsSnap.forEach(doc => {
-            uniqueUsers.add(doc.data().userId);
-        });
-        document.getElementById("active-users").textContent = uniqueUsers.size;
-
-        let todayCount = 0;
-        totalChatsSnap.forEach(doc => {
-            const data = doc.data();
-            if (data.timestamp && data.timestamp.toDate() >= today) {
-                todayCount++;
-            }
-        });
-        document.getElementById("today-chats").textContent = todayCount;
-
-    } catch (error) {
-        console.error("통계 로드 오류:", error);
-        document.getElementById("total-chats").textContent = "오류";
-        document.getElementById("active-users").textContent = "오류";
-        document.getElementById("today-chats").textContent = "오류";
-    }
-}
-
-async function loadEmotionAnalysis() {
-    try {
-        const container = document.getElementById("emotion-analysis");
-        container.innerHTML = "<p style='text-align: center; color: #8d6e63;'>감정 데이터 분석 중...</p>";
-
-        const snaps = await getDocs(query(collection(window.db, "chatAnalytics"), orderBy("timestamp", "desc")));
+        const listEl = document.getElementById("archive-timeline-list");
+        listEl.innerHTML = "<p style='text-align: center; color: #8d6e63;'>타임라인을 불러오는 중...</p>";
         
-        const emotionCount = {
-            sad: 0,
-            anxious: 0,
-            angry: 0,
-            hopeful: 0,
-            confused: 0
-        };
+        const snaps = await getDocs(query(collection(window.db, "archiveTimeline"), orderBy("date", "desc")));
+        listEl.innerHTML = "";
+        
+        if (snaps.empty) {
+            listEl.innerHTML = "<p style='text-align: center; color: #f5f0e6; font-style: italic;'>등록된 타임라인 이벤트가 없습니다.</p>";
+            return;
+        }
+        
+        snaps.forEach(docSnap => {
+            const { date, title, description } = docSnap.data();
+            const id = docSnap.id;
 
-        snaps.forEach(doc => {
-            const emotions = doc.data().detectedEmotions || [];
-            emotions.forEach(emotion => {
-                if (emotionCount[emotion] !== undefined) {
-                    emotionCount[emotion]++;
-                }
-            });
-        });
-
-        const emotionLabels = {
-            sad: '😢 슬픔',
-            anxious: '😰 불안',
-            angry: '😠 분노',
-            hopeful: '😊 희망',
-            confused: '😕 혼란'
-        };
-
-        container.innerHTML = "";
-        Object.entries(emotionCount).forEach(([emotion, count]) => {
             const div = document.createElement("div");
-            div.style.cssText = "margin-bottom: 10px; padding: 8px; background: rgba(245,240,230,0.1); border-radius: 4px; display: flex; justify-content: space-between;";
+            div.className = "content-item";
             div.innerHTML = `
-                <span style="color: #f5f0e6;">${emotionLabels[emotion]}</span>
-                <span style="color: #8d6e63; font-weight: bold;">${count}회</span>
+                <h4>${title}</h4>
+                <p>📅 ${date}</p>
+                <p>${description}</p>
+                <div class="content-actions">
+                    <button onclick="deleteArchiveItem('archiveTimeline', '${id}')" class="danger-btn">삭제</button>
+                </div>
             `;
-            container.appendChild(div);
+            listEl.appendChild(div);
         });
-
     } catch (error) {
-        console.error("감정 분석 로드 오류:", error);
-        document.getElementById("emotion-analysis").innerHTML = "<p style='color: #dc3545;'>감정 분석을 불러오는 중 오류가 발생했습니다.</p>";
+        console.error("타임라인 로드 오류:", error);
+        document.getElementById("archive-timeline-list").innerHTML = "<p style='color: #dc3545;'>타임라인 로드 중 오류가 발생했습니다.</p>";
     }
 }
 
-async function loadUrgentMessages() {
+async function loadArchiveVideos() {
     try {
-        const container = document.getElementById("urgent-messages");
-        container.innerHTML = "<p style='text-align: center; color: #8d6e63;'>긴급 메시지 확인 중...</p>";
-
-        const snaps = await getDocs(query(collection(window.db, "chatAnalytics"), orderBy("timestamp", "desc")));
-        container.innerHTML = "";
-
-        let urgentFound = false;
-        snaps.forEach(doc => {
-            const data = doc.data();
-            if (data.urgencyLevel === 'high' || data.urgencyLevel === 'medium') {
-                urgentFound = true;
-                const div = document.createElement("div");
-                div.style.cssText = `
-                    margin-bottom: 15px; 
-                    padding: 12px; 
-                    background: ${data.urgencyLevel === 'high' ? 'rgba(220, 53, 69, 0.2)' : 'rgba(255, 193, 7, 0.2)'}; 
-                    border-left: 4px solid ${data.urgencyLevel === 'high' ? '#dc3545' : '#ffc107'}; 
-                    border-radius: 4px;
-                `;
-                
-                const timestamp = data.timestamp ? data.timestamp.toDate().toLocaleString('ko-KR') : '';
-                div.innerHTML = `
-                    <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 8px;">
-                        <span style="color: ${data.urgencyLevel === 'high' ? '#dc3545' : '#ffc107'}; font-weight: bold;">
-                            ${data.urgencyLevel === 'high' ? '🚨 높음' : '⚠️ 중간'}
-                        </span>
-                        <span style="color: #f5f0e6; font-size: 12px; opacity: 0.8;">${timestamp}</span>
-                    </div>
-                    <p style="margin: 0; color: #f5f0e6; font-size: 14px; word-break: break-word;">${data.message}</p>
-                    <p style="margin: 5px 0 0 0; color: #f5f0e6; font-size: 12px; opacity: 0.7;">사용자: ${data.userId.substring(0, 10)}...</p>
-                `;
-                container.appendChild(div);
-            }
-        });
-
-        if (!urgentFound) {
-            container.innerHTML = "<p style='text-align: center; color: #f5f0e6; font-style: italic;'>긴급 상황이 감지된 메시지가 없습니다.</p>";
+        const listEl = document.getElementById("archive-video-list");
+        listEl.innerHTML = "<p style='text-align: center; color: #8d6e63;'>영상을 불러오는 중...</p>";
+        
+        const snaps = await getDocs(query(collection(window.db, "archiveVideos"), orderBy("timestamp", "desc")));
+        listEl.innerHTML = "";
+        
+        if (snaps.empty) {
+            listEl.innerHTML = "<p style='text-align: center; color: #f5f0e6; font-style: italic;'>등록된 영상이 없습니다.</p>";
+            return;
         }
+        
+        snaps.forEach(docSnap => {
+            const { title, description, duration } = docSnap.data();
+            const id = docSnap.id;
 
-    } catch (error) {
-        console.error("긴급 메시지 로드 오류:", error);
-        document.getElementById("urgent-messages").innerHTML = "<p style='color: #dc3545;'>긴급 메시지를 불러오는 중 오류가 발생했습니다.</p>";
-    }
-}
-
-async function loadRecentChats() {
-    try {
-        const container = document.getElementById("recent-chats");
-        container.innerHTML = "<p style='text-align: center; color: #8d6e63;'>최근 대화 불러오는 중...</p>";
-
-        const snaps = await getDocs(query(collection(window.db, "chatHistory"), orderBy("timestamp", "desc")));
-        container.innerHTML = "";
-
-        let count = 0;
-        snaps.forEach(doc => {
-            if (count >= 10) return;
-            
-            const data = doc.data();
             const div = document.createElement("div");
-            div.style.cssText = `
-                margin-bottom: 15px; 
-                padding: 12px; 
-                background: rgba(245,240,230,0.1); 
-                border-left: 4px solid #8d6e63; 
-                border-radius: 4px;
-            `;
-            
-            const timestamp = data.timestamp ? data.timestamp.toDate().toLocaleString('ko-KR') : '';
+            div.className = "content-item";
             div.innerHTML = `
-                <div style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="color: #8d6e63; font-size: 12px;">사용자: ${data.userId.substring(0, 10)}...</span>
-                    <span style="color: #f5f0e6; font-size: 12px; opacity: 0.8;">${timestamp}</span>
-                </div>
-                <div style="margin-bottom: 8px;">
-                    <strong style="color: #f5f0e6;">사용자:</strong>
-                    <p style="margin: 4px 0; color: #f5f0e6; font-size: 14px; background: rgba(245,240,230,0.1); padding: 8px; border-radius: 4px;">${data.userMessage}</p>
-                </div>
-                <div>
-                    <strong style="color: #8d6e63;">상담사:</strong>
-                    <p style="margin: 4px 0; color: #f5f0e6; font-size: 14px; background: rgba(141,110,99,0.2); padding: 8px; border-radius: 4px;">${data.botMessage.substring(0, 100)}${data.botMessage.length > 100 ? '...' : ''}</p>
+                <h4>${title}</h4>
+                <p>⏱️ ${duration}</p>
+                <p>${description}</p>
+                <div class="content-actions">
+                    <button onclick="deleteArchiveItem('archiveVideos', '${id}')" class="danger-btn">삭제</button>
                 </div>
             `;
-            container.appendChild(div);
-            count++;
+            listEl.appendChild(div);
         });
-
-        if (count === 0) {
-            container.innerHTML = "<p style='text-align: center; color: #f5f0e6; font-style: italic;'>아직 대화 기록이 없습니다.</p>";
-        }
-
     } catch (error) {
-        console.error("최근 대화 로드 오류:", error);
-        document.getElementById("recent-chats").innerHTML = "<p style='color: #dc3545;'>대화 기록을 불러오는 중 오류가 발생했습니다.</p>";
+        console.error("영상 로드 오류:", error);
+        document.getElementById("archive-video-list").innerHTML = "<p style='color: #dc3545;'>영상 로드 중 오류가 발생했습니다.</p>";
     }
 }
 
-async function loadTopicAnalysis() {
+async function loadArchiveGallery() {
     try {
-        const container = document.getElementById("topic-analysis");
-        container.innerHTML = "<p style='text-align: center; color: #8d6e63;'>주제 분석 중...</p>";
-
-        const snaps = await getDocs(query(collection(window.db, "chatAnalytics"), orderBy("timestamp", "desc")));
+        const listEl = document.getElementById("archive-gallery-list");
+        listEl.innerHTML = "<p style='text-align: center; color: #8d6e63;'>갤러리를 불러오는 중...</p>";
         
-        const topicCount = {
-            medication: 0,
-            family: 0,
-            work: 0,
-            social: 0,
-            symptoms: 0,
-            daily: 0
-        };
+        const snaps = await getDocs(query(collection(window.db, "archiveGallery"), orderBy("timestamp", "desc")));
+        listEl.innerHTML = "";
+        
+        if (snaps.empty) {
+            listEl.innerHTML = "<p style='text-align: center; color: #f5f0e6; font-style: italic;'>등록된 이미지가 없습니다.</p>";
+            return;
+        }
+        
+        snaps.forEach(docSnap => {
+            const { title, description, category } = docSnap.data();
+            const id = docSnap.id;
 
-        snaps.forEach(doc => {
-            const topics = doc.data().detectedTopics || [];
-            topics.forEach(topic => {
-                if (topicCount[topic] !== undefined) {
-                    topicCount[topic]++;
-                }
-            });
-        });
+            const categoryLabels = {
+                production: '제작 현장',
+                interview: '인터뷰',
+                daily: '일상',
+                document: '자료'
+            };
 
-        const topicLabels = {
-            medication: '💊 치료/약물',
-            family: '👨‍👩‍👧‍👦 가족',
-            work: '💼 직장/업무',
-            social: '👥 사회관계',
-            symptoms: '🧠 증상',
-            daily: '🏠 일상생활'
-        };
-
-        container.innerHTML = "";
-        Object.entries(topicCount).forEach(([topic, count]) => {
             const div = document.createElement("div");
-            div.style.cssText = "margin-bottom: 10px; padding: 8px; background: rgba(245,240,230,0.1); border-radius: 4px; display: flex; justify-content: space-between;";
+            div.className = "content-item";
             div.innerHTML = `
-                <span style="color: #f5f0e6;">${topicLabels[topic]}</span>
-                <span style="color: #8d6e63; font-weight: bold;">${count}회</span>
-            `;
-            container.appendChild(div);
-        });
-
-    } catch (error) {
-        console.error("주제 분석 로드 오류:", error);
-        document.getElementById("topic-analysis").innerHTML = "<p style='color: #dc3545;'>주제 분석을 불러오는 중 오류가 발생했습니다.</p>";
-    }
-}
-
-async function loadSystemLogs() {
-    try {
-        const container = document.getElementById("system-logs");
-        container.innerHTML = "<p style='text-align: center; color: #8d6e63;'>시스템 로그 불러오는 중...</p>";
-
-        const [errorSnaps, eventSnaps] = await Promise.all([
-            getDocs(query(collection(window.db, "chatErrors"), orderBy("timestamp", "desc"))),
-            getDocs(query(collection(window.db, "chatEvents"), orderBy("timestamp", "desc")))
-        ]);
-
-        container.innerHTML = "";
-
-        if (!errorSnaps.empty) {
-            const errorHeader = document.createElement("h4");
-            errorHeader.textContent = "🔴 에러 로그";
-            errorHeader.style.cssText = "color: #dc3545; margin: 0 0 10px 0;";
-            container.appendChild(errorHeader);
-
-            let errorCount = 0;
-            errorSnaps.forEach(doc => {
-                if (errorCount >= 5) return;
-                
-                const data = doc.data();
-                const div = document.createElement("div");
-                div.style.cssText = "margin-bottom: 10px; padding: 8px; background: rgba(220, 53, 69, 0.2); border-left: 4px solid #dc3545; border-radius: 4px;";
-                
-                const timestamp = data.timestamp ? data.timestamp.toDate().toLocaleString('ko-KR') : '';
-                div.innerHTML = `
-                    <div style="font-size: 12px; color: #dc3545; margin-bottom: 4px;">${timestamp}</div>
-                    <div style="font-size: 14px; color: #f5f0e6;">${data.errorMessage}</div>
-                    <div style="font-size: 12px; color: #f5f0e6; opacity: 0.7; margin-top: 4px;">페이지: ${data.page}</div>
-                `;
-                container.appendChild(div);
-                errorCount++;
-            });
-        }
-
-        if (!eventSnaps.empty) {
-            const eventHeader = document.createElement("h4");
-            eventHeader.textContent = "📊 이벤트 로그";
-            eventHeader.style.cssText = "color: #8d6e63; margin: 20px 0 10px 0;";
-            container.appendChild(eventHeader);
-
-            const eventStats = {};
-            eventSnaps.forEach(doc => {
-                const eventType = doc.data().eventType;
-                eventStats[eventType] = (eventStats[eventType] || 0) + 1;
-            });
-
-            Object.entries(eventStats).forEach(([eventType, count]) => {
-                const div = document.createElement("div");
-                div.style.cssText = "margin-bottom: 8px; padding: 6px; background: rgba(245,240,230,0.1); border-radius: 4px; display: flex; justify-content: space-between;";
-                div.innerHTML = `
-                    <span style="color: #f5f0e6;">${eventType}</span>
-                    <span style="color: #8d6e63; font-weight: bold;">${count}회</span>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        if (errorSnaps.empty && eventSnaps.empty) {
-            container.innerHTML = "<p style='text-align: center; color: #f5f0e6; font-style: italic;'>시스템 로그가 없습니다.</p>";
-        }
-
-    } catch (error) {
-        console.error("시스템 로그 로드 오류:", error);
-        document.getElementById("system-logs").innerHTML = "<p style='color: #dc3545;'>시스템 로그를 불러오는 중 오류가 발생했습니다.</p>";
-    }
-}
-
-async function loadInterviews() {
-    try {
-        const listEl = document.getElementById("interview-list");
-        listEl.innerHTML = "<p style='text-align: center; color: #8d6e63;'>인터뷰를 불러오는 중...</p>";
-        
-        const snaps = await getDocs(query(collection(window.db, "interviewVideos"), orderBy("timestamp", "desc")));
-        listEl.innerHTML = "";
-        
-        if (snaps.empty) {
-            listEl.innerHTML = "<p style='text-align: center; color: #f5f0e6; font-style: italic;'>아직 등록된 인터뷰가 없습니다.</p>";
-            return;
-        }
-        
-        snaps.forEach(docSnap => {
-            const { title, description, youtubeUrl, videoUrl } = docSnap.data();
-            const id = docSnap.id;
-
-            const interviewDiv = document.createElement("div");
-            interviewDiv.style.cssText = `
-                background: rgba(245,240,230,0.1);
-                border-left: 4px solid #8d6e63;
-                padding: 12px;
-                margin-bottom: 15px;
-                border-radius: 4px;
-                position: relative;
-            `;
-            
-            const videoPreview = youtubeUrl ? 
-                `<iframe width="200" height="120" src="${youtubeUrl}" frameborder="0" allowfullscreen style="border-radius: 4px; margin-top: 8px;"></iframe>` :
-                `<video width="200" height="120" controls style="border-radius: 4px; margin-top: 8px;"><source src="${videoUrl}" type="video/mp4"></video>`;
-            
-            interviewDiv.innerHTML = `
-                <div style="display: flex; gap: 15px; padding-right: 120px;">
-                    <div>
-                        ${videoPreview}
-                    </div>
-                    <div style="flex: 1;">
-                        <h4 style="margin: 0 0 8px 0; color: #8d6e63;">${title}</h4>
-                        ${description ? `<p style="margin: 0 0 8px 0; color: #f5f0e6; font-size: 14px;">${description}</p>` : ''}
-                        <p style="margin: 0; font-size: 12px; color: #f5f0e6; opacity: 0.8;">
-                            ${youtubeUrl ? 'YouTube 영상' : '업로드된 파일'}
-                        </p>
-                    </div>
-                </div>
-                <div style="position: absolute; top: 8px; right: 8px; display: flex; gap: 5px;">
-                    <button onclick="editInterview('${id}', '${title}', '${description || ''}')" 
-                            style="background: #007bff; color: white; border: none; border-radius: 3px; padding: 4px 8px; cursor: pointer; font-size: 12px;">
-                        수정
-                    </button>
-                    <button onclick="deleteInterview('${id}')" 
-                            style="background: #dc3545; color: white; border: none; border-radius: 3px; padding: 4px 8px; cursor: pointer; font-size: 12px;">
-                        삭제
-                    </button>
+                <h4>${title}</h4>
+                <p>📂 ${categoryLabels[category] || category}</p>
+                <p>${description}</p>
+                <div class="content-actions">
+                    <button onclick="deleteArchiveItem('archiveGallery', '${id}')" class="danger-btn">삭제</button>
                 </div>
             `;
-            
-            listEl.appendChild(interviewDiv);
+            listEl.appendChild(div);
         });
     } catch (error) {
-        console.error("인터뷰 로드 오류:", error);
-        document.getElementById("interview-list").innerHTML = "<p style='color: #dc3545;'>인터뷰를 불러오는 중 오류가 발생했습니다.</p>";
+        console.error("갤러리 로드 오류:", error);
+        document.getElementById("archive-gallery-list").innerHTML = "<p style='color: #dc3545;'>갤러리 로드 중 오류가 발생했습니다.</p>";
     }
 }
 
-async function loadMotherMusic() {
+window.deleteArchiveItem = async function(collection_name, itemId) {
+    if (!confirm("정말 이 항목을 삭제하시겠습니까?")) return;
+    
     try {
-        const listEl = document.getElementById("mother-music-list");
-        listEl.innerHTML = "<p style='text-align: center; color: #8d6e63;'>음악을 불러오는 중...</p>";
+        await deleteDoc(doc(window.db, collection_name, itemId));
+        showMessage(document.getElementById("archive-timeline-message"), "항목이 삭제되었습니다!", "success");
         
-        const snaps = await getDocs(query(collection(window.db, "motherMusic"), orderBy("timestamp", "desc")));
-        listEl.innerHTML = "";
-        
-        if (snaps.empty) {
-            listEl.innerHTML = "<p style='text-align: center; color: #f5f0e6; font-style: italic;'>아직 등록된 음악이 없습니다.</p>";
-            return;
-        }
-        
-        snaps.forEach(docSnap => {
-            const { title, url, originalUrl } = docSnap.data();
-            const id = docSnap.id;
-
-            const musicDiv = document.createElement("div");
-            musicDiv.style.cssText = `
-                background: rgba(245,240,230,0.1);
-                border-left: 4px solid #8d6e63;
-                padding: 12px;
-                margin-bottom: 10px;
-                border-radius: 4px;
-                position: relative;
-            `;
-            
-            musicDiv.innerHTML = `
-                <h4 style="margin: 0 0 8px 0; color: #8d6e63; padding-right: 60px;">${title}</h4>
-                <p style="margin: 0; font-size: 12px; color: #f5f0e6; opacity: 0.8; word-break: break-all; padding-right: 60px;">${originalUrl || url}</p>
-                <button onclick="deleteMotherMusic('${id}')" 
-                        style="position: absolute; top: 8px; right: 8px; background: #dc3545; color: white; border: none; border-radius: 3px; padding: 4px 8px; cursor: pointer; font-size: 12px;">
-                    삭제
-                </button>
-            `;
-            
-            listEl.appendChild(musicDiv);
-        });
+        if (collection_name === 'archiveTimeline') loadArchiveTimeline();
+        else if (collection_name === 'archiveVideos') loadArchiveVideos();
+        else if (collection_name === 'archiveGallery') loadArchiveGallery();
     } catch (error) {
-        console.error("음악 로드 오류:", error);
-        document.getElementById("mother-music-list").innerHTML = "<p style='color: #dc3545;'>음악을 불러오는 중 오류가 발생했습니다.</p>";
+        console.error("삭제 오류:", error);
+        showMessage(document.getElementById("archive-timeline-message"), "삭제 중 오류가 발생했습니다.", "error");
     }
+};
+
+function convertToEmbedUrl(url) {
+    let videoId = '';
+    
+    if (url.includes('youtube.com/watch?v=')) {
+        videoId = url.split('v=')[1].split('&')[0];
+    } else if (url.includes('youtu.be/')) {
+        videoId = url.split('youtu.be/')[1].split('?')[0];
+    } else if (url.includes('youtube.com/embed/')) {
+        return url;
+    }
+    
+    if (videoId) {
+        return `https://www.youtube.com/embed/${videoId}`;
+    }
+    
+    return url;
 }
 
-async function loadMotherPhotos() {
-    try {
-        const listEl = document.getElementById("mother-photo-list");
-        listEl.innerHTML = "<p style='text-align: center; color: #8d6e63;'>사진을 불러오는 중...</p>";
-        
-        const snaps = await getDocs(query(collection(window.db, "motherPhotos"), orderBy("timestamp", "desc")));
-        listEl.innerHTML = "";
-        
-        if (snaps.empty) {
-            listEl.innerHTML = "<p style='text-align: center; color: #f5f0e6; font-style: italic;'>아직 등록된 사진이 없습니다.</p>";
-            return;
-        }
-        
-        snaps.forEach(docSnap => {
-            const { photoUrl, caption } = docSnap.data();
-            const id = docSnap.id;
-
-            const photoDiv = document.createElement("div");
-            photoDiv.style.cssText = `
-                background: rgba(245,240,230,0.1);
-                border-left: 4px solid #8d6e63;
-                padding: 12px;
-                margin-bottom: 10px;
-                border-radius: 4px;
-                position: relative;
-            `;
-            
-            photoDiv.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 10px; padding-right: 60px;">
-                    <img src="${photoUrl}" alt="${caption}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">
-                    <div>
-                        <p style="margin: 0; color: #f5f0e6; font-weight: bold;">${caption}</p>
-                        <p style="margin: 5px 0 0 0; font-size: 12px; color: #f5f0e6; opacity: 0.8;">클릭하여 원본 보기</p>
-                    </div>
-                </div>
-                <button onclick="deleteMotherPhoto('${id}')" 
-                        style="position: absolute; top: 8px; right: 8px; background: #dc3545; color: white; border: none; border-radius: 3px; padding: 4px 8px; cursor: pointer; font-size: 12px;">
-                    삭제
-                </button>
-            `;
-            
-            photoDiv.querySelector('img').addEventListener('click', () => {
-                window.open(photoUrl, '_blank');
-            });
-            
-            listEl.appendChild(photoDiv);
-        });
-    } catch (error) {
-        console.error("사진 로드 오류:", error);
-        document.getElementById("mother-photo-list").innerHTML = "<p style='color: #dc3545;'>사진을 불러오는 중 오류가 발생했습니다.</p>";
-    }
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
-
-async function loadMotherComments() {
-    try {
-        const listEl = document.getElementById("mother-comments-list");
-        listEl.innerHTML = "<p style='text-align: center; color: #8d6e63;'>댓글을 불러오는 중...</p>";
-        
-        const snaps = await getDocs(query(collection(window.db, "motherComments"), orderBy("timestamp", "desc")));
-        listEl.innerHTML = "";
-        
-        if (snaps.empty) {
-            listEl.innerHTML = "<p style='text-align: center; color: #f5f0e6; font-style: italic;'>아직 등록된 댓글이 없습니다.</p>";
-            return;
-        }
-        
-        snaps.forEach(docSnap => {
-            const { text } = docSnap.data();
-            const id = docSnap.id;
-
-            const commentDiv = document.createElement("div");
-            commentDiv.style.cssText = `
-                background: rgba(245,240,230,0.1);
-                border-left: 4px solid #8d6e63;
-                padding: 12px;
-                margin-bottom: 10px;
-                border-radius: 4px;
-                position: relative;
-            `;
-            
-            commentDiv.innerHTML = `
-                <p style="margin: 0; padding-right: 60px; color: #f5f0e6; font-style: italic;">${text}</p>
-                <button onclick="deleteMotherComment('${id}')" 
-                        style="position: absolute; top: 8px; right: 8px; background: #dc3545; color: white; border: none; border-radius: 3px; padding: 4px 8px; cursor: pointer; font-size: 12px;">
-                    삭제
-                </button>
-            `;
-            
-            listEl.appendChild(commentDiv);
-        });
-    } catch (error) {
-        console.error("댓글 로드 오류:", error);
-        document.getElementById("mother-comments-list").innerHTML = "<p style='color: #dc3545;'>댓글을 불러오는 중 오류가 발생했습니다.</p>";
-    }
-}
-
-window.editInterview = async function(interviewId, currentTitle, currentDescription) {
-    const newTitle = prompt("새 제목을 입력하세요:", currentTitle);
-    if (newTitle === null) return;
-    
-    const newDescription = prompt("새 설명을 입력하세요:", currentDescription);
-    if (newDescription === null) return;
-    
-    try {
-        const { updateDoc } = await import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js');
-        await updateDoc(doc(window.db, "interviewVideos", interviewId), {
-            title: newTitle,
-            description: newDescription
-        });
-        showMessage(document.getElementById("interview-message"), "인터뷰가 성공적으로 수정되었습니다!", "success");
-        loadInterviews();
-    } catch (error) {
-        console.error("인터뷰 수정 오류:", error);
-        showMessage(document.getElementById("interview-message"), "인터뷰 수정 중 오류가 발생했습니다.", "error");
-    }
-};
-
-window.deleteInterview = async function(interviewId) {
-    if (!confirm("정말 이 인터뷰를 삭제하시겠습니까?")) return;
-    
-    try {
-        await deleteDoc(doc(window.db, "interviewVideos", interviewId));
-        showMessage(document.getElementById("interview-message"), "인터뷰가 성공적으로 삭제되었습니다!", "success");
-        loadInterviews();
-    } catch (error) {
-        console.error("인터뷰 삭제 오류:", error);
-        showMessage(document.getElementById("interview-message"), "인터뷰 삭제 중 오류가 발생했습니다.", "error");
-    }
-};
-
-window.deleteMotherMusic = async function(musicId) {
-    if (!confirm("정말 이 음악을 삭제하시겠습니까?")) return;
-    
-    try {
-        await deleteDoc(doc(window.db, "motherMusic", musicId));
-        showMessage(document.getElementById("mother-music-message"), "음악이 성공적으로 삭제되었습니다!", "success");
-        loadMotherMusic();
-    } catch (error) {
-        console.error("음악 삭제 오류:", error);
-        showMessage(document.getElementById("mother-music-message"), "음악 삭제 중 오류가 발생했습니다.", "error");
-    }
-};
-
-window.deleteMotherPhoto = async function(photoId) {
-    if (!confirm("정말 이 사진을 삭제하시겠습니까?")) return;
-    
-    try {
-        await deleteDoc(doc(window.db, "motherPhotos", photoId));
-        showMessage(document.getElementById("mother-photo-message"), "사진이 성공적으로 삭제되었습니다!", "success");
-        loadMotherPhotos();
-    } catch (error) {
-        console.error("사진 삭제 오류:", error);
-        showMessage(document.getElementById("mother-photo-message"), "사진 삭제 중 오류가 발생했습니다.", "error");
-    }
-};
-
-window.deleteMotherComment = async function(commentId) {
-    if (!confirm("정말 이 댓글을 삭제하시겠습니까?")) return;
-    
-    try {
-        await deleteDoc(doc(window.db, "motherComments", commentId));
-        showMessage(document.getElementById("mother-comments-message"), "댓글이 성공적으로 삭제되었습니다!", "success");
-        loadMotherComments();
-    } catch (error) {
-        console.error("댓글 삭제 오류:", error);
-        showMessage(document.getElementById("mother-comments-message"), "댓글 삭제 중 오류가 발생했습니다.", "error");
-    }
-};
 
 function showMessage(element, message, type) {
     element.innerHTML = `<div class="status-message ${type}">${message}</div>`;
     setTimeout(() => {
         element.innerHTML = "";
     }, 5000);
+}
+
+function loadAllContent() {
+    loadArchiveTimeline();
+    loadArchiveVideos();
+    loadArchiveGallery();
 }
 </script>
 </body>

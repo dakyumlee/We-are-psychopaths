@@ -4,77 +4,638 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>우리의 정신병 일지</title>
-    <link href="index.css" rel="stylesheet"/>
-<link rel="stylesheet" href="css/chatbot.css">
-<script src="js/chatbot.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Song+Myung&display=swap" rel="stylesheet">
+    <style>
+        .song-myung-regular {
+            font-family: "Song Myung", serif;
+            font-weight: 400;
+            font-style: normal;
+        }
 
-<!-- <script>
-  if (!document.querySelector('link[href*="chatbot.css"]')) {
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'css/chatbot.css';
-    document.head.appendChild(link);
-  }
-  if (!window.chatbot) {
-    const script = document.createElement('script');
-    script.src = 'js/chatbot.js';
-    document.head.appendChild(script);
-  }
-</script> -->
-</head>
-<body>
-    <div class="main-container">
-        <br>
-        <h1 ondblclick="window.location.href='admin.html'" style="cursor: pointer;">우리의 정신병 일지, 2024.11.15~</h1>
-        <br><br>
-        <h3>We are psychopath's</h3>
-        <p>
-            정신질환을 앓고 있는 당사자 혹은 가족분들 중 인터뷰이를 구하고 있습니다.<br>
-            다큐멘터리를 통해 자신 혹은 자신의 가족들의 이야기를 하고 싶으신 분들이 있다면<br>
-            아래 메일로 연락 남겨주시면 감사하겠습니다.<br><br>
-            <a href="mailto:we.are.psychopath2025@gmail.com" style="color: #f5f0e6; text-decoration: underline;">we.are.psychopath2025@gmail.com</a>
-            </p>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Song Myung", serif;
+            background-color: #4e2e1e;
+            color: #f5f0e6;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(78, 46, 30, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(245, 240, 230, 0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            list-style: none;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-container li a {
+            color: #f5f0e6;
+            text-decoration: none;
+            font-size: 1.1em;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .nav-container li a:hover {
+            background-color: rgba(245, 240, 230, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-container li a::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background-color: #f5f0e6;
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+        }
+
+        .nav-container li a:hover::after {
+            width: 80%;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 40px;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 60px 0;
+        }
+
+        .hero-section h1 {
+            font-size: 3.5em;
+            margin-bottom: 30px;
+            color: #f5f0e6;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-info {
+            margin-top: 20px;
+        }
+
+        .project-info p {
+            margin: 8px 0;
+            font-size: 1.2em;
+        }
+
+        .period {
+            color: #d4c4a8;
+            font-weight: bold;
+        }
+
+        .slogan {
+            color: #f5f0e6;
+            font-style: italic;
+            font-size: 1.4em !important;
+            margin: 15px 0 !important;
+        }
+
+        .support {
+            color: #b8a082;
+            font-size: 1em !important;
+            background: rgba(245, 240, 230, 0.1);
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        .intro-section {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 40px;
+            background: rgba(245, 240, 230, 0.05);
+            border-left: 4px solid #f5f0e6;
+            border-radius: 8px;
+        }
+
+        .intro-text {
+            font-size: 1.3em;
+            line-height: 1.8;
+            color: #f5f0e6;
+        }
+
+        .contact-section {
+            margin-bottom: 60px;
+            padding: 60px 40px;
+            background: rgba(245, 240, 230, 0.05);
+            border-radius: 20px;
+            border-left: 6px solid #8d6e63;
+        }
+
+        .contact-section h2 {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 2.5em;
+            color: #f5f0e6;
+            position: relative;
+        }
+
+        .contact-section h2::after {
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: #8d6e63;
+            border-radius: 2px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .contact-card {
+            background: rgba(245, 240, 230, 0.08);
+            padding: 35px 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 2px solid rgba(245, 240, 230, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(245, 240, 230, 0.05);
+            transition: left 0.6s ease;
+        }
+
+        .contact-card:hover::before {
+            left: 100%;
+        }
+
+        .contact-card:hover {
+            background: rgba(245, 240, 230, 0.12);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            border-color: #8d6e63;
+        }
+
+        .contact-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .contact-label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #8d6e63;
+            font-size: 1.3em;
+            letter-spacing: 1px;
+        }
+
+        .contact-value {
+            color: #f5f0e6;
+            font-size: 1.2em;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: block;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(245, 240, 230, 0.05);
+            border: 1px solid rgba(245, 240, 230, 0.1);
+            word-break: break-all;
+        }
+
+        .contact-value:hover {
+            color: #ffffff;
+            background: #8d6e63;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(141, 110, 99, 0.4);
+        }
+
+        .youtube-icon { color: #ff6b6b; }
+        .instagram-icon { color: #e1306c; }
+        .blog-icon { color: #03c75a; }
+        .email-icon { color: #ffd93d; }
+
+        .navigation-section {
+            margin-bottom: 60px;
+        }
+
+        .navigation-section h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.2em;
+            color: #f5f0e6;
+        }
+
+        .nav-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .nav-card {
+            background: rgba(245, 240, 230, 0.08);
+            padding: 30px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #f5f0e6;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(245, 240, 230, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(245, 240, 230, 0.1);
+            transition: left 0.5s ease;
+        }
+
+        .nav-card:hover::before {
+            left: 100%;
+        }
+
+        .nav-card:hover {
+            background: rgba(245, 240, 230, 0.12);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            border-color: rgba(245, 240, 230, 0.2);
+        }
+
+        .nav-card h3 {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            color: #f5f0e6;
+        }
+
+        .nav-card p {
+            color: #d4c4a8;
+            line-height: 1.6;
+        }
+
+        .interview-call {
+            margin-bottom: 60px;
+        }
+
+        .call-box {
+            background: rgba(245, 240, 230, 0.08);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            border-left: 4px solid #8d6e63;
+        }
+
+        .call-box h3 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #f5f0e6;
+        }
+
+        .call-box p {
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            color: #f5f0e6;
+        }
+
+        .contact-btn {
+            display: inline-block;
+            background: #8d6e63;
+            color: #f5f0e6;
+            padding: 15px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .contact-btn:hover {
+            background: #a1887f;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid rgba(245, 240, 230, 0.2);
+            margin-top: 60px;
+        }
+
+        footer p {
+            margin: 8px 0;
+            color: #b8a082;
+        }
+
+        footer p:first-child {
+            font-weight: bold;
+            color: #d4c4a8;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                gap: 15px;
+                justify-content: center;
+            }
             
-        <nav>
-            <div class="nav-container">
-                <nav>
-                    <ul class="nav-container">
-                      <li><a href="index.html">홈</a></li>
-                  
-                      <li class="dropdown">
-                        <a href="#">1</a>
-                        <ul class="dropdown-content">
-                          <li><a href="diary-list.html">일기 게시판</a></li>
-                          <li><a href="gallery.html">기록 갤러리</a></li>
-                          <li><a href="community-list.html">커뮤니티</a></li>
-                        </ul>
-                      </li>
-                  
-                      <li class="dropdown">
-                        <a href="#">2</a>
-                        <ul class="dropdown-content">
-                          <li><a href="campaign-clips.html">다큐 영상</a></li>
-                          <li><a href="info.html">조현병 정보</a></li>
-                          <li><a href="interview.html">인터뷰 클립</a></li>
-                          <li><a href="story.html">우리의 이야기</a></li>
-                        </ul>
-                      </li>
-                  
-                      <li class="dropdown">
-                        <a href="#">3</a>
-                        <ul class="dropdown-content">
-                          <li><a href="support.html">병원/정책/연락처</a></li>
-                        </ul>
-                      </li>
-                  
-                      <li><a href="timeline.html">4</a></li>
-                      <li><a href="mother.html">5</a></li>
-                    </ul>
-                  </nav>
-                  
+            .nav-container li a {
+                font-size: 1em;
+                padding: 6px 12px;
+            }
+            
+            .main-container {
+                padding: 120px 15px 30px;
+            }
+            
+            .hero-section h1 {
+                font-size: 2.5em;
+            }
+            
+            .hero-section {
+                padding: 40px 0;
+                margin-bottom: 40px;
+            }
+            
+            .project-info p {
+                font-size: 1.1em;
+            }
+            
+            .slogan {
+                font-size: 1.2em !important;
+            }
+            
+            .intro-section,
+            .contact-section,
+            .call-box {
+                padding: 25px;
+                margin-bottom: 40px;
+            }
+            
+            .intro-text {
+                font-size: 1.1em;
+            }
+            
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .nav-cards {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .nav-card {
+                padding: 25px;
+            }
+            
+            .navigation-section h2,
+            .contact-section h2 {
+                font-size: 1.8em;
+            }
+
+            .contact-section {
+                padding: 40px 20px;
+            }
+
+            .contact-section h2 {
+                font-size: 2em;
+            }
+
+            .contact-card {
+                padding: 25px 20px;
+            }
+
+            .contact-icon {
+                font-size: 2.5em;
+            }
+
+            .contact-label {
+                font-size: 1.2em;
+            }
+
+            .contact-value {
+                font-size: 1.1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-container {
+                flex-direction: column;
+                gap: 10px;
+                padding: 0 10px;
+            }
+            
+            .nav-container li a {
+                font-size: 0.95em;
+                padding: 8px 15px;
+            }
+            
+            .main-container {
+                padding: 140px 10px 25px;
+            }
+            
+            .hero-section h1 {
+                font-size: 2em;
+                line-height: 1.2;
+            }
+            
+            .project-info p {
+                font-size: 1em;
+            }
+            
+            .intro-text {
+                font-size: 1em;
+                line-height: 1.6;
+            }
+            
+            .nav-card,
+            .call-box {
+                padding: 20px;
+            }
+            
+            .call-box h3 {
+                font-size: 1.5em;
+            }
+            
+            .call-box p {
+                font-size: 1em;
+                line-height: 1.6;
+            }
+            
+            .contact-btn {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
+
+            .contact-section {
+                padding: 30px 15px;
+            }
+
+            .contact-section h2 {
+                font-size: 1.8em;
+            }
+
+            .contact-card {
+                padding: 20px 15px;
+            }
+
+            .contact-icon {
+                font-size: 2.2em;
+            }
+        }
+    </style>
+</head>
+<body class="song-myung-regular">
+    <nav>
+        <ul class="nav-container">
+            <li><a href="index.html">홈</a></li>
+            <li><a href="movie.html">영화: &lt;우리의 정신병 일지&gt;</a></li>
+            <li><a href="my-diary.html">나의 정신병 일지</a></li>
+            <li><a href="your-diary.html">당신의 정신병 일지</a></li>
+            <li><a href="recovery.html">당신의 회복 일지</a></li>
+            <li><a href="archive.html">아카이빙</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container">
+        <div class="hero-section">
+            <h1 ondblclick="window.location.href='admin.html'" style="cursor: pointer;">
+                우리의 정신병 일지
+            </h1>
+            <div class="project-info">
+                <p class="period">2024.11.15~</p>
+                <p class="slogan">We are psychopaths</p>
+                <p class="support">2025 부산 영상위원회 장편 다큐멘터리 기획 개발 지원작</p>
             </div>
-        </nav>        
-        <footer>© 2025 우리의 정신병 일지</footer>
+        </div>
+
+        <div class="intro-section">
+            <p class="intro-text">
+                정신질환을 앓고 있는 당사자 혹은 가족분들과 함께 만들어가는 다큐멘터리 프로젝트입니다.<br>
+                우리의 이야기가 누군가에게 위로와 희망이 되기를 바랍니다.
+            </p>
+        </div>
+
+        <div class="contact-section">
+            <h2>연락처 및 소셜미디어</h2>
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <span class="contact-icon youtube-icon">📺</span>
+                    <span class="contact-label">유튜브:</span>
+                    <a href="https://www.youtube.com/@%EC%9E%84%EC%AD%88%EC%AD%88%EA%B3%B5%EC%AD%88" target="_blank" rel="noopener noreferrer" class="contact-value">임쭈쭈</a>
+                </div>
+                
+                <div class="contact-card">
+                    <span class="contact-icon instagram-icon">📷</span>
+                    <span class="contact-label">인스타그램:</span>
+                    <a href="https://instagram.com/wearepsychopaths" target="_blank" rel="noopener noreferrer" class="contact-value">@wearepsychopaths</a>
+                </div>
+                
+                <div class="contact-card">
+                    <span class="contact-icon blog-icon">📝</span>
+                    <span class="contact-label">블로그:</span>
+                    <a href="https://blog.naver.com/jueun_3299/223804219544" target="_blank" rel="noopener noreferrer" class="contact-value">jueun_3299</a>
+                </div>
+                
+                <div class="contact-card">
+                    <span class="contact-icon email-icon">📧</span>
+                    <span class="contact-label">이메일:</span>
+                    <a href="mailto:we.are.psychopath2025@gmail.com" class="contact-value">we.are.psychopath2025@gmail.com</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation-section">
+            <h2>사이트 둘러보기</h2>
+            <div class="nav-cards">
+                <a href="movie.html" class="nav-card">
+                    <h3>영화: &lt;우리의 정신병 일지&gt;</h3>
+                    <p>조현병 당사자와 그의 가족들에 관한 다큐멘터리의 모든 정보</p>
+                </a>
+                <a href="my-diary.html" class="nav-card">
+                    <h3>나의 정신병 일지</h3>
+                    <p>감독 주은과 엄마 순경의 삶의 여정과 이야기</p>
+                </a>
+                <a href="your-diary.html" class="nav-card">
+                    <h3>당신의 정신병 일지</h3>
+                    <p>모든 이들이 자신의 이야기를 나누는 익명 커뮤니티</p>
+                </a>
+                <a href="recovery.html" class="nav-card">
+                    <h3>당신의 회복 일지</h3>
+                    <p>조현병 정보와 회복을 위한 다양한 자료와 도움말</p>
+                </a>
+                <a href="archive.html" class="nav-card">
+                    <h3>아카이빙</h3>
+                    <p>영화 제작 과정의 기록들과 소중한 순간들</p>
+                </a>
+            </div>
+        </div>
+
+        <div class="interview-call">
+            <div class="call-box">
+                <h3>🎤 인터뷰이를 찾습니다</h3>
+                <p>
+                    정신질환을 앓고 있는 당사자 혹은 가족분들 중 인터뷰이를 구하고 있습니다.<br>
+                    다큐멘터리를 통해 자신 혹은 자신의 가족들의 이야기를 하고 싶으신 분들이 있다면<br>
+                    언제든 연락주세요.
+                </p>
+                <a href="mailto:we.are.psychopath2025@gmail.com" class="contact-btn">
+                    이메일로 연락하기
+                </a>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2024-2025 우리의 정신병 일지 프로젝트</p>
+            <p>모든 이야기는 소중하고, 모든 사람은 존중받을 권리가 있습니다.</p>
+        </footer>
     </div>
 </body>
 </html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>나의 정신병 일지</title>
+    <link href="main.css" rel="stylesheet"/>
+    <link href="timeline.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/chatbot.css">
+    <script src="js/chatbot.js"></script>
+</head>
+<body class="song-myung-regular">
+    <nav>
+        <ul class="nav-container">
+            <li><a href="index.html">홈</a></li>
+            <li><a href="movie.html">영화: &lt;우리의 정신병 일지&gt;</a></li>
+            <li><a href="my-diary.html" class="active">나의 정신병 일지</a></li>
+            <li><a href="your-diary.html">당신의 정신병 일지</a></li>
+            <li><a href="recovery.html">당신의 회복 일지</a></li>
+            <li><a href="archive.html">아카이빙</a></li>
+        </ul>
+    </nav>
+
+    <div class="main-container">
+        <div class="page-hero">
+            <h1>나의 정신병 일지</h1>
+            <p class="subtitle">주은과 순경, 두 세대의 삶의 여정</p>
+        </div>
+
+        <div class="timeline-selector">
+            <div class="selector-buttons">
+                <button id="jueun-timeline-btn" class="timeline-btn active" data-person="jueun">
+                    나의 이야기 (주은)
+                </button>
+                <button id="soonkyung-timeline-btn" class="timeline-btn" data-person="soonkyung">
+                    엄마의 이야기 (순경)
+                </button>
+            </div>
+            <p class="timeline-description" id="timeline-description">
+                감독이자 딸인 주은의 삶의 궤적을 따라가보세요.
+            </p>
+        </div>
+
+        <div class="timeline-container">
+            <div id="timeline-visualization"></div>
+        </div>
+
+        <div class="timeline-details" id="timeline-details">
+            <div class="details-placeholder">
+                <p>타임라인의 특정 시점을 클릭하면 자세한 내용을 볼 수 있습니다.</p>
+            </div>
+        </div>
+
+        <section class="person-intro">
+            <div class="person-cards">
+                <div class="person-card" data-person="jueun">
+                    <div class="person-photo">
+                        <div class="photo-placeholder">
+                            <span>👩‍🎨</span>
+                        </div>
+                    </div>
+                    <div class="person-info">
+                        <h3>주은 (감독이자 주인공)</h3>
+                        <p class="person-years">2001년생 ~ 현재 24세</p>
+                        <p class="person-description">
+                            다큐멘터리 감독이자 조현병을 앓고 있는 엄마의 딸. 
+                            어릴 때부터 엄마의 병과 함께 자라며 겪은 혼란과 성장, 
+                            그리고 현재 카메라를 통해 가족의 이야기를 기록하는 여정.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="person-card" data-person="soonkyung">
+                    <div class="person-photo">
+                        <div class="photo-placeholder">
+                            <span>👩‍🦳</span>
+                        </div>
+                    </div>
+                    <div class="person-info">
+                        <h3>순경 (엄마)</h3>
+                        <p class="person-years">1968년생 ~ 현재 57세</p>
+                        <p class="person-description">
+                            40년째 조현병을 앓고 있는 어머니. 
+                            딸을 키우며, 가족을 지키며, 자신만의 방식으로 
+                            일상을 이어가는 평범하고도 특별한 삶의 이야기.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="story-section">
+            <h2>우리의 이야기</h2>
+            <div class="story-intro">
+                <p>
+                    이곳에는 주은과 순경, 두 사람의 인생 여정이 담겨있습니다. 
+                    각자의 관점에서 바라본 삶의 순간들과 함께 겪어온 시간들을 
+                    타임라인을 통해 확인해보세요.
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+    <script>
+        const jueunTimelineData = [
+            {
+                id: 1,
+                content: '주은 태어난 날',
+                start: '2001-01-01',
+                description: '세상에 첫 발을 내딛은 날'
+            },
+            {
+                id: 2,
+                content: '중학교 입학',
+                start: '2014-03-01',
+                description: '중학교 입학. 처음으로 순경의 병에 대해 어렴풋이 알게 됨'
+            },
+            {
+                id: 3,
+                content: '순경의 입원',
+                start: '2015-01-01',
+                description: '순경의 입원. 사춘기와 함께 비행을 일삼음'
+            },
+            {
+                id: 4,
+                content: '고등학교 입학',
+                start: '2017-03-01',
+                description: '고등학교 입학. 순경의 입퇴원 반복'
+            },
+            {
+                id: 5,
+                content: '대학 입학',
+                start: '2020-03-01',
+                description: '대학 입학. 순경의 퇴원'
+            },
+            {
+                id: 6,
+                content: '첫 자해',
+                start: '2024-01-01',
+                description: '첫 자해. 청년 심리 상담 받음'
+            },
+            {
+                id: 7,
+                content: '대학 졸업',
+                start: '2025-02-01',
+                description: '대학 졸업. 순경의 담당 의사를 만나고 순경의 병을 정확히 알게 됨'
+            },
+            {
+                id: 8,
+                content: '건강검진 결과',
+                start: '2025-03-01',
+                description: '건강검진을 통해 우울, 조기정신증 증상 상담 필요하다는 진단을 받았으나 진료를 거부'
+            },
+            {
+                id: 9,
+                content: '자살 시도',
+                start: '2025-04-01',
+                description: '자살 시도. 반복적 자해'
+            }
+        ];
+
+        const soonkyungTimelineData = [
+            {
+                id: 1,
+                content: '순경 태어난 날',
+                start: '1968-01-01',
+                description: '세상에 첫 발을 내딛은 날'
+            },
+            {
+                id: 2,
+                content: '증상 시작',
+                start: '1985-01-01',
+                description: '환청, 망상 등의 증상이 나타나기 시작. 고등학교 중퇴'
+            },
+            {
+                id: 3,
+                content: '첫 정신과 입원',
+                start: '1986-01-01',
+                description: '정신과 입원'
+            },
+            {
+                id: 4,
+                content: '채욱과 결혼',
+                start: '2000-01-01',
+                description: '채욱과 결혼. 사이비 교회 입교'
+            },
+            {
+                id: 5,
+                content: '주은 태어난 날',
+                start: '2001-01-01',
+                description: '딸 주은이 태어남'
+            },
+            {
+                id: 6,
+                content: '발목 부상',
+                start: '2014-01-01',
+                description: '발목을 다친 뒤 정형외과 입원. 신경과 약 중단. 단식. 환청과 피해망상이 급격히 심화. 정신과 입원. 몇달 후 퇴원'
+            },
+            {
+                id: 7,
+                content: '증상 악화',
+                start: '2015-01-01',
+                description: '증상이 다시 악화되며 정신과 입원'
+            },
+            {
+                id: 8,
+                content: '입퇴원 반복',
+                start: '2016-01-01',
+                description: '정신과 입퇴원 반복 (2016~2020)'
+            },
+            {
+                id: 9,
+                content: '외래 진료',
+                start: '2020-01-01',
+                description: '외래 진료 시작 (2020~2025)'
+            }
+        ];
+
+        let currentTimeline = 'jueun';
+        let timeline;
+
+        function initTimeline() {
+            const container = document.getElementById('timeline-visualization');
+            const items = new vis.DataSet(jueunTimelineData);
+            const options = {
+                width: '100%',
+                height: '400px',
+                margin: {
+                    item: 20
+                },
+                orientation: 'top',
+                showCurrentTime: false,
+                zoomable: true,
+                moveable: true
+            };
+
+            timeline = new vis.Timeline(container, items, options);
+
+            timeline.on('select', function(properties) {
+                if (properties.items.length > 0) {
+                    const selectedId = properties.items[0];
+                    const data = currentTimeline === 'jueun' ? jueunTimelineData : soonkyungTimelineData;
+                    const selectedEvent = data.find(item => item.id === selectedId);
+                    if (selectedEvent) {
+                        showEventDetail(selectedEvent);
+                    }
+                }
+            });
+        }
+
+        function showEventDetail(event) {
+            const detailContainer = document.getElementById('timeline-details');
+            detailContainer.innerHTML = `
+                <div class="event-detail active">
+                    <h3>${event.content}</h3>
+                    <div class="event-date">${event.start}</div>
+                    <div class="event-content">${event.description}</div>
+                </div>
+            `;
+        }
+
+        function switchTimeline(person) {
+            currentTimeline = person;
+            const data = person === 'jueun' ? jueunTimelineData : soonkyungTimelineData;
+            const items = new vis.DataSet(data);
+            timeline.setItems(items);
+
+            const description = document.getElementById('timeline-description');
+            if (person === 'jueun') {
+                description.textContent = '감독이자 딸인 주은의 삶의 궤적을 따라가보세요.';
+            } else {
+                description.textContent = '40년째 조현병을 앓고 있는 엄마 순경의 인생 이야기입니다.';
+            }
+
+            document.querySelectorAll('.timeline-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`${person}-timeline-btn`).classList.add('active');
+
+            document.getElementById('timeline-details').innerHTML = `
+                <div class="details-placeholder">
+                    <p>타임라인의 특정 시점을 클릭하면 자세한 내용을 볼 수 있습니다.</p>
+                </div>
+            `;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initTimeline();
+
+            document.getElementById('jueun-timeline-btn').addEventListener('click', () => switchTimeline('jueun'));
+            document.getElementById('soonkyung-timeline-btn').addEventListener('click', () => switchTimeline('soonkyung'));
+
+            document.querySelectorAll('.person-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const person = this.dataset.person;
+                    switchTimeline(person);
+
+                    document.querySelectorAll('.person-card').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            document.querySelector('.person-card[data-person="jueun"]').classList.add('active');
+        });
+    </script>
+</body>
+</html>
