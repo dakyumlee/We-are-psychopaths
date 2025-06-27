@@ -92,9 +92,32 @@ body {
 
 .card-title {
     color: #f5f0e6;
-    font-size: 1.5em;
-    margin-bottom: 1.5rem;
+    font-size: 1.8em;
+    margin-bottom: 1rem;
     text-align: center;
+    border-bottom: 2px solid rgba(245, 240, 230, 0.2);
+    padding-bottom: 0.5rem;
+}
+
+.section-info {
+    background: rgba(141, 110, 99, 0.2);
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid #8d6e63;
+}
+
+.section-info h4 {
+    color: #f5f0e6;
+    margin: 0 0 8px 0;
+    font-size: 1.2em;
+}
+
+.section-info p {
+    color: #d4c4a8;
+    margin: 0;
+    line-height: 1.4;
+    font-size: 0.95em;
 }
 
 .form-section {
@@ -335,31 +358,6 @@ body {
     min-width: auto;
 }
 
-.progress-container {
-    margin: 15px 0;
-}
-
-.progress-bar {
-    background: rgba(245, 240, 230, 0.2);
-    border-radius: 10px;
-    overflow: hidden;
-    height: 8px;
-}
-
-.progress-fill {
-    background: #8d6e63;
-    height: 100%;
-    width: 0%;
-    transition: width 0.3s ease;
-}
-
-.file-info {
-    font-size: 0.9em;
-    color: #d4c4a8;
-    margin-top: 8px;
-    font-style: italic;
-}
-
 .hidden {
     display: none !important;
 }
@@ -382,6 +380,34 @@ body {
         opacity: 1; 
         transform: translateY(0); 
     }
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.stat-card {
+    background: rgba(141, 110, 99, 0.2);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid rgba(245, 240, 230, 0.1);
+}
+
+.stat-number {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #f5f0e6;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    color: #d4c4a8;
+    font-size: 1em;
 }
 
 @media (max-width: 768px) {
@@ -437,33 +463,6 @@ body {
         font-size: 1.8em;
     }
 }
-
-@media (max-width: 480px) {
-    .management-card {
-        padding: 1rem;
-    }
-    
-    .card-title {
-        font-size: 1.3em;
-    }
-    
-    .content-item h4,
-    .content-item p {
-        padding-right: 60px;
-    }
-    
-    .content-actions button {
-        padding: 4px 8px;
-        font-size: 0.8em;
-    }
-    
-    .logout-btn {
-        top: 15px;
-        right: 15px;
-        padding: 8px 15px;
-        font-size: 0.9em;
-    }
-}
 </style>
 </head>
 <body class="song-myung-regular">
@@ -489,17 +488,22 @@ body {
 </div>
 
 <div class="management-tabs">
-    <button class="tab-button active" onclick="showTab('diary')">📝 일기</button>
-    <button class="tab-button" onclick="showTab('timeline')">⏰ 타임라인</button>
-    <button class="tab-button" onclick="showTab('gallery')">📸 갤러리</button>
-    <button class="tab-button" onclick="showTab('video')">🎥 영상</button>
+    <button class="tab-button active" onclick="showTab('diary')">📝 나의 일기</button>
+    <button class="tab-button" onclick="showTab('timeline')">⏰ 나의 타임라인</button>
+    <button class="tab-button" onclick="showTab('gallery')">📸 기록 갤러리</button>
+    <button class="tab-button" onclick="showTab('video')">🎥 다큐 영상</button>
+    <button class="tab-button" onclick="showTab('interview')">🎤 인터뷰</button>
     <button class="tab-button" onclick="showTab('archive')">📂 아카이브</button>
     <button class="tab-button" onclick="showTab('chatbot')">💬 챗봇 분석</button>
 </div>
 
 <div id="diary-tab" class="tab-content active">
     <div class="management-card">
-        <h2 class="card-title">📝 일기 작성</h2>
+        <h2 class="card-title">📝 나의 일기 작성</h2>
+        <div class="section-info">
+            <h4>📍 업로드 위치</h4>
+            <p>여기서 작성한 일기는 <strong>"나의 정신병 일지" 페이지</strong>에 표시됩니다.</p>
+        </div>
         <form id="diary-form" class="form-section">
             <div class="form-group">
                 <label for="diary-title">일기 제목</label>
@@ -522,11 +526,27 @@ body {
 
 <div id="timeline-tab" class="tab-content">
     <div class="management-card">
-        <h2 class="card-title">⏰ 타임라인 이벤트 추가</h2>
+        <h2 class="card-title">⏰ 개인 타임라인 이벤트 추가</h2>
+        <div class="section-info">
+            <h4>📍 업로드 위치</h4>
+            <p>여기서 추가한 이벤트는 <strong>"나의 정신병 일지" 페이지의 타임라인</strong>에 표시됩니다.</p>
+        </div>
         <form id="timeline-form" class="form-section">
+            <div class="form-group">
+                <label for="person-select">인물 선택</label>
+                <select id="person-select" required>
+                    <option value="">선택하세요</option>
+                    <option value="jueun">주은</option>
+                    <option value="soonkyung">순경</option>
+                </select>
+            </div>
             <div class="form-group">
                 <label for="timeline-date">날짜</label>
                 <input type="date" id="timeline-date" required />
+            </div>
+            <div class="form-group">
+                <label for="timeline-title">이벤트 제목</label>
+                <input type="text" id="timeline-title" placeholder="이벤트 제목" required />
             </div>
             <div class="form-group">
                 <label for="timeline-content">이벤트 내용</label>
@@ -540,7 +560,11 @@ body {
 
 <div id="gallery-tab" class="tab-content">
     <div class="management-card">
-        <h2 class="card-title">📸 사진 업로드</h2>
+        <h2 class="card-title">📸 기록 갤러리 사진 업로드</h2>
+        <div class="section-info">
+            <h4>📍 업로드 위치</h4>
+            <p>여기서 업로드한 사진은 <strong>"기록 갤러리" 페이지</strong>에 표시됩니다.</p>
+        </div>
         <form id="gallery-form" class="form-section">
             <div class="form-group">
                 <label for="gallery-image">사진 선택</label>
@@ -559,7 +583,11 @@ body {
 
 <div id="video-tab" class="tab-content">
     <div class="management-card">
-        <h2 class="card-title">🎥 영상 업로드</h2>
+        <h2 class="card-title">🎥 다큐 영상 업로드</h2>
+        <div class="section-info">
+            <h4>📍 업로드 위치</h4>
+            <p>여기서 업로드한 영상은 <strong>"영화 페이지의 다큐 영상" 섹션</strong>에 표시됩니다.</p>
+        </div>
         <form id="video-form" class="form-section">
             <div class="form-group">
                 <label for="video-title">영상 제목</label>
@@ -599,10 +627,60 @@ body {
     </div>
 </div>
 
+<div id="interview-tab" class="tab-content">
+    <div class="management-card">
+        <h2 class="card-title">🎤 인터뷰 영상 업로드</h2>
+        <div class="section-info">
+            <h4>📍 업로드 위치</h4>
+            <p>여기서 업로드한 영상은 <strong>"인터뷰 클립" 페이지</strong>에 표시됩니다.</p>
+        </div>
+        <form id="interview-form" class="form-section">
+            <div class="form-group">
+                <label for="interview-title">인터뷰 제목</label>
+                <input type="text" id="interview-title" placeholder="인터뷰 제목을 입력하세요" required />
+            </div>
+            <div class="form-group">
+                <label for="interview-description">인터뷰 설명</label>
+                <textarea id="interview-description" rows="3" placeholder="인터뷰에 대한 설명을 입력하세요"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>인터뷰 업로드 방식</label>
+                <div style="margin: 10px 0;">
+                    <label style="margin-right: 20px;">
+                        <input type="radio" name="interview-type" value="youtube" checked> YouTube 링크
+                    </label>
+                    <label>
+                        <input type="radio" name="interview-type" value="file"> 파일 업로드
+                    </label>
+                </div>
+            </div>
+            
+            <div id="interview-youtube-input" class="form-group">
+                <label for="interview-youtube-url">YouTube URL</label>
+                <input type="url" id="interview-youtube-url" placeholder="https://www.youtube.com/watch?v=..." />
+            </div>
+            
+            <div id="interview-file-input" class="form-group" style="display:none;">
+                <label for="interview-video-file">비디오 파일</label>
+                <input type="file" id="interview-video-file" accept=".mp4,.webm,.mov,.avi,.mkv,.flv,video/*" />
+                <div id="interview-video-file-info" class="file-info"></div>
+            </div>
+            
+            <button type="submit">인터뷰 업로드</button>
+        </form>
+        <div id="interview-message"></div>
+    </div>
+</div>
+
 <div id="archive-tab" class="tab-content">
     <div class="management-grid">
         <div class="management-card">
-            <h2 class="card-title">📂 타임라인 이벤트</h2>
+            <h2 class="card-title">📂 아카이브 타임라인</h2>
+            <div class="section-info">
+                <h4>📍 업로드 위치</h4>
+                <p>여기서 추가한 이벤트는 <strong>"아카이빙" 페이지의 타임라인</strong>에 표시됩니다.</p>
+            </div>
             <form id="archive-timeline-form" class="form-section">
                 <div class="form-group">
                     <label for="archive-event-date">날짜</label>
@@ -622,7 +700,11 @@ body {
         </div>
 
         <div class="management-card">
-            <h2 class="card-title">🎬 프로젝트 영상</h2>
+            <h2 class="card-title">🎬 아카이브 영상</h2>
+            <div class="section-info">
+                <h4>📍 업로드 위치</h4>
+                <p>여기서 추가한 영상은 <strong>"아카이빙" 페이지의 영상 섹션</strong>에 표시됩니다.</p>
+            </div>
             <form id="archive-video-form" class="form-section">
                 <div class="form-group">
                     <label for="archive-video-title">영상 제목</label>
@@ -647,6 +729,10 @@ body {
 
         <div class="management-card">
             <h2 class="card-title">📸 아카이브 갤러리</h2>
+            <div class="section-info">
+                <h4>📍 업로드 위치</h4>
+                <p>여기서 업로드한 사진은 <strong>"아카이빙" 페이지의 갤러리 섹션</strong>에 표시됩니다.</p>
+            </div>
             <form id="archive-gallery-form" class="form-section">
                 <div class="form-group">
                     <label for="archive-gallery-image">사진 선택</label>
@@ -676,39 +762,28 @@ body {
             <div id="archive-gallery-message"></div>
         </div>
     </div>
-
-    <div class="management-card">
-        <h2 class="card-title">📊 아카이브 컨텐츠 관리</h2>
-        <div class="content-list">
-            <h4 style="color: #8d6e63;">타임라인 이벤트</h4>
-            <div id="archive-timeline-list"></div>
-            <h4 style="color: #8d6e63; margin-top: 30px;">프로젝트 영상</h4>
-            <div id="archive-video-list"></div>
-            <h4 style="color: #8d6e63; margin-top: 30px;">갤러리 이미지</h4>
-            <div id="archive-gallery-list"></div>
-            <button type="button" id="refresh-archive-btn" class="action-btn secondary-btn" style="width: 100%; margin-top: 20px;">
-                아카이브 컨텐츠 새로고침
-            </button>
-        </div>
-    </div>
 </div>
 
 <div id="chatbot-tab" class="tab-content">
     <div class="management-grid">
         <div class="management-card">
             <h2 class="card-title">📊 대화 통계</h2>
-            <div style="padding: 15px;">
-                <div class="content-item">
-                    <span style="color: #8d6e63;">총 대화 수:</span>
-                    <span id="total-chats" style="color: #f5f0e6; font-weight: bold; float: right;">로딩 중...</span>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number" id="total-chats">-</span>
+                    <span class="stat-label">총 대화 수</span>
                 </div>
-                <div class="content-item">
-                    <span style="color: #8d6e63;">활성 사용자:</span>
-                    <span id="active-users" style="color: #f5f0e6; font-weight: bold; float: right;">로딩 중...</span>
+                <div class="stat-card">
+                    <span class="stat-number" id="active-users">-</span>
+                    <span class="stat-label">활성 사용자</span>
                 </div>
-                <div class="content-item">
-                    <span style="color: #8d6e63;">오늘 대화:</span>
-                    <span id="today-chats" style="color: #f5f0e6; font-weight: bold; float: right;">로딩 중...</span>
+                <div class="stat-card">
+                    <span class="stat-number" id="today-chats">-</span>
+                    <span class="stat-label">오늘 대화</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="avg-messages">-</span>
+                    <span class="stat-label">평균 메시지 수</span>
                 </div>
             </div>
             <button type="button" id="refresh-stats-btn" class="action-btn secondary-btn" style="width: 100%;">
@@ -757,16 +832,6 @@ body {
                 주제 분석 새로고침
             </button>
         </div>
-
-        <div class="management-card">
-            <h2 class="card-title">🔧 시스템 로그</h2>
-            <div id="system-logs" class="content-list">
-                <p style="text-align: center; color: #8d6e63;">시스템 로그를 불러오는 중...</p>
-            </div>
-            <button type="button" id="refresh-logs-btn" class="action-btn secondary-btn" style="width: 100%;">
-                로그 새로고침
-            </button>
-        </div>
     </div>
 </div>
 
@@ -774,7 +839,7 @@ body {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, deleteDoc, doc, where, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL, uploadBytesResumable } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
 const firebaseConfig = {
@@ -787,7 +852,7 @@ const firebaseConfig = {
   measurementId: "G-MG2X69DDK8"
 };
 
-const MASTER_KEY = "3292";
+const MASTER_KEY = "189512"; // 새로운 비밀번호
 
 const loginSection = document.getElementById("login-section");
 const adminPanel = document.getElementById("admin-panel");
@@ -798,7 +863,7 @@ const loginMessage = document.getElementById("login-message");
 
 let app, db, storage;
 
-// Firebase 초기화 함수
+// Firebase 초기화
 async function initializeFirebase() {
   try {
     if (!app) {
@@ -809,7 +874,7 @@ async function initializeFirebase() {
       window.db = db;
       window.storage = storage;
       
-      console.log("✅ Firebase 초기화 성공:", { db, storage });
+      console.log("✅ Firebase 초기화 성공");
       return true;
     }
     return true;
@@ -828,18 +893,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 // 로그인 처리
 async function handleLogin() {
     const inputKey = masterKeyInput.value.trim();
-    console.log("🔐 로그인 시도:", inputKey);
+    console.log("🔐 로그인 시도");
     
     if (inputKey === MASTER_KEY) {
         showMessage(loginMessage, "로그인 성공!", "success");
         
-        // Firebase 재확인
         const firebaseReady = await initializeFirebase();
-        console.log("🔥 Firebase 상태:", firebaseReady);
-        
-        // 디버그: Firebase 객체 상태 확인
-        console.log("DB 객체:", window.db);
-        console.log("Storage 객체:", window.storage);
         
         setTimeout(() => {
             loginSection.classList.add("hidden");
@@ -847,15 +906,12 @@ async function handleLogin() {
             
             if (firebaseReady) {
                 initializeForms();
-                loadAllContent();
+                loadChatbotStats();
                 console.log("✅ 관리자 패널 준비 완료");
-            } else {
-                console.error("❌ Firebase 초기화 실패로 일부 기능이 작동하지 않을 수 있습니다");
             }
         }, 500);
     } else {
         showMessage(loginMessage, "마스터키가 올바르지 않습니다.", "error");
-        console.log("❌ 키 불일치");
     }
 }
 
@@ -883,6 +939,11 @@ window.showTab = function(tabName) {
     
     event.target.classList.add('active');
     document.getElementById(tabName + '-tab').classList.add('active');
+    
+    // 챗봇 탭이 선택되면 통계 로드
+    if (tabName === 'chatbot') {
+        loadChatbotStats();
+    }
 };
 
 // 폼 초기화
@@ -911,28 +972,59 @@ function initializeForms() {
     const videoForm = document.getElementById("video-form");
     if (videoForm) {
         videoForm.addEventListener("submit", handleVideoSubmit);
-        
-        const videoTypeRadios = document.querySelectorAll('input[name="video-type"]');
-        const youtubeInput = document.getElementById("youtube-input");
-        const fileInput = document.getElementById("file-input");
-        
-        videoTypeRadios.forEach(radio => {
-            radio.addEventListener("change", () => {
-                if (radio.value === "youtube") {
-                    youtubeInput.style.display = "block";
-                    fileInput.style.display = "none";
-                } else {
-                    youtubeInput.style.display = "none";
-                    fileInput.style.display = "block";
-                }
-            });
-        });
+        setupVideoForm();
+    }
+    
+    // 인터뷰 폼
+    const interviewForm = document.getElementById("interview-form");
+    if (interviewForm) {
+        interviewForm.addEventListener("submit", handleInterviewSubmit);
+        setupInterviewForm();
     }
     
     // 아카이브 폼들
     initializeArchiveForms();
     
+    // 챗봇 분석 버튼들
+    initializeChatbotButtons();
+    
     console.log("✅ 폼 초기화 완료");
+}
+
+function setupVideoForm() {
+    const videoTypeRadios = document.querySelectorAll('input[name="video-type"]');
+    const youtubeInput = document.getElementById("youtube-input");
+    const fileInput = document.getElementById("file-input");
+    
+    videoTypeRadios.forEach(radio => {
+        radio.addEventListener("change", () => {
+            if (radio.value === "youtube") {
+                youtubeInput.style.display = "block";
+                fileInput.style.display = "none";
+            } else {
+                youtubeInput.style.display = "none";
+                fileInput.style.display = "block";
+            }
+        });
+    });
+}
+
+function setupInterviewForm() {
+    const interviewTypeRadios = document.querySelectorAll('input[name="interview-type"]');
+    const youtubeInput = document.getElementById("interview-youtube-input");
+    const fileInput = document.getElementById("interview-file-input");
+    
+    interviewTypeRadios.forEach(radio => {
+        radio.addEventListener("change", () => {
+            if (radio.value === "youtube") {
+                youtubeInput.style.display = "block";
+                fileInput.style.display = "none";
+            } else {
+                youtubeInput.style.display = "none";
+                fileInput.style.display = "block";
+            }
+        });
+    });
 }
 
 // 일기 제출 처리
@@ -955,64 +1047,57 @@ async function handleDiarySubmit(e) {
     }
     
     try {
-        console.log("💾 Firestore에 일기 저장 중...");
         await addDoc(collection(window.db, "diaryPosts"), {
             title,
             content,
             author: "주은",
             isPublic: !isPrivate,
             timestamp: serverTimestamp(),
-            secretPassword: isPrivate ? "3292" : ""
+            secretPassword: isPrivate ? "189512" : ""
         });
         
         showMessage(document.getElementById("diary-message"), "일기가 성공적으로 등록되었습니다!", "success");
         document.getElementById("diary-form").reset();
-        console.log("✅ 일기 저장 완료");
     } catch (error) {
         console.error("❌ 일기 등록 오류:", error);
-        showMessage(document.getElementById("diary-message"), "일기 등록 중 오류가 발생했습니다: " + error.message, "error");
+        showMessage(document.getElementById("diary-message"), "일기 등록 중 오류가 발생했습니다.", "error");
     }
 }
 
 // 타임라인 제출 처리
 async function handleTimelineSubmit(e) {
     e.preventDefault();
-    console.log("⏰ 타임라인 제출 처리 시작");
     
+    const person = document.getElementById("person-select").value;
     const date = document.getElementById("timeline-date").value;
+    const title = document.getElementById("timeline-title").value.trim();
     const content = document.getElementById("timeline-content").value.trim();
     
-    if (!date || !content) {
-        showMessage(document.getElementById("timeline-message"), "날짜와 내용을 모두 입력해주세요.", "error");
-        return;
-    }
-    
-    if (!window.db) {
-        showMessage(document.getElementById("timeline-message"), "Firebase가 초기화되지 않았습니다.", "error");
+    if (!person || !date || !title || !content) {
+        showMessage(document.getElementById("timeline-message"), "모든 필드를 입력해주세요.", "error");
         return;
     }
     
     try {
-        console.log("💾 Firestore에 타임라인 이벤트 저장 중...");
-        await addDoc(collection(window.db, "timelineEvents"), {
-            start: date,
+        await addDoc(collection(window.db, "personalTimeline"), {
+            person,
+            date,
+            title,
             content,
             timestamp: serverTimestamp()
         });
         
         showMessage(document.getElementById("timeline-message"), "타임라인 이벤트가 성공적으로 추가되었습니다!", "success");
         document.getElementById("timeline-form").reset();
-        console.log("✅ 타임라인 이벤트 저장 완료");
     } catch (error) {
         console.error("❌ 타임라인 이벤트 추가 오류:", error);
-        showMessage(document.getElementById("timeline-message"), "이벤트 추가 중 오류가 발생했습니다: " + error.message, "error");
+        showMessage(document.getElementById("timeline-message"), "이벤트 추가 중 오류가 발생했습니다.", "error");
     }
 }
 
 // 갤러리 제출 처리
 async function handleGallerySubmit(e) {
     e.preventDefault();
-    console.log("📸 갤러리 제출 처리 시작");
     
     const imageFile = document.getElementById("gallery-image").files[0];
     const caption = document.getElementById("gallery-caption").value.trim();
@@ -1022,18 +1107,11 @@ async function handleGallerySubmit(e) {
         return;
     }
     
-    if (!window.db || !window.storage) {
-        showMessage(document.getElementById("gallery-message"), "Firebase가 초기화되지 않았습니다.", "error");
-        return;
-    }
-    
     try {
-        console.log("📤 이미지 업로드 중...");
         const storageRef = ref(window.storage, `gallery/${imageFile.name}_${Date.now()}`);
         await uploadBytes(storageRef, imageFile);
         const imageUrl = await getDownloadURL(storageRef);
         
-        console.log("💾 Firestore에 갤러리 데이터 저장 중...");
         await addDoc(collection(window.db, "galleryPosts"), {
             imageUrl,
             caption,
@@ -1042,17 +1120,15 @@ async function handleGallerySubmit(e) {
         
         showMessage(document.getElementById("gallery-message"), "사진이 성공적으로 업로드되었습니다!", "success");
         document.getElementById("gallery-form").reset();
-        console.log("✅ 갤러리 업로드 완료");
     } catch (error) {
         console.error("❌ 사진 업로드 오류:", error);
-        showMessage(document.getElementById("gallery-message"), "사진 업로드 중 오류가 발생했습니다: " + error.message, "error");
+        showMessage(document.getElementById("gallery-message"), "사진 업로드 중 오류가 발생했습니다.", "error");
     }
 }
 
 // 비디오 제출 처리
 async function handleVideoSubmit(e) {
     e.preventDefault();
-    console.log("🎥 비디오 제출 처리 시작");
     
     const title = document.getElementById("video-title").value.trim();
     const description = document.getElementById("video-description").value.trim();
@@ -1060,11 +1136,6 @@ async function handleVideoSubmit(e) {
     
     if (!title) {
         showMessage(document.getElementById("video-message"), "영상 제목을 입력해주세요.", "error");
-        return;
-    }
-    
-    if (!window.db) {
-        showMessage(document.getElementById("video-message"), "Firebase가 초기화되지 않았습니다.", "error");
         return;
     }
     
@@ -1087,13 +1158,11 @@ async function handleVideoSubmit(e) {
                 return;
             }
             
-            console.log("📤 비디오 파일 업로드 중...");
             const storageRef = ref(window.storage, `campaignVideos/${videoFile.name}_${Date.now()}`);
             await uploadBytes(storageRef, videoFile);
             videoUrl = await getDownloadURL(storageRef);
         }
         
-        console.log("💾 Firestore에 비디오 데이터 저장 중...");
         await addDoc(collection(window.db, "campaignVideos"), {
             title,
             description,
@@ -1104,16 +1173,66 @@ async function handleVideoSubmit(e) {
         
         showMessage(document.getElementById("video-message"), "영상이 성공적으로 업로드되었습니다!", "success");
         document.getElementById("video-form").reset();
-        console.log("✅ 비디오 업로드 완료");
     } catch (error) {
         console.error("❌ 영상 업로드 오류:", error);
-        showMessage(document.getElementById("video-message"), "영상 업로드 중 오류가 발생했습니다: " + error.message, "error");
+        showMessage(document.getElementById("video-message"), "영상 업로드 중 오류가 발생했습니다.", "error");
+    }
+}
+
+// 인터뷰 제출 처리
+async function handleInterviewSubmit(e) {
+    e.preventDefault();
+    
+    const title = document.getElementById("interview-title").value.trim();
+    const description = document.getElementById("interview-description").value.trim();
+    const interviewType = document.querySelector('input[name="interview-type"]:checked').value;
+    
+    if (!title) {
+        showMessage(document.getElementById("interview-message"), "인터뷰 제목을 입력해주세요.", "error");
+        return;
+    }
+    
+    try {
+        let videoUrl = "";
+        let youtubeUrl = "";
+        
+        if (interviewType === "youtube") {
+            const inputUrl = document.getElementById("interview-youtube-url").value.trim();
+            if (!inputUrl) {
+                showMessage(document.getElementById("interview-message"), "YouTube 링크를 입력해주세요.", "error");
+                return;
+            }
+            youtubeUrl = inputUrl;
+        } else {
+            const videoFile = document.getElementById("interview-video-file").files[0];
+            if (!videoFile) {
+                showMessage(document.getElementById("interview-message"), "비디오 파일을 선택해주세요.", "error");
+                return;
+            }
+            
+            const storageRef = ref(window.storage, `interviewVideos/${videoFile.name}_${Date.now()}`);
+            await uploadBytes(storageRef, videoFile);
+            videoUrl = await getDownloadURL(storageRef);
+        }
+        
+        await addDoc(collection(window.db, "interviewVideos"), {
+            title,
+            description,
+            videoUrl,
+            youtubeUrl,
+            timestamp: serverTimestamp()
+        });
+        
+        showMessage(document.getElementById("interview-message"), "인터뷰가 성공적으로 업로드되었습니다!", "success");
+        document.getElementById("interview-form").reset();
+    } catch (error) {
+        console.error("❌ 인터뷰 업로드 오류:", error);
+        showMessage(document.getElementById("interview-message"), "인터뷰 업로드 중 오류가 발생했습니다.", "error");
     }
 }
 
 // 아카이브 폼 초기화
 function initializeArchiveForms() {
-    // 아카이브 타임라인 폼
     const archiveTimelineForm = document.getElementById("archive-timeline-form");
     if (archiveTimelineForm) {
         archiveTimelineForm.addEventListener("submit", async (e) => {
@@ -1127,117 +1246,86 @@ function initializeArchiveForms() {
                 return;
             }
             
-            if (!window.db) {
-                showMessage(document.getElementById("archive-timeline-message"), "Firebase가 초기화되지 않았습니다.", "error");
-                return;
-            }
-            
             try {
                 await addDoc(collection(window.db, "archiveTimeline"), {
                     date, title, description, timestamp: serverTimestamp()
                 });
                 showMessage(document.getElementById("archive-timeline-message"), "타임라인 이벤트가 추가되었습니다!", "success");
                 document.getElementById("archive-timeline-form").reset();
-                loadArchiveTimeline();
             } catch (error) {
                 console.error("아카이브 타임라인 이벤트 추가 오류:", error);
-                showMessage(document.getElementById("archive-timeline-message"), "이벤트 추가 중 오류가 발생했습니다: " + error.message, "error");
+                showMessage(document.getElementById("archive-timeline-message"), "이벤트 추가 중 오류가 발생했습니다.", "error");
             }
         });
     }
-    
-    // 새로고침 버튼
-    const refreshArchiveBtn = document.getElementById("refresh-archive-btn");
-    if (refreshArchiveBtn) {
-        refreshArchiveBtn.addEventListener("click", () => {
-            loadArchiveTimeline();
-            loadArchiveVideos();
-            loadArchiveGallery();
+
+    const archiveVideoForm = document.getElementById("archive-video-form");
+    if (archiveVideoForm) {
+        archiveVideoForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const title = document.getElementById("archive-video-title").value.trim();
+            const description = document.getElementById("archive-video-description").value.trim();
+            const url = document.getElementById("archive-video-url").value.trim();
+            const duration = document.getElementById("archive-video-duration").value.trim();
+            
+            if (!title || !description || !url || !duration) {
+                showMessage(document.getElementById("archive-video-message"), "모든 필드를 입력해주세요.", "error");
+                return;
+            }
+            
+            try {
+                const embedUrl = convertToEmbedUrl(url);
+                await addDoc(collection(window.db, "archiveVideos"), {
+                    title, description, embedUrl, duration, timestamp: serverTimestamp()
+                });
+                showMessage(document.getElementById("archive-video-message"), "영상이 추가되었습니다!", "success");
+                document.getElementById("archive-video-form").reset();
+            } catch (error) {
+                console.error("아카이브 영상 추가 오류:", error);
+                showMessage(document.getElementById("archive-video-message"), "영상 추가 중 오류가 발생했습니다.", "error");
+            }
+        });
+    }
+
+    const archiveGalleryForm = document.getElementById("archive-gallery-form");
+    if (archiveGalleryForm) {
+        archiveGalleryForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const imageFile = document.getElementById("archive-gallery-image").files[0];
+            const title = document.getElementById("archive-gallery-title").value.trim();
+            const description = document.getElementById("archive-gallery-description").value.trim();
+            const category = document.getElementById("archive-gallery-category").value;
+            
+            if (!imageFile || !title || !description || !category) {
+                showMessage(document.getElementById("archive-gallery-message"), "모든 필드를 입력해주세요.", "error");
+                return;
+            }
+            
+            try {
+                const storageRef = ref(window.storage, `archiveGallery/${imageFile.name}_${Date.now()}`);
+                await uploadBytes(storageRef, imageFile);
+                const imageUrl = await getDownloadURL(storageRef);
+                
+                await addDoc(collection(window.db, "archiveGallery"), {
+                    imageUrl, title, description, category, timestamp: serverTimestamp()
+                });
+                showMessage(document.getElementById("archive-gallery-message"), "갤러리에 추가되었습니다!", "success");
+                document.getElementById("archive-gallery-form").reset();
+            } catch (error) {
+                console.error("아카이브 갤러리 추가 오류:", error);
+                showMessage(document.getElementById("archive-gallery-message"), "갤러리 추가 중 오류가 발생했습니다.", "error");
+            }
         });
     }
 }
 
-// 아카이브 데이터 로드 함수들
-async function loadArchiveTimeline() {
-    try {
-        const listEl = document.getElementById("archive-timeline-list");
-        if (!listEl || !window.db) return;
-        
-        listEl.innerHTML = "<p style='text-align: center; color: #8d6e63;'>타임라인을 불러오는 중...</p>";
-        
-        const snaps = await getDocs(query(collection(window.db, "archiveTimeline"), orderBy("date", "desc")));
-        listEl.innerHTML = "";
-        
-        if (snaps.empty) {
-            listEl.innerHTML = "<p style='text-align: center; color: #f5f0e6; font-style: italic;'>등록된 타임라인 이벤트가 없습니다.</p>";
-            return;
-        }
-        
-        snaps.forEach(docSnap => {
-            const { date, title, description } = docSnap.data();
-            const id = docSnap.id;
-
-            const div = document.createElement("div");
-            div.className = "content-item";
-            div.innerHTML = `
-                <h4>${title}</h4>
-                <p>📅 ${date}</p>
-                <p>${description}</p>
-                <div class="content-actions">
-                    <button onclick="deleteArchiveItem('archiveTimeline', '${id}')" class="danger-btn">삭제</button>
-                </div>
-            `;
-            listEl.appendChild(div);
-        });
-        
-        console.log("✅ 아카이브 타임라인 로드 완료");
-    } catch (error) {
-        console.error("❌ 타임라인 로드 오류:", error);
-        const listEl = document.getElementById("archive-timeline-list");
-        if (listEl) {
-            listEl.innerHTML = "<p style='color: #dc3545;'>타임라인 로드 중 오류가 발생했습니다: " + error.message + "</p>";
-        }
-    }
-}
-
-async function loadArchiveVideos() {
-    console.log("📹 아카이브 비디오 로드 중...");
-}
-
-async function loadArchiveGallery() {
-    console.log("🖼️ 아카이브 갤러리 로드 중...");
-}
-
-// 아카이브 아이템 삭제
-window.deleteArchiveItem = async function(collectionName, itemId) {
-    if (!confirm("정말 이 항목을 삭제하시겠습니까?")) return;
-    
-    try {
-        if (!window.db) {
-            throw new Error("Firebase가 초기화되지 않았습니다");
-        }
-        
-        await deleteDoc(doc(window.db, collectionName, itemId));
-        showMessage(document.getElementById("archive-timeline-message"), "항목이 삭제되었습니다!", "success");
-        
-        if (collectionName === 'archiveTimeline') loadArchiveTimeline();
-        else if (collectionName === 'archiveVideos') loadArchiveVideos();
-        else if (collectionName === 'archiveGallery') loadArchiveGallery();
-        
-        console.log("✅ 아이템 삭제 완료:", itemId);
-    } catch (error) {
-        console.error("❌ 삭제 오류:", error);
-        showMessage(document.getElementById("archive-timeline-message"), "삭제 중 오류가 발생했습니다: " + error.message, "error");
-    }
-};
-
-// 컨텐츠 로드
-function loadAllContent() {
-    console.log("📊 모든 컨텐츠 로드 시작");
-    loadArchiveTimeline();
-    loadArchiveVideos();
-    loadArchiveGallery();
-    loadChatbotStats();
+// 챗봇 분석 버튼 초기화
+function initializeChatbotButtons() {
+    document.getElementById("refresh-stats-btn")?.addEventListener("click", loadChatbotStats);
+    document.getElementById("refresh-emotions-btn")?.addEventListener("click", loadEmotionAnalysis);
+    document.getElementById("refresh-urgent-btn")?.addEventListener("click", loadUrgentMessages);
+    document.getElementById("refresh-chats-btn")?.addEventListener("click", loadRecentChats);
+    document.getElementById("refresh-topics-btn")?.addEventListener("click", loadTopicAnalysis);
 }
 
 // 챗봇 통계 로드
@@ -1250,29 +1338,235 @@ async function loadChatbotStats() {
         
         console.log("📊 챗봇 통계 로드 중...");
         
-        // 기본 통계 로드
+        // 기본 통계 표시
         const totalChatsEl = document.getElementById("total-chats");
         const activeUsersEl = document.getElementById("active-users");
         const todayChatsEl = document.getElementById("today-chats");
+        const avgMessagesEl = document.getElementById("avg-messages");
         
         if (totalChatsEl) totalChatsEl.textContent = "로딩 중...";
         if (activeUsersEl) activeUsersEl.textContent = "로딩 중...";
         if (todayChatsEl) todayChatsEl.textContent = "로딩 중...";
+        if (avgMessagesEl) avgMessagesEl.textContent = "로딩 중...";
         
         // 실제 데이터 로드
         const chatHistorySnaps = await getDocs(collection(window.db, "chatHistory"));
         const totalChats = chatHistorySnaps.size;
         
-        if (totalChatsEl) totalChatsEl.textContent = totalChats;
-        if (activeUsersEl) activeUsersEl.textContent = "데이터 수집 중";
-        if (todayChatsEl) todayChatsEl.textContent = "데이터 수집 중";
+        // 고유 사용자 수 계산
+        const uniqueUsers = new Set();
+        chatHistorySnaps.forEach(doc => {
+            const data = doc.data();
+            if (data.userId) {
+                uniqueUsers.add(data.userId);
+            }
+        });
         
-        console.log("✅ 챗봇 통계 로드 완료:", { totalChats });
+        // 오늘 대화 수 계산
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayTimestamp = today.getTime() / 1000;
+        
+        let todayChats = 0;
+        chatHistorySnaps.forEach(doc => {
+            const data = doc.data();
+            if (data.timestamp && data.timestamp.seconds >= todayTimestamp) {
+                todayChats++;
+            }
+        });
+        
+        // 평균 메시지 수 계산
+        const avgMessages = uniqueUsers.size > 0 ? Math.round(totalChats / uniqueUsers.size) : 0;
+        
+        if (totalChatsEl) totalChatsEl.textContent = totalChats;
+        if (activeUsersEl) activeUsersEl.textContent = uniqueUsers.size;
+        if (todayChatsEl) todayChatsEl.textContent = todayChats;
+        if (avgMessagesEl) avgMessagesEl.textContent = avgMessages;
+        
+        console.log("✅ 챗봇 통계 로드 완료:", { totalChats, uniqueUsers: uniqueUsers.size, todayChats, avgMessages });
         
     } catch (error) {
         console.error("❌ 챗봇 통계 로드 오류:", error);
         const totalChatsEl = document.getElementById("total-chats");
         if (totalChatsEl) totalChatsEl.textContent = "오류";
+    }
+}
+
+// 감정 분석 로드
+async function loadEmotionAnalysis() {
+    try {
+        const analyticsSnaps = await getDocs(query(collection(window.db, "chatAnalytics"), orderBy("timestamp", "desc"), limit(100)));
+        const emotionAnalysisEl = document.getElementById("emotion-analysis");
+        
+        if (analyticsSnaps.empty) {
+            emotionAnalysisEl.innerHTML = '<p style="text-align: center; color: #f5f0e6;">감정 분석 데이터가 없습니다.</p>';
+            return;
+        }
+        
+        const emotionCounts = {};
+        analyticsSnaps.forEach(doc => {
+            const data = doc.data();
+            if (data.detectedEmotions && Array.isArray(data.detectedEmotions)) {
+                data.detectedEmotions.forEach(emotion => {
+                    emotionCounts[emotion] = (emotionCounts[emotion] || 0) + 1;
+                });
+            }
+        });
+        
+        const emotionLabels = {
+            sad: '😢 슬픔',
+            anxious: '😰 불안',
+            angry: '😠 분노',
+            hopeful: '🌟 희망',
+            confused: '😕 혼란'
+        };
+        
+        let html = '';
+        Object.entries(emotionCounts).forEach(([emotion, count]) => {
+            const label = emotionLabels[emotion] || emotion;
+            html += `<div class="content-item"><h4>${label}</h4><p>${count}회 감지</p></div>`;
+        });
+        
+        emotionAnalysisEl.innerHTML = html || '<p style="text-align: center; color: #f5f0e6;">감정 데이터가 충분하지 않습니다.</p>';
+        
+    } catch (error) {
+        console.error("감정 분석 로드 오류:", error);
+        document.getElementById("emotion-analysis").innerHTML = '<p style="color: #dc3545;">감정 분석 로드 중 오류가 발생했습니다.</p>';
+    }
+}
+
+// 긴급 메시지 로드
+async function loadUrgentMessages() {
+    try {
+        const urgentSnaps = await getDocs(query(collection(window.db, "chatAnalytics"), where("urgencyLevel", "==", "high"), orderBy("timestamp", "desc"), limit(20)));
+        const urgentMessagesEl = document.getElementById("urgent-messages");
+        
+        if (urgentSnaps.empty) {
+            urgentMessagesEl.innerHTML = '<p style="text-align: center; color: #5cb85c;">다행히 긴급 상황은 없습니다.</p>';
+            return;
+        }
+        
+        let html = '';
+        urgentSnaps.forEach(doc => {
+            const data = doc.data();
+            const timestamp = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString('ko-KR') : '시간 미상';
+            const message = data.message ? data.message.substring(0, 100) + '...' : '메시지 없음';
+            html += `
+                <div class="content-item" style="border-left-color: #dc3545;">
+                    <h4 style="color: #ff6b6b;">긴급 메시지</h4>
+                    <p>${message}</p>
+                    <p style="font-size: 0.8em; color: #b8a082;">${timestamp}</p>
+                </div>
+            `;
+        });
+        
+        urgentMessagesEl.innerHTML = html;
+        
+    } catch (error) {
+        console.error("긴급 메시지 로드 오류:", error);
+        document.getElementById("urgent-messages").innerHTML = '<p style="color: #dc3545;">긴급 메시지 로드 중 오류가 발생했습니다.</p>';
+    }
+}
+
+// 최근 대화 로드
+async function loadRecentChats() {
+    try {
+        const recentSnaps = await getDocs(query(collection(window.db, "chatHistory"), orderBy("timestamp", "desc"), limit(10)));
+        const recentChatsEl = document.getElementById("recent-chats");
+        
+        if (recentSnaps.empty) {
+            recentChatsEl.innerHTML = '<p style="text-align: center; color: #f5f0e6;">최근 대화가 없습니다.</p>';
+            return;
+        }
+        
+        let html = '';
+        recentSnaps.forEach(doc => {
+            const data = doc.data();
+            const timestamp = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString('ko-KR') : '시간 미상';
+            const userMessage = data.userMessage ? data.userMessage.substring(0, 80) + '...' : '메시지 없음';
+            html += `
+                <div class="content-item">
+                    <h4>사용자 메시지</h4>
+                    <p>${userMessage}</p>
+                    <p style="font-size: 0.8em; color: #b8a082;">${timestamp}</p>
+                </div>
+            `;
+        });
+        
+        recentChatsEl.innerHTML = html;
+        
+    } catch (error) {
+        console.error("최근 대화 로드 오류:", error);
+        document.getElementById("recent-chats").innerHTML = '<p style="color: #dc3545;">최근 대화 로드 중 오류가 발생했습니다.</p>';
+    }
+}
+
+// 주제별 분석 로드
+async function loadTopicAnalysis() {
+    try {
+        const analyticsSnaps = await getDocs(query(collection(window.db, "chatAnalytics"), orderBy("timestamp", "desc"), limit(100)));
+        const topicAnalysisEl = document.getElementById("topic-analysis");
+        
+        if (analyticsSnaps.empty) {
+            topicAnalysisEl.innerHTML = '<p style="text-align: center; color: #f5f0e6;">주제 분석 데이터가 없습니다.</p>';
+            return;
+        }
+        
+        const topicCounts = {};
+        analyticsSnaps.forEach(doc => {
+            const data = doc.data();
+            if (data.detectedTopics && Array.isArray(data.detectedTopics)) {
+                data.detectedTopics.forEach(topic => {
+                    topicCounts[topic] = (topicCounts[topic] || 0) + 1;
+                });
+            }
+        });
+        
+        const topicLabels = {
+            medication: '💊 약물',
+            family: '👨‍👩‍👧‍👦 가족',
+            work: '💼 직장',
+            social: '👥 사회관계',
+            symptoms: '🧠 증상',
+            daily: '📅 일상'
+        };
+        
+        let html = '';
+        Object.entries(topicCounts).forEach(([topic, count]) => {
+            const label = topicLabels[topic] || topic;
+            html += `<div class="content-item"><h4>${label}</h4><p>${count}회 언급</p></div>`;
+        });
+        
+        topicAnalysisEl.innerHTML = html || '<p style="text-align: center; color: #f5f0e6;">주제 데이터가 충분하지 않습니다.</p>';
+        
+    } catch (error) {
+        console.error("주제 분석 로드 오류:", error);
+        document.getElementById("topic-analysis").innerHTML = '<p style="color: #dc3545;">주제 분석 로드 중 오류가 발생했습니다.</p>';
+    }
+}
+
+// YouTube URL을 embed URL로 변환
+function convertToEmbedUrl(url) {
+    try {
+        let videoId = '';
+        
+        if (url.includes('youtube.com/watch?v=')) {
+            const urlParams = new URLSearchParams(url.split('?')[1]);
+            videoId = urlParams.get('v');
+        } else if (url.includes('youtu.be/')) {
+            videoId = url.split('youtu.be/')[1].split('?')[0];
+        } else if (url.includes('youtube.com/embed/')) {
+            return url;
+        }
+        
+        if (videoId) {
+            return `https://www.youtube.com/embed/${videoId}`;
+        }
+        
+        return url;
+    } catch (error) {
+        console.error('URL 변환 오류:', error);
+        return url;
     }
 }
 
@@ -1287,7 +1581,10 @@ function showMessage(element, message, type) {
 
 // 모든 폼 초기화
 function clearAllForms() {
-    const forms = ['diary-form', 'timeline-form', 'gallery-form', 'video-form'];
+    const forms = [
+        'diary-form', 'timeline-form', 'gallery-form', 'video-form', 
+        'interview-form', 'archive-timeline-form', 'archive-video-form', 'archive-gallery-form'
+    ];
     forms.forEach(formId => {
         const form = document.getElementById(formId);
         if (form) form.reset();
