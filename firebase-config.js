@@ -12,7 +12,20 @@ const firebaseConfig = {
   measurementId: "G-MG2X69DDK8"
 };
 
-const app = initializeApp(firebaseConfig);
+let app;
+if (!window.firebaseApp) {
+  app = initializeApp(firebaseConfig);
+  window.firebaseApp = app;
+} else {
+  app = window.firebaseApp;
+}
 
-export const db = getFirestore(app);
-export const storage = getStorage(app);
+if (!window.db) {
+  window.db = getFirestore(app);
+}
+if (!window.storage) {
+  window.storage = getStorage(app);
+}
+
+export const db = window.db;
+export const storage = window.storage;
