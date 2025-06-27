@@ -29,11 +29,26 @@ exports.handler = async (event, context) => {
       };
     }
 
+    const API_KEY = process.env.ANTHROPIC_API_KEY;
+    if (!API_KEY) {
+      console.error('ANTHROPIC_API_KEY not found in environment variables');
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ 
+          error: 'API key not configured',
+          message: 'Netlify 환경변수에서 ANTHROPIC_API_KEY를 확인해주세요.'
+        })
+      };
+    }
+
+    console.log('API 키 확인됨:', API_KEY.substring(0, 20) + '...');
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'x-api-key': API_KEY,
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
@@ -62,21 +77,26 @@ exports.handler = async (event, context) => {
       })
     });
 
+    console.log('Anthropic API 응답 상태:', response.status);
+
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('Claude API Error:', errorData);
+      console.error('Claude API Error:', response.status, errorData);
       return {
         statusCode: response.status,
         headers,
         body: JSON.stringify({ 
           error: 'Claude API request failed',
-          details: errorData
+          details: errorData,
+          status: response.status
         })
       };
     }
 
     const data = await response.json();
     const assistantMessage = data.content[0]?.text || '죄송해요, 응답을 생성할 수 없었어요.';
+
+    console.log('응답 성공:', assistantMessage.substring(0, 50) + '...');
 
     return {
       statusCode: 200,
