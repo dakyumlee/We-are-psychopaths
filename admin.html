@@ -494,7 +494,6 @@ body {
     <button class="tab-button" onclick="showTab('gallery')">📸 갤러리</button>
     <button class="tab-button" onclick="showTab('video')">🎥 영상</button>
     <button class="tab-button" onclick="showTab('archive')">📂 아카이브</button>
-    <button class="tab-button" onclick="showTab('mother')">👩‍👧 엄마의 이야기</button>
     <button class="tab-button" onclick="showTab('chatbot')">💬 챗봇 분석</button>
 </div>
 
@@ -690,66 +689,6 @@ body {
             <button type="button" id="refresh-archive-btn" class="action-btn secondary-btn" style="width: 100%; margin-top: 20px;">
                 아카이브 컨텐츠 새로고침
             </button>
-        </div>
-    </div>
-</div>
-
-<div id="mother-tab" class="tab-content">
-    <div class="management-grid">
-        <div class="management-card">
-            <h2 class="card-title">🎵 음악 관리</h2>
-            <form id="mother-music-form" class="form-section">
-                <div class="form-group">
-                    <label for="music-title">곡 제목</label>
-                    <input type="text" id="music-title" placeholder="곡 제목을 입력하세요" required />
-                </div>
-                <div class="form-group">
-                    <label for="music-url">YouTube 링크</label>
-                    <input type="url" id="music-url" placeholder="https://www.youtube.com/watch?v=..." required />
-                </div>
-                <button type="submit">음악 추가</button>
-            </form>
-            <div class="content-list">
-                <div id="mother-music-list"></div>
-                <button type="button" id="refresh-music-btn" class="action-btn secondary-btn" style="width: 100%;">
-                    음악 목록 새로고침
-                </button>
-            </div>
-            <div id="mother-music-message"></div>
-        </div>
-        
-        <div class="management-card">
-            <h2 class="card-title">📷 사진 관리</h2>
-            <form id="mother-photo-form" class="form-section">
-                <div class="form-group">
-                    <label for="mother-photo">사진 선택</label>
-                    <input type="file" id="mother-photo" accept="image/*" required />
-                    <div id="mother-photo-file-info" class="file-info"></div>
-                </div>
-                <div class="form-group">
-                    <label for="photo-caption">사진 설명</label>
-                    <textarea id="photo-caption" rows="3" placeholder="사진에 대한 설명을 입력하세요" required></textarea>
-                </div>
-                <button type="submit">사진 추가</button>
-            </form>
-            <div class="content-list">
-                <div id="mother-photo-list"></div>
-                <button type="button" id="refresh-photos-btn" class="action-btn secondary-btn" style="width: 100%;">
-                    사진 목록 새로고침
-                </button>
-            </div>
-            <div id="mother-photo-message"></div>
-        </div>
-        
-        <div class="management-card">
-            <h2 class="card-title">💬 댓글 관리</h2>
-            <div class="content-list">
-                <div id="mother-comments-list"></div>
-                <button type="button" id="refresh-comments-btn" class="action-btn secondary-btn" style="width: 100%;">
-                    댓글 새로고침
-                </button>
-            </div>
-            <div id="mother-comments-message"></div>
         </div>
     </div>
 </div>
@@ -1207,8 +1146,6 @@ function initializeArchiveForms() {
         });
     }
     
-    // 다른 아카이브 폼들도 비슷하게 처리...
-    
     // 새로고침 버튼
     const refreshArchiveBtn = document.getElementById("refresh-archive-btn");
     if (refreshArchiveBtn) {
@@ -1264,12 +1201,10 @@ async function loadArchiveTimeline() {
 }
 
 async function loadArchiveVideos() {
-    // 비슷한 로직으로 구현
     console.log("📹 아카이브 비디오 로드 중...");
 }
 
 async function loadArchiveGallery() {
-    // 비슷한 로직으로 구현
     console.log("🖼️ 아카이브 갤러리 로드 중...");
 }
 
