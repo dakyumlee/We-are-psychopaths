@@ -1892,27 +1892,43 @@ async function loadAllChats() {
 
 async function loadTopicAnalysis() {
     try {
-        const analyticsQuery = query(collection(window.db, 'chatAnalytics'));
-        const analyticsSnapshot = await getDocs(analyticsQuery);
+        const chatHistoryQuery = query(collection(window.db, 'chatHistory'));
+        const chatHistorySnapshot = await getDocs(chatHistoryQuery);
         
+        const topicKeywords = {
+            symptoms: ['우울', '불안', '슬픔', '아픔', '힘들', '괴롭', '고통', '증상', '병원', '치료', '약', '상담', '심리', '정신', '스트레스', '트라우마', '공황', '강박'],
+            family: ['가족', '부모', '엄마', '아빠', '형제', '자매', '친척', '집', '가정', '아버지', '어머니', '형', '누나', '언니', '동생', '할머니', '할아버지'],
+            work: ['직장', '회사', '업무', '일', '상사', '동료', '취업', '면접', '야근', '스트레스', '직업', '커리어', '승진', '퇴사', '이직'],
+            social: ['친구', '사람', '관계', '만남', '소통', '외로', '혼자', '사회', '모임', '동아리', '인간관계', '갈등', '다툼'],
+            daily: ['일상', '생활', '루틴', '습관', '식사', '잠', '수면', '운동', '취미', '여가', '휴식'],
+            education: ['학교', '공부', '시험', '성적', '대학', '학과', '교수', '학생', '졸업', '입시', '학습', '과제']
+        };
+
         const topicCounts = {
-            medication: 0,
+            symptoms: 0,
             family: 0, 
             work: 0,
             social: 0,
-            symptoms: 0,
-            daily: 0
+            daily: 0,
+            education: 0
         };
 
-        let totalTopics = 0;
+        let totalMessages = 0;
 
-        analyticsSnapshot.forEach(doc => {
+        chatHistorySnapshot.forEach(doc => {
             const data = doc.data();
-            if (data.detectedTopics && Array.isArray(data.detectedTopics)) {
-                data.detectedTopics.forEach(topic => {
-                    if (topicCounts.hasOwnProperty(topic)) {
+            const userMessage = (data.userMessage || '').toLowerCase();
+            const botMessage = (data.botMessage || '').toLowerCase();
+            const fullMessage = userMessage + ' ' + botMessage;
+            
+            if (fullMessage.trim()) {
+                totalMessages++;
+                
+                Object.keys(topicKeywords).forEach(topic => {
+                    const keywords = topicKeywords[topic];
+                    const hasKeyword = keywords.some(keyword => fullMessage.includes(keyword));
+                    if (hasKeyword) {
                         topicCounts[topic]++;
-                        totalTopics++;
                     }
                 });
             }
@@ -1920,58 +1936,76 @@ async function loadTopicAnalysis() {
 
         const container = document.getElementById("topic-analysis");
         
-        if (totalTopics === 0) {
+        if (totalMessages === 0) {
             container.innerHTML = `
                 <div class="content-item">
                     <h4>📊 주제 분석</h4>
-                    <p>아직 충분한 데이터가 수집되지 않았습니다.</p>
+                    <p>분석할 대화 데이터가 없습니다.</p>
                 </div>
             `;
             return;
         }
 
         const topicLabels = {
-            symptoms: '💊 증상 관련',
+            symptoms: '💊 증상/치료 관련',
             family: '👨‍👩‍👧‍👦 가족 관계',
-            medication: '💉 약물/치료',
+            work: '💼 직장/업무',
+            social: '👥 사회/인간관계',
             daily: '🏠 일상생활',
-            social: '👥 사회관계',
-            work: '💼 직장/업무'
+            education: '📚 학업/교육'
         };
 
         const topicPercentages = Object.entries(topicCounts)
             .map(([topic, count]) => ({
                 topic,
                 count,
-                percentage: ((count / totalTopics) * 100).toFixed(1)
+                percentage: totalMessages > 0 ? ((count / totalMessages) * 100).toFixed(1) : 0
             }))
             .sort((a, b) => b.count - a.count);
 
         let html = '';
+        let hasAnyTopic = false;
+
         topicPercentages.forEach(({ topic, count, percentage }) => {
             if (count > 0) {
+                hasAnyTopic = true;
+                const intensity = count >= 5 ? 'high' : count >= 2 ? 'medium' : 'low';
+                const colorClass = intensity === 'high' ? '#4CAF50' : intensity === 'medium' ? '#FF9800' : '#9E9E9E';
+                
                 html += `
-                    <div class="content-item">
-                        <h4>${topicLabels[topic]} - ${percentage}%</h4>
-                        <p>언급된 횟수: ${count}회</p>
+                    <div class="content-item" style="border-left-color: ${colorClass};">
+                        <h4 style="color: ${colorClass};">${topicLabels[topic]} - ${percentage}%</h4>
+                        <p><strong>언급 횟수:</strong> ${count}회 (전체 ${totalMessages}개 대화 중)</p>
+                        <p><strong>빈도:</strong> ${intensity === 'high' ? '매우 높음' : intensity === 'medium' ? '보통' : '낮음'}</p>
                     </div>
                 `;
             }
         });
 
-        container.innerHTML = html || `
-            <div class="content-item">
-                <h4>📊 주제 분석</h4>
-                <p>분석 가능한 주제 데이터가 없습니다.</p>
-            </div>
-        `;
+        if (!hasAnyTopic) {
+            html = `
+                <div class="content-item">
+                    <h4>📊 주제 분석 결과</h4>
+                    <p>총 ${totalMessages}개의 대화를 분석했지만, 분류 가능한 주제 키워드를 찾지 못했습니다.</p>
+                    <p>대화 내용이 매우 일반적이거나 분석 키워드에 포함되지 않은 주제일 수 있습니다.</p>
+                </div>
+            `;
+        } else {
+            html = `<div class="content-item">
+                <h4>📊 주제 분석 개요</h4>
+                <p><strong>분석된 총 대화:</strong> ${totalMessages}개</p>
+                <p><strong>감지된 주제:</strong> ${topicPercentages.filter(t => t.count > 0).length}개</p>
+            </div>` + html;
+        }
+
+        container.innerHTML = html;
 
     } catch (error) {
         console.error("주제 분석 로딩 실패:", error);
         document.getElementById("topic-analysis").innerHTML = `
             <div class="content-item">
                 <h4>⚠️ 오류</h4>
-                <p>주제 분석 데이터를 불러오는 중 오류가 발생했습니다.</p>
+                <p>주제 분석 중 오류가 발생했습니다.</p>
             </div>
         `;
     }
