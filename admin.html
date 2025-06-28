@@ -1273,7 +1273,11 @@ function setupChatDetailModal() {
 }
 
 function openChatModal(userMessage, botMessage, timestampSeconds) {
-    console.log('openChatModal 호출됨:', { userMessage, botMessage, timestampSeconds });
+    console.log('openChatModal 호출됨:', { 
+        userMessage: userMessage ? userMessage.substring(0, 50) + '...' : 'null', 
+        botMessage: botMessage ? botMessage.substring(0, 50) + '...' : 'null', 
+        timestampSeconds 
+    });
     
     const modal = document.getElementById('chat-detail-modal');
     const title = document.getElementById('chat-detail-title');
@@ -1296,8 +1300,11 @@ function openChatModal(userMessage, botMessage, timestampSeconds) {
     
     title.textContent = `💬 대화 상세 내용`;
     
-    const safeUserMessage = userMessage || '메시지 없음';
-    const safeBotMessage = botMessage || '응답 없음';
+    // 메시지 내용 확인 및 기본값 설정
+    const displayUserMessage = userMessage && userMessage.trim() !== '' ? userMessage : '사용자 메시지가 기록되지 않았습니다.';
+    const displayBotMessage = botMessage && botMessage.trim() !== '' ? botMessage : '상담사 응답이 기록되지 않았습니다.';
+    
+    console.log('모달에 표시할 메시지:', { displayUserMessage, displayBotMessage });
     
     body.innerHTML = `
         <div style="text-align: center; margin-bottom: 20px; padding: 10px; background: rgba(245, 240, 230, 0.05); border-radius: 8px;">
@@ -1309,7 +1316,7 @@ function openChatModal(userMessage, botMessage, timestampSeconds) {
                 <span style="margin-right: 10px;">👤</span> 사용자 메시지
             </h5>
             <div style="background: rgba(245, 240, 230, 0.1); padding: 15px; border-radius: 6px; line-height: 1.6;">
-                <p style="margin: 0; white-space: pre-wrap; color: #f5f0e6;">${safeUserMessage}</p>
+                <p style="margin: 0; white-space: pre-wrap; color: #f5f0e6; word-wrap: break-word;">${displayUserMessage}</p>
             </div>
         </div>
         
@@ -1318,7 +1325,7 @@ function openChatModal(userMessage, botMessage, timestampSeconds) {
                 <span style="margin-right: 10px;">🤖</span> 상담사 응답
             </h5>
             <div style="background: rgba(141, 110, 99, 0.1); padding: 15px; border-radius: 6px; line-height: 1.6;">
-                <p style="margin: 0; white-space: pre-wrap; color: #f5f0e6;">${safeBotMessage}</p>
+                <p style="margin: 0; white-space: pre-wrap; color: #f5f0e6; word-wrap: break-word;">${displayBotMessage}</p>
             </div>
         </div>
         
@@ -1330,8 +1337,13 @@ function openChatModal(userMessage, botMessage, timestampSeconds) {
     modal.style.display = 'flex';
     console.log('모달이 표시되었습니다.');
     
+    // 모달 스타일 강제 적용
     setTimeout(() => {
-        modal.style.opacity = '1';
+        if (modal.style.display === 'flex') {
+            modal.style.opacity = '1';
+            modal.style.visibility = 'visible';
+            console.log('모달 스타일 적용 완료');
+        }
     }, 10);
 }
 
@@ -1777,27 +1789,46 @@ async function loadUrgentMessages() {
     try {
         const container = document.getElementById("urgent-messages");
         
-        const analyticsQuery = query(collection(window.db, 'chatAnalytics'), limit(1));
-        const analyticsSnapshot = await getDocs(analyticsQuery);
+        // chatHistory에서 직접 데이터를 가져와서 긴급상황 시뮬레이션
+        const chatHistoryQuery = query(
+            collection(window.db, 'chatHistory'),
+            orderBy('timestamp', 'desc'),
+            limit(50)
+        );
+        const chatHistorySnapshot = await getDocs(chatHistoryQuery);
         
-        if (analyticsSnapshot.empty) {
+        if (chatHistorySnapshot.empty) {
             container.innerHTML = `
                 <div class="content-item">
                     <h4>✅ 현재 긴급 상황 없음</h4>
-                    <p>아직 분석된 채팅 데이터가 없습니다.</p>
+                    <p>아직 대화 데이터가 없습니다.</p>
                 </div>
             `;
             return;
         }
 
-        const urgentQuery = query(collection(window.db, 'chatAnalytics'), limit(20));
-        const urgentSnapshot = await getDocs(urgentQuery);
-        
+        // 긴급상황 키워드로 필터링
+        const urgentKeywords = ['죽고싶', '자살', '자해', '죽', '끝내고싶', '힘들어', '우울', '절망', '포기', '의미없', '혼자', '외로', '아무도'];
         let urgentMessages = [];
-        urgentSnapshot.forEach(doc => {
+        
+        chatHistorySnapshot.forEach(doc => {
             const data = doc.data();
-            if (data.urgencyLevel && (data.urgencyLevel === 'high' || data.urgencyLevel === 'medium')) {
-                urgentMessages.push({ id: doc.id, ...data });
+            const userMessage = (data.userMessage || '').toLowerCase();
+            
+            // 긴급상황 키워드가 포함된 메시지 찾기
+            const hasUrgentKeyword = urgentKeywords.some(keyword => userMessage.includes(keyword));
+            
+            if (hasUrgentKeyword && data.userMessage && data.botMessage) {
+                const urgencyLevel = urgentKeywords.slice(0, 6).some(keyword => userMessage.includes(keyword)) ? 'high' : 'medium';
+                urgentMessages.push({
+                    id: doc.id,
+                    userMessage: data.userMessage,
+                    botMessage: data.botMessage,
+                    userId: data.userId,
+                    timestamp: data.timestamp,
+                    urgencyLevel: urgencyLevel,
+                    detectedTopics: ['심리상담', '위기개입']
+                });
             }
         });
 
@@ -1811,6 +1842,7 @@ async function loadUrgentMessages() {
             return;
         }
 
+        // 시간순 정렬
         urgentMessages.sort((a, b) => {
             const timeA = a.timestamp?.toDate() || new Date(0);
             const timeB = b.timestamp?.toDate() || new Date(0);
@@ -1833,10 +1865,6 @@ async function loadUrgentMessages() {
             const urgencyText = data.urgencyLevel === 'high' ? '높음' : '중간';
             const urgencyColor = data.urgencyLevel === 'high' ? '#ff4444' : '#ff8800';
             
-            const userMessage = data.userMessage || '메시지 없음';
-            const botMessage = data.botMessage || '응답 없음';
-            const timestampSeconds = timestamp ? Math.floor(timestamp.getTime() / 1000) : 0;
-            
             html += `
                 <div class="content-item urgent-item urgent-chat-${index}" style="cursor: pointer; border-left-color: ${urgencyColor};">
                     <h4 style="color: ${urgencyColor};">${urgencyIcon} 위험도: ${urgencyText}</h4>
@@ -1851,16 +1879,15 @@ async function loadUrgentMessages() {
 
         container.innerHTML = html;
 
+        // 이벤트 리스너 추가
         urgentMessages.slice(0, 10).forEach((data, index) => {
             const element = document.querySelector(`.urgent-chat-${index}`);
             if (element) {
                 element.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    const userMessage = data.userMessage || '메시지 없음';
-                    const botMessage = data.botMessage || '응답 없음';
-                    const timestampSeconds = data.timestamp ? Math.floor(data.timestamp.toDate().getTime() / 1000) : 0;
-                    openChatModal(userMessage, botMessage, timestampSeconds);
+                    console.log('긴급상황 클릭됨:', data);
+                    openChatModal(data.userMessage, data.botMessage, data.timestamp ? Math.floor(data.timestamp.toDate().getTime() / 1000) : 0);
                 });
             }
         });
