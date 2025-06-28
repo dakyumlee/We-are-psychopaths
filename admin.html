@@ -656,41 +656,6 @@ body {
     </div>
 </div>
 
-<div id="gallery-tab" class="tab-content">
-    <div class="management-grid">
-        <div class="management-card">
-            <h2 class="card-title">📸 기록 갤러리 사진 업로드</h2>
-            <div class="section-info">
-                <h4>📍 업로드 위치</h4>
-                <p>여기서 업로드한 사진은 <strong>"기록 갤러리" 페이지</strong>에 표시됩니다.</p>
-            </div>
-            <form id="gallery-form" class="form-section">
-                <div class="form-group">
-                    <label for="gallery-image">사진 선택</label>
-                    <input type="file" id="gallery-image" accept="image/*" required />
-                    <div id="gallery-file-info" class="file-info"></div>
-                </div>
-                <div class="form-group">
-                    <label for="gallery-caption">사진 설명</label>
-                    <textarea id="gallery-caption" rows="3" placeholder="사진에 대한 설명을 입력하세요" required></textarea>
-                </div>
-                <button type="submit">사진 업로드</button>
-            </form>
-            <div id="gallery-message"></div>
-        </div>
-
-        <div class="management-card">
-            <h2 class="card-title">📋 갤러리 사진 목록</h2>
-            <div id="gallery-list" class="content-list">
-                <p style="text-align: center; color: #8d6e63;">갤러리 목록을 불러오는 중...</p>
-            </div>
-            <button type="button" id="refresh-gallery-btn" class="action-btn secondary-btn" style="width: 100%;">
-                목록 새로고침
-            </button>
-        </div>
-    </div>
-</div>
-
 <div id="video-tab" class="tab-content">
     <div class="management-grid">
         <div class="management-card">
@@ -804,10 +769,30 @@ body {
                     <label for="archive-video-description">영상 설명</label>
                     <textarea id="archive-video-description" rows="3" placeholder="영상에 대한 설명을 입력하세요" required></textarea>
                 </div>
+                
                 <div class="form-group">
-                    <label for="archive-video-url">YouTube URL</label>
-                    <input type="url" id="archive-video-url" placeholder="https://www.youtube.com/watch?v=..." required />
+                    <label>영상 업로드 방식</label>
+                    <div style="margin: 10px 0;">
+                        <label style="margin-right: 20px;">
+                            <input type="radio" name="archive-video-type" value="youtube" checked> YouTube 링크
+                        </label>
+                        <label>
+                            <input type="radio" name="archive-video-type" value="file"> 파일 업로드
+                        </label>
+                    </div>
                 </div>
+                
+                <div id="archive-youtube-input" class="form-group">
+                    <label for="archive-video-url">YouTube URL</label>
+                    <input type="url" id="archive-video-url" placeholder="https://www.youtube.com/watch?v=..." />
+                </div>
+                
+                <div id="archive-file-input" class="form-group" style="display:none;">
+                    <label for="archive-video-file">비디오 파일</label>
+                    <input type="file" id="archive-video-file" accept=".mp4,.webm,.mov,.avi,.mkv,.flv,video/*" />
+                    <div id="archive-video-file-info" class="file-info"></div>
+                </div>
+                
                 <div class="form-group">
                     <label for="archive-video-duration">영상 길이</label>
                     <input type="text" id="archive-video-duration" placeholder="2:30" required />
@@ -1174,9 +1159,7 @@ async function handleLogin() {
             if (firebaseReady) {
                 initializeForms();
                 loadChatbotStats();
-                loadDiaryList();
                 loadTimelineList();
-                loadGalleryList();
                 loadVideoList();
                 loadArchiveTimelineList();
                 loadArchiveVideosList();
@@ -1214,12 +1197,8 @@ window.showTab = function(tabName) {
     
     if (tabName === 'chatbot') {
         loadChatbotStats();
-    } else if (tabName === 'diary') {
-        loadDiaryList();
     } else if (tabName === 'timeline') {
         loadTimelineList();
-    } else if (tabName === 'gallery') {
-        loadGalleryList();
     } else if (tabName === 'video') {
         loadVideoList();
     } else if (tabName === 'archive-timeline') {
@@ -1234,23 +1213,9 @@ window.showTab = function(tabName) {
 };
 
 function initializeForms() {
-    const diaryForm = document.getElementById("diary-form");
-    if (diaryForm) {
-        diaryForm.addEventListener("submit", handleDiarySubmit);
-    }
-    
     const timelineForm = document.getElementById("timeline-form");
     if (timelineForm) {
         timelineForm.addEventListener("submit", handleTimelineSubmit);
-    }
-    
-    const galleryForm = document.getElementById("gallery-form");
-    if (galleryForm) {
-        galleryForm.addEventListener("submit", handleGallerySubmit);
-        displayFileInfo(
-            document.getElementById("gallery-image"),
-            document.getElementById("gallery-file-info")
-        );
     }
     
     const videoForm = document.getElementById("video-form");
@@ -1493,6 +1458,11 @@ function initializeArchiveForms() {
     const archiveVideoForm = document.getElementById("archive-video-form");
     if (archiveVideoForm) {
         archiveVideoForm.addEventListener("submit", handleArchiveVideoSubmit);
+        setupArchiveVideoForm();
+        displayFileInfo(
+            document.getElementById("archive-video-file"),
+            document.getElementById("archive-video-file-info")
+        );
     }
     
     const archiveGalleryForm = document.getElementById("archive-gallery-form");
@@ -1503,6 +1473,24 @@ function initializeArchiveForms() {
             document.getElementById("archive-gallery-file-info")
         );
     }
+}
+
+function setupArchiveVideoForm() {
+    const videoTypeRadios = document.querySelectorAll('input[name="archive-video-type"]');
+    const youtubeInput = document.getElementById("archive-youtube-input");
+    const fileInput = document.getElementById("archive-file-input");
+    
+    videoTypeRadios.forEach(radio => {
+        radio.addEventListener("change", () => {
+            if (radio.value === "youtube") {
+                youtubeInput.style.display = "block";
+                fileInput.style.display = "none";
+            } else {
+                youtubeInput.style.display = "none";
+                fileInput.style.display = "block";
+            }
+        });
+    });
 }
 
 async function handleArchiveTimelineSubmit(e) {
@@ -1539,28 +1527,52 @@ async function handleArchiveVideoSubmit(e) {
     
     const title = document.getElementById("archive-video-title").value.trim();
     const description = document.getElementById("archive-video-description").value.trim();
-    const url = document.getElementById("archive-video-url").value.trim();
+    const videoType = document.querySelector('input[name="archive-video-type"]:checked').value;
     const duration = document.getElementById("archive-video-duration").value.trim();
     
-    if (!title || !description || !url || !duration) {
-        showMessage(document.getElementById("archive-video-message"), "모든 필드를 입력해주세요.", "error");
+    if (!title || !description || !duration) {
+        showMessage(document.getElementById("archive-video-message"), "제목, 설명, 길이를 모두 입력해주세요.", "error");
         return;
     }
     
     try {
-        const embedUrl = convertToEmbedUrl(url);
+        let videoUrl = "";
+        let isYoutube = false;
+        
+        if (videoType === "youtube") {
+            const youtubeUrl = document.getElementById("archive-video-url").value.trim();
+            if (!youtubeUrl) {
+                showMessage(document.getElementById("archive-video-message"), "YouTube 링크를 입력해주세요.", "error");
+                return;
+            }
+            videoUrl = convertToEmbedUrl(youtubeUrl);
+            isYoutube = true;
+        } else {
+            const videoFile = document.getElementById("archive-video-file").files[0];
+            if (!videoFile) {
+                showMessage(document.getElementById("archive-video-message"), "비디오 파일을 선택해주세요.", "error");
+                return;
+            }
+            
+            const storageRef = ref(window.storage, `archive-videos/${videoFile.name}_${Date.now()}`);
+            await uploadBytes(storageRef, videoFile);
+            videoUrl = await getDownloadURL(storageRef);
+            isYoutube = false;
+        }
         
         await addDoc(collection(window.db, "archiveVideos"), {
             title,
             description,
-            url: embedUrl,
-            embedUrl: embedUrl,
+            url: videoUrl,
+            embedUrl: videoUrl,
             duration,
+            isYoutube,
             timestamp: serverTimestamp()
         });
         
         showMessage(document.getElementById("archive-video-message"), "아카이브 영상이 성공적으로 추가되었습니다!", "success");
         document.getElementById("archive-video-form").reset();
+        document.getElementById("archive-video-file-info").innerHTML = "";
         loadArchiveVideosList();
     } catch (error) {
         console.error("아카이브 영상 추가 오류:", error);
@@ -1611,9 +1623,7 @@ function initializeChatbotButtons() {
     document.getElementById("refresh-all-chats-btn")?.addEventListener("click", loadAllChats);
     document.getElementById("refresh-topics-btn")?.addEventListener("click", loadTopicAnalysis);
     
-    document.getElementById("refresh-diary-btn")?.addEventListener("click", loadDiaryList);
     document.getElementById("refresh-timeline-btn")?.addEventListener("click", loadTimelineList);
-    document.getElementById("refresh-gallery-btn")?.addEventListener("click", loadGalleryList);
     document.getElementById("refresh-video-btn")?.addEventListener("click", loadVideoList);
     
     document.getElementById("refresh-archive-timeline-btn")?.addEventListener("click", loadArchiveTimelineList);
@@ -1964,7 +1974,7 @@ async function loadArchiveVideosList() {
                         </div>
                     </div>
                     <p>${data.description || '설명 없음'}</p>
-                    <p><strong>길이:</strong> ${data.duration || '미상'}</p>
+                    <p><strong>유형:</strong> ${data.isYoutube ? 'YouTube' : '파일 업로드'} | <strong>길이:</strong> ${data.duration || '미상'}</p>
                 </div>
             `;
         });
