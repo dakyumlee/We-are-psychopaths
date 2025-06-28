@@ -227,6 +227,40 @@
             background: #333;
             border-radius: 12px 12px 0 0;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.8);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .play-button:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: translate(-50%, -50%) scale(1.1);
         }
 
         .video-iframe {
@@ -375,6 +409,25 @@
             line-height: 1.6;
         }
 
+        .video-modal-content {
+            position: relative;
+            background: rgba(0, 0, 0, 0.95);
+            margin: 2% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 1000px;
+            border-radius: 15px;
+            border: 2px solid rgba(245, 240, 230, 0.2);
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        .video-modal-iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 8px;
+        }
+
         @media (max-width: 768px) {
             .archive-container {
                 padding: 140px 15px 30px;
@@ -417,6 +470,10 @@
                 padding: 20px;
                 width: 95%;
             }
+
+            .video-modal-iframe {
+                height: 300px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -442,6 +499,10 @@
             .timeline-btn {
                 width: 200px;
                 text-align: center;
+            }
+
+            .video-modal-iframe {
+                height: 250px;
             }
         }
     </style>
@@ -528,6 +589,13 @@
         </div>
     </div>
 
+    <div id="videoModal" class="modal">
+        <div class="video-modal-content">
+            <span class="modal-close" id="videoModalClose">&times;</span>
+            <iframe id="modalVideoIframe" class="video-modal-iframe" src="" allowfullscreen></iframe>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -604,9 +672,10 @@
                         id: doc.id,
                         title: data.title,
                         description: data.description,
-                        embedUrl: data.embedUrl,
+                        embedUrl: data.embedUrl || data.url,
                         duration: data.duration,
-                        timestamp: data.timestamp
+                        timestamp: data.timestamp,
+                        isYoutube: data.isYoutube !== false
                     });
                 });
             } catch (error) {
@@ -662,6 +731,19 @@
             });
         }
 
+        function getYouTubeThumbnail(url) {
+            if (!url) return '';
+            
+            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const match = url.match(regex);
+            
+            if (match && match[1]) {
+                return `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`;
+            }
+            
+            return '';
+        }
+
         function renderVideos(data) {
             const container = document.getElementById('videoGrid');
             
@@ -678,17 +760,38 @@
                 const date = item.timestamp ? 
                     new Date(item.timestamp.seconds * 1000).toLocaleDateString('ko-KR') : 
                     '날짜 미상';
+
+                let thumbnailContent = '';
                 
-                const embedUrl = item.embedUrl.includes('autoplay=1') 
-                    ? item.embedUrl.replace('autoplay=1', 'autoplay=0')
-                    : item.embedUrl + (item.embedUrl.includes('?') ? '&' : '?') + 'autoplay=0';
-                
+                if (item.isYoutube) {
+                    const thumbnailUrl = getYouTubeThumbnail(item.embedUrl);
+                    if (thumbnailUrl) {
+                        thumbnailContent = `
+                            <img class="video-preview" src="${thumbnailUrl}" alt="${item.title}" />
+                            <button class="play-button">▶</button>
+                        `;
+                    } else {
+                        thumbnailContent = `
+                            <iframe class="video-iframe" 
+                                    src="${item.embedUrl}?enablejsapi=1&controls=1" 
+                                    allowfullscreen>
+                            </iframe>
+                        `;
+                    }
+                } else {
+                    thumbnailContent = `
+                        <video class="video-preview" 
+                               src="${item.embedUrl}" 
+                               controls 
+                               preload="metadata"
+                               style="width: 100%; height: 100%; object-fit: cover;">
+                        </video>
+                    `;
+                }
+
                 videoItem.innerHTML = `
                     <div class="video-thumbnail">
-                        <iframe class="video-iframe" 
-                                src="${embedUrl}" 
-                                allowfullscreen>
-                        </iframe>
+                        ${thumbnailContent}
                     </div>
                     <div class="video-info">
                         <div class="video-title">${item.title}</div>
@@ -699,6 +802,17 @@
                         </div>
                     </div>
                 `;
+
+                if (item.isYoutube && getYouTubeThumbnail(item.embedUrl)) {
+                    const playButton = videoItem.querySelector('.play-button');
+                    const thumbnail = videoItem.querySelector('.video-preview');
+                    
+                    if (playButton && thumbnail) {
+                        const clickHandler = () => openVideoModal(item.embedUrl);
+                        playButton.addEventListener('click', clickHandler);
+                        thumbnail.addEventListener('click', clickHandler);
+                    }
+                }
                 
                 container.appendChild(videoItem);
             });
@@ -749,16 +863,28 @@
                 });
             });
             
-            document.querySelector('.modal-close').addEventListener('click', closeModal);
+            document.querySelectorAll('.modal-close').forEach(closeBtn => {
+                closeBtn.addEventListener('click', closeModal);
+            });
+            
+            document.getElementById('videoModalClose').addEventListener('click', closeVideoModal);
+            
             document.getElementById('imageModal').addEventListener('click', function(e) {
                 if (e.target === this) {
                     closeModal();
+                }
+            });
+
+            document.getElementById('videoModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeVideoModal();
                 }
             });
             
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     closeModal();
+                    closeVideoModal();
                 }
             });
         }
@@ -810,8 +936,30 @@
             document.body.style.overflow = 'hidden';
         }
 
+        function openVideoModal(embedUrl) {
+            const modal = document.getElementById('videoModal');
+            const iframe = document.getElementById('modalVideoIframe');
+            
+            const autoplayUrl = embedUrl.includes('?') 
+                ? embedUrl + '&autoplay=1' 
+                : embedUrl + '?autoplay=1';
+            
+            iframe.src = autoplayUrl;
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
         function closeModal() {
             const modal = document.getElementById('imageModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function closeVideoModal() {
+            const modal = document.getElementById('videoModal');
+            const iframe = document.getElementById('modalVideoIframe');
+            
+            iframe.src = '';
             modal.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
