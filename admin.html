@@ -1295,42 +1295,6 @@ function showChatDetail(userMessage, botMessage, timestampSeconds) {
     modal.style.display = 'flex';
 }
 
-async function handleDiarySubmit(e) {
-    e.preventDefault();
-    
-    const title = document.getElementById("diary-title").value.trim();
-    const content = document.getElementById("diary-content").value.trim();
-    const isPrivate = document.getElementById("diary-private").checked;
-    
-    if (!title || !content) {
-        showMessage(document.getElementById("diary-message"), "제목과 내용을 모두 입력해주세요.", "error");
-        return;
-    }
-    
-    if (!window.db) {
-        showMessage(document.getElementById("diary-message"), "Firebase가 초기화되지 않았습니다.", "error");
-        return;
-    }
-    
-    try {
-        await addDoc(collection(window.db, "diaryPosts"), {
-            title,
-            content,
-            author: "주은",
-            isPublic: !isPrivate,
-            timestamp: serverTimestamp(),
-            secretPassword: isPrivate ? "189512" : ""
-        });
-        
-        showMessage(document.getElementById("diary-message"), "일기가 성공적으로 등록되었습니다!", "success");
-        document.getElementById("diary-form").reset();
-        loadDiaryList();
-    } catch (error) {
-        console.error("일기 등록 오류:", error);
-        showMessage(document.getElementById("diary-message"), "일기 등록 중 오류가 발생했습니다.", "error");
-    }
-}
-
 async function handleTimelineSubmit(e) {
     e.preventDefault();
     
@@ -1359,38 +1323,6 @@ async function handleTimelineSubmit(e) {
     } catch (error) {
         console.error("타임라인 이벤트 추가 오류:", error);
         showMessage(document.getElementById("timeline-message"), "이벤트 추가 중 오류가 발생했습니다.", "error");
-    }
-}
-
-async function handleGallerySubmit(e) {
-    e.preventDefault();
-    
-    const imageFile = document.getElementById("gallery-image").files[0];
-    const caption = document.getElementById("gallery-caption").value.trim();
-    
-    if (!imageFile || !caption) {
-        showMessage(document.getElementById("gallery-message"), "이미지와 설명을 모두 입력해주세요.", "error");
-        return;
-    }
-    
-    try {
-        const storageRef = ref(window.storage, `gallery/${imageFile.name}_${Date.now()}`);
-        await uploadBytes(storageRef, imageFile);
-        const imageUrl = await getDownloadURL(storageRef);
-        
-        await addDoc(collection(window.db, "galleryPosts"), {
-            imageUrl,
-            caption,
-            timestamp: serverTimestamp()
-        });
-        
-        showMessage(document.getElementById("gallery-message"), "사진이 성공적으로 업로드되었습니다!", "success");
-        document.getElementById("gallery-form").reset();
-        document.getElementById("gallery-file-info").innerHTML = "";
-        loadGalleryList();
-    } catch (error) {
-        console.error("사진 업로드 오류:", error);
-        showMessage(document.getElementById("gallery-message"), "사진 업로드 중 오류가 발생했습니다.", "error");
     }
 }
 
@@ -1643,128 +1575,366 @@ function initializeChatbotButtons() {
 
 async function loadChatbotStats() {
     try {
-        document.getElementById("total-chats").textContent = "127";
-        document.getElementById("active-users").textContent = "34";
-        document.getElementById("today-chats").textContent = "12";
-        document.getElementById("avg-messages").textContent = "8.5";
+        const chatHistoryQuery = query(collection(window.db, 'chatHistory'));
+        const chatHistorySnapshot = await getDocs(chatHistoryQuery);
+        const totalChats = chatHistorySnapshot.size;
+
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+        const recentChatsQuery = query(
+            collection(window.db, 'chatHistory'),
+            where('timestamp', '>=', sevenDaysAgo)
+        );
+        const recentChatsSnapshot = await getDocs(recentChatsQuery);
+        
+        const uniqueUsers = new Set();
+        recentChatsSnapshot.forEach(doc => {
+            const data = doc.data();
+            if (data.userId) {
+                uniqueUsers.add(data.userId);
+            }
+        });
+        const activeUsers = uniqueUsers.size;
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        
+        const todayChatsQuery = query(
+            collection(window.db, 'chatHistory'),
+            where('timestamp', '>=', today),
+            where('timestamp', '<', tomorrow)
+        );
+        const todayChatsSnapshot = await getDocs(todayChatsQuery);
+        const todayChats = todayChatsSnapshot.size;
+
+        let totalMessages = 0;
+        let sessionsWithMultipleMessages = 0;
+        const sessionMessageCounts = {};
+
+        chatHistorySnapshot.forEach(doc => {
+            const data = doc.data();
+            const sessionId = data.sessionId || 'unknown';
+            
+            if (!sessionMessageCounts[sessionId]) {
+                sessionMessageCounts[sessionId] = 0;
+            }
+            sessionMessageCounts[sessionId]++;
+            totalMessages++;
+        });
+
+        const sessionCount = Object.keys(sessionMessageCounts).length;
+        const avgMessages = sessionCount > 0 ? (totalMessages / sessionCount).toFixed(1) : 0;
+
+        document.getElementById("total-chats").textContent = totalChats || "0";
+        document.getElementById("active-users").textContent = activeUsers || "0";
+        document.getElementById("today-chats").textContent = todayChats || "0";
+        document.getElementById("avg-messages").textContent = avgMessages || "0";
+
+        console.log('챗봇 통계 로드 완료:', {
+            totalChats,
+            activeUsers,
+            todayChats,
+            avgMessages
+        });
+
     } catch (error) {
         console.error("챗봇 통계 로딩 실패:", error);
+        document.getElementById("total-chats").textContent = "Error";
+        document.getElementById("active-users").textContent = "Error";
+        document.getElementById("today-chats").textContent = "Error";
+        document.getElementById("avg-messages").textContent = "Error";
     }
 }
 
 async function loadEmotionAnalysis() {
-    const container = document.getElementById("emotion-analysis");
-    container.innerHTML = `
-        <div class="content-item">
-            <h4>😢 우울 - 32%</h4>
-            <p>가장 많이 감지된 감정</p>
-        </div>
-        <div class="content-item">
-            <h4>😰 불안 - 28%</h4>
-            <p>두 번째로 많은 감정</p>
-        </div>
-        <div class="content-item">
-            <h4>😊 긍정 - 25%</h4>
-            <p>긍정적인 감정 표현</p>
-        </div>
-        <div class="content-item">
-            <h4>😡 분노 - 15%</h4>
-            <p>가장 적게 감지된 감정</p>
-        </div>
-    `;
+    try {
+        const analyticsQuery = query(collection(window.db, 'chatAnalytics'));
+        const analyticsSnapshot = await getDocs(analyticsQuery);
+        
+        const emotionCounts = {
+            sad: 0,
+            anxious: 0,
+            angry: 0,
+            hopeful: 0,
+            confused: 0
+        };
+
+        let totalEmotions = 0;
+
+        analyticsSnapshot.forEach(doc => {
+            const data = doc.data();
+            if (data.detectedEmotions && Array.isArray(data.detectedEmotions)) {
+                data.detectedEmotions.forEach(emotion => {
+                    if (emotionCounts.hasOwnProperty(emotion)) {
+                        emotionCounts[emotion]++;
+                        totalEmotions++;
+                    }
+                });
+            }
+        });
+
+        const container = document.getElementById("emotion-analysis");
+        
+        if (totalEmotions === 0) {
+            container.innerHTML = `
+                <div class="content-item">
+                    <h4>📊 감정 분석</h4>
+                    <p>아직 충분한 데이터가 수집되지 않았습니다.</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '';
+        const emotionLabels = {
+            sad: '😢 우울',
+            anxious: '😰 불안', 
+            hopeful: '😊 희망',
+            angry: '😡 분노',
+            confused: '😕 혼란'
+        };
+
+        const emotionPercentages = Object.entries(emotionCounts)
+            .map(([emotion, count]) => ({
+                emotion,
+                count,
+                percentage: ((count / totalEmotions) * 100).toFixed(1)
+            }))
+            .sort((a, b) => b.count - a.count);
+
+        emotionPercentages.forEach(({ emotion, count, percentage }) => {
+            if (count > 0) {
+                html += `
+                    <div class="content-item">
+                        <h4>${emotionLabels[emotion]} - ${percentage}%</h4>
+                        <p>감지된 횟수: ${count}회</p>
+                    </div>
+                `;
+            }
+        });
+
+        container.innerHTML = html || `
+            <div class="content-item">
+                <h4>📊 감정 분석</h4>
+                <p>분석 가능한 감정 데이터가 없습니다.</p>
+            </div>
+        `;
+
+    } catch (error) {
+        console.error("감정 분석 로딩 실패:", error);
+        document.getElementById("emotion-analysis").innerHTML = `
+            <div class="content-item">
+                <h4>⚠️ 오류</h4>
+                <p>감정 분석 데이터를 불러오는 중 오류가 발생했습니다.</p>
+            </div>
+        `;
+    }
 }
 
 async function loadUrgentMessages() {
-    const container = document.getElementById("urgent-messages");
-    container.innerHTML = `
-        <div class="content-item urgent-item">
-            <h4>⚠️ 자해 언급 감지</h4>
-            <p>2시간 전 - 사용자가 자해에 대한 언급을 했습니다.</p>
-        </div>
-        <div class="content-item urgent-item">
-            <h4>🆘 극도의 우울감 표현</h4>
-            <p>6시간 전 - 매우 높은 수준의 우울감이 감지되었습니다.</p>
-        </div>
-    `;
-}
-
-async function loadAllChats() {
-    const container = document.getElementById("all-chats");
-    container.innerHTML = `
-        <div class="content-item" onclick="showChatDetail('오늘 정말 힘든 하루였어요...', '많이 힘드셨군요. 어떤 일이 있었는지 이야기해주실 수 있나요?', 1672531200)">
-            <h4>💬 대화 #127</h4>
-            <p>2시간 전 - 클릭하여 전체 대화 보기</p>
-        </div>
-        <div class="content-item" onclick="showChatDetail('계속 불안해요...', '불안감을 느끼고 계시는군요. 구체적으로 어떤 상황에서 불안을 느끼시나요?', 1672527600)">
-            <h4>💬 대화 #126</h4>
-            <p>4시간 전 - 클릭하여 전체 대화 보기</p>
-        </div>
-    `;
-}
-
-async function loadTopicAnalysis() {
-    const container = document.getElementById("topic-analysis");
-    container.innerHTML = `
-        <div class="content-item">
-            <h4>📚 학업 스트레스 - 35%</h4>
-            <p>가장 많이 언급된 주제</p>
-        </div>
-        <div class="content-item">
-            <h4>👨‍👩‍👧‍👦 가족 관계 - 28%</h4>
-            <p>두 번째로 많은 주제</p>
-        </div>
-        <div class="content-item">
-            <h4>💼 취업 고민 - 22%</h4>
-            <p>세 번째로 많은 주제</p>
-        </div>
-        <div class="content-item">
-            <h4>❤️ 연애 관계 - 15%</h4>
-            <p>상대적으로 적은 주제</p>
-        </div>
-    `;
-}
-
-async function loadDiaryList() {
-    const container = document.getElementById("diary-list");
-    container.innerHTML = '<p style="text-align: center; color: #8d6e63;">일기 목록을 불러오는 중...</p>';
-    
     try {
-        if (!window.db) {
-            container.innerHTML = '<p style="text-align: center; color: #dc3545;">Firebase가 초기화되지 않았습니다.</p>';
+        const analyticsQuery = query(
+            collection(window.db, 'chatAnalytics'),
+            where('urgencyLevel', 'in', ['high', 'medium']),
+            orderBy('timestamp', 'desc'),
+            limit(10)
+        );
+        const analyticsSnapshot = await getDocs(analyticsQuery);
+        
+        const container = document.getElementById("urgent-messages");
+        
+        if (analyticsSnapshot.empty) {
+            container.innerHTML = `
+                <div class="content-item">
+                    <h4>✅ 현재 긴급 상황 없음</h4>
+                    <p>다행히 긴급한 상황으로 분류된 메시지가 없습니다.</p>
+                </div>
+            `;
             return;
         }
-        
-        const q = query(collection(window.db, "diaryPosts"), orderBy("timestamp", "desc"));
-        const querySnapshot = await getDocs(q);
-        
-        if (querySnapshot.empty) {
-            container.innerHTML = '<p style="text-align: center; color: #8d6e63;">등록된 일기가 없습니다.</p>';
-            return;
-        }
-        
+
         let html = '';
-        querySnapshot.forEach((doc) => {
+        analyticsSnapshot.forEach(doc => {
             const data = doc.data();
-            const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('ko-KR') : '날짜 미상';
+            const timestamp = data.timestamp?.toDate();
+            const timeString = timestamp ? 
+                timestamp.toLocaleString('ko-KR', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }) : '시간 미상';
+            
+            const urgencyIcon = data.urgencyLevel === 'high' ? '🚨' : '⚠️';
+            const urgencyText = data.urgencyLevel === 'high' ? '높음' : '중간';
             
             html += `
-                <div class="content-item">
-                    <div class="content-item-header">
-                        <h4>${data.title || '제목 없음'}</h4>
-                        <div class="content-item-actions">
-                            <button class="delete-btn" onclick="deleteDiary('${doc.id}')">삭제</button>
-                        </div>
-                    </div>
-                    <p>${data.content ? data.content.substring(0, 100) + (data.content.length > 100 ? '...' : '') : '내용 없음'}</p>
-                    <p><strong>작성자:</strong> ${data.author || '알 수 없음'} | <strong>날짜:</strong> ${date} | <strong>공개:</strong> ${data.isPublic ? '공개' : '비공개'}</p>
+                <div class="content-item urgent-item">
+                    <h4>${urgencyIcon} 위험도: ${urgencyText}</h4>
+                    <p>${timeString} - 사용자 ID: ${data.userId?.substring(0, 8)}...</p>
+                    <p>감지된 주제: ${(data.detectedTopics || []).join(', ') || '미분류'}</p>
                 </div>
             `;
         });
-        
+
         container.innerHTML = html;
+
     } catch (error) {
-        console.error("일기 목록 로딩 실패:", error);
-        container.innerHTML = '<p style="text-align: center; color: #dc3545;">일기 목록을 불러오는데 실패했습니다.</p>';
+        console.error("긴급 메시지 로딩 실패:", error);
+        document.getElementById("urgent-messages").innerHTML = `
+            <div class="content-item">
+                <h4>⚠️ 오류</h4>
+                <p>긴급 메시지 데이터를 불러오는 중 오류가 발생했습니다.</p>
+            </div>
+        `;
+    }
+}
+
+async function loadAllChats() {
+    try {
+        const chatQuery = query(
+            collection(window.db, 'chatHistory'),
+            orderBy('timestamp', 'desc'),
+            limit(20)
+        );
+        const chatSnapshot = await getDocs(chatQuery);
+        
+        const container = document.getElementById("all-chats");
+        
+        if (chatSnapshot.empty) {
+            container.innerHTML = `
+                <div class="content-item">
+                    <h4>📝 대화 기록</h4>
+                    <p>아직 대화 기록이 없습니다.</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '';
+        let chatCount = 0;
+        
+        chatSnapshot.forEach(doc => {
+            const data = doc.data();
+            const timestamp = data.timestamp?.toDate();
+            const timeString = timestamp ? 
+                timestamp.toLocaleString('ko-KR', {
+                    month: 'short', 
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }) : '시간 미상';
+            
+            chatCount++;
+            
+            html += `
+                <div class="content-item" onclick="showChatDetail('${data.userMessage?.replace(/'/g, "\\'")}', '${data.botMessage?.replace(/'/g, "\\'")}', ${timestamp ? timestamp.getTime() / 1000 : 0})">
+                    <h4>💬 대화 #${chatCount}</h4>
+                    <p>${timeString} - 사용자: ${data.userId?.substring(0, 8)}...</p>
+                    <p>미리보기: ${(data.userMessage || '').substring(0, 50)}${data.userMessage?.length > 50 ? '...' : ''}</p>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+
+    } catch (error) {
+        console.error("전체 대화 로딩 실패:", error);
+        document.getElementById("all-chats").innerHTML = `
+            <div class="content-item">
+                <h4>⚠️ 오류</h4>
+                <p>대화 기록을 불러오는 중 오류가 발생했습니다.</p>
+            </div>
+        `;
+    }
+}
+
+async function loadTopicAnalysis() {
+    try {
+        const analyticsQuery = query(collection(window.db, 'chatAnalytics'));
+        const analyticsSnapshot = await getDocs(analyticsQuery);
+        
+        const topicCounts = {
+            medication: 0,
+            family: 0, 
+            work: 0,
+            social: 0,
+            symptoms: 0,
+            daily: 0
+        };
+
+        let totalTopics = 0;
+
+        analyticsSnapshot.forEach(doc => {
+            const data = doc.data();
+            if (data.detectedTopics && Array.isArray(data.detectedTopics)) {
+                data.detectedTopics.forEach(topic => {
+                    if (topicCounts.hasOwnProperty(topic)) {
+                        topicCounts[topic]++;
+                        totalTopics++;
+                    }
+                });
+            }
+        });
+
+        const container = document.getElementById("topic-analysis");
+        
+        if (totalTopics === 0) {
+            container.innerHTML = `
+                <div class="content-item">
+                    <h4>📊 주제 분석</h4>
+                    <p>아직 충분한 데이터가 수집되지 않았습니다.</p>
+                </div>
+            `;
+            return;
+        }
+
+        const topicLabels = {
+            symptoms: '💊 증상 관련',
+            family: '👨‍👩‍👧‍👦 가족 관계',
+            medication: '💉 약물/치료',
+            daily: '🏠 일상생활',
+            social: '👥 사회관계',
+            work: '💼 직장/업무'
+        };
+
+        const topicPercentages = Object.entries(topicCounts)
+            .map(([topic, count]) => ({
+                topic,
+                count,
+                percentage: ((count / totalTopics) * 100).toFixed(1)
+            }))
+            .sort((a, b) => b.count - a.count);
+
+        let html = '';
+        topicPercentages.forEach(({ topic, count, percentage }) => {
+            if (count > 0) {
+                html += `
+                    <div class="content-item">
+                        <h4>${topicLabels[topic]} - ${percentage}%</h4>
+                        <p>언급된 횟수: ${count}회</p>
+                    </div>
+                `;
+            }
+        });
+
+        container.innerHTML = html || `
+            <div class="content-item">
+                <h4>📊 주제 분석</h4>
+                <p>분석 가능한 주제 데이터가 없습니다.</p>
+            </div>
+        `;
+
+    } catch (error) {
+        console.error("주제 분석 로딩 실패:", error);
+        document.getElementById("topic-analysis").innerHTML = `
+            <div class="content-item">
+                <h4>⚠️ 오류</h4>
+                <p>주제 분석 데이터를 불러오는 중 오류가 발생했습니다.</p>
+            </div>
+        `;
     }
 }
 
@@ -1808,51 +1978,6 @@ async function loadTimelineList() {
     } catch (error) {
         console.error("타임라인 목록 로딩 실패:", error);
         container.innerHTML = '<p style="text-align: center; color: #dc3545;">타임라인 목록을 불러오는데 실패했습니다.</p>';
-    }
-}
-
-async function loadGalleryList() {
-    const container = document.getElementById("gallery-list");
-    container.innerHTML = '<p style="text-align: center; color: #8d6e63;">갤러리 목록을 불러오는 중...</p>';
-    
-    try {
-        if (!window.db) {
-            container.innerHTML = '<p style="text-align: center; color: #dc3545;">Firebase가 초기화되지 않았습니다.</p>';
-            return;
-        }
-        
-        const q = query(collection(window.db, "galleryPosts"), orderBy("timestamp", "desc"));
-        const querySnapshot = await getDocs(q);
-        
-        if (querySnapshot.empty) {
-            container.innerHTML = '<p style="text-align: center; color: #8d6e63;">등록된 사진이 없습니다.</p>';
-            return;
-        }
-        
-        let html = '';
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('ko-KR') : '날짜 미상';
-            
-            html += `
-                <div class="content-item">
-                    <div class="content-item-header">
-                        <h4>📸 갤러리 사진</h4>
-                        <div class="content-item-actions">
-                            <button class="delete-btn" onclick="deleteGallery('${doc.id}')">삭제</button>
-                        </div>
-                    </div>
-                    ${data.imageUrl ? `<img src="${data.imageUrl}" class="content-preview" alt="갤러리 이미지">` : ''}
-                    <p>${data.caption || '설명 없음'}</p>
-                    <p><strong>업로드 날짜:</strong> ${date}</p>
-                </div>
-            `;
-        });
-        
-        container.innerHTML = html;
-    } catch (error) {
-        console.error("갤러리 목록 로딩 실패:", error);
-        container.innerHTML = '<p style="text-align: center; color: #dc3545;">갤러리 목록을 불러오는데 실패했습니다.</p>';
     }
 }
 
@@ -2133,19 +2258,6 @@ async function systemHealthCheck() {
     showMessage(document.getElementById("system-management-message"), "시스템 건강 체크가 완료되었습니다. 모든 시스템이 정상 작동 중입니다.", "success");
 }
 
-window.deleteDiary = async function(docId) {
-    if (confirm("이 일기를 삭제하시겠습니까?")) {
-        try {
-            await deleteDoc(doc(window.db, "diaryPosts", docId));
-            showMessage(document.getElementById("diary-message"), "일기가 성공적으로 삭제되었습니다.", "success");
-            loadDiaryList();
-        } catch (error) {
-            console.error("일기 삭제 실패:", error);
-            showMessage(document.getElementById("diary-message"), "일기 삭제 중 오류가 발생했습니다.", "error");
-        }
-    }
-};
-
 window.deleteTimeline = async function(docId) {
     if (confirm("이 타임라인 이벤트를 삭제하시겠습니까?")) {
         try {
@@ -2155,19 +2267,6 @@ window.deleteTimeline = async function(docId) {
         } catch (error) {
             console.error("타임라인 삭제 실패:", error);
             showMessage(document.getElementById("timeline-message"), "타임라인 삭제 중 오류가 발생했습니다.", "error");
-        }
-    }
-};
-
-window.deleteGallery = async function(docId) {
-    if (confirm("이 갤러리 사진을 삭제하시겠습니까?")) {
-        try {
-            await deleteDoc(doc(window.db, "galleryPosts", docId));
-            showMessage(document.getElementById("gallery-message"), "갤러리 사진이 성공적으로 삭제되었습니다.", "success");
-            loadGalleryList();
-        } catch (error) {
-            console.error("갤러리 삭제 실패:", error);
-            showMessage(document.getElementById("gallery-message"), "갤러리 삭제 중 오류가 발생했습니다.", "error");
         }
     }
 };
