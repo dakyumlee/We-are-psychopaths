@@ -1266,13 +1266,13 @@ function setupChatDetailModal() {
     });
     
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal.style.display === 'block') {
+        if (e.key === 'Escape' && modal.style.display === 'flex') {
             modal.style.display = 'none';
         }
     });
 }
 
-function showChatDetail(userMessage, botMessage, timestampSeconds) {
+function openChatModal(userMessage, botMessage, timestampSeconds) {
     const modal = document.getElementById('chat-detail-modal');
     const title = document.getElementById('chat-detail-title');
     const body = document.getElementById('chat-detail-body');
@@ -1282,22 +1282,45 @@ function showChatDetail(userMessage, botMessage, timestampSeconds) {
         return;
     }
     
-    const timeString = timestampSeconds ? new Date(timestampSeconds * 1000).toLocaleString('ko-KR') : '시간 미상';
+    const timeString = timestampSeconds ? new Date(timestampSeconds * 1000).toLocaleString('ko-KR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    }) : '시간 미상';
     
-    title.textContent = `대화 내용 - ${timeString}`;
+    title.textContent = `💬 대화 상세 내용`;
     
-    // HTML 엔티티를 다시 변환
-    const decodedUserMessage = userMessage.replace(/&apos;/g, "'").replace(/\\\\/g, "\\");
-    const decodedBotMessage = botMessage.replace(/&apos;/g, "'").replace(/\\\\/g, "\\");
+    const safeUserMessage = userMessage || '메시지 없음';
+    const safeBotMessage = botMessage || '응답 없음';
     
     body.innerHTML = `
-        <div class="chat-message user">
-            <h5>👤 사용자</h5>
-            <p>${decodedUserMessage}</p>
+        <div style="text-align: center; margin-bottom: 20px; padding: 10px; background: rgba(245, 240, 230, 0.05); border-radius: 8px;">
+            <p style="margin: 0; color: #d4c4a8;"><strong>📅 대화 시간:</strong> ${timeString}</p>
         </div>
-        <div class="chat-message bot">
-            <h5>🤖 상담사</h5>
-            <p>${decodedBotMessage}</p>
+        
+        <div class="chat-message user" style="background: rgba(141, 110, 99, 0.2); border-left: 4px solid #8d6e63; padding: 20px; margin-bottom: 20px; border-radius: 8px;">
+            <h5 style="margin: 0 0 15px 0; color: #f5f0e6; font-size: 1.2em; display: flex; align-items: center;">
+                <span style="margin-right: 10px;">👤</span> 사용자 메시지
+            </h5>
+            <div style="background: rgba(245, 240, 230, 0.1); padding: 15px; border-radius: 6px; line-height: 1.6;">
+                <p style="margin: 0; white-space: pre-wrap; color: #f5f0e6;">${safeUserMessage}</p>
+            </div>
+        </div>
+        
+        <div class="chat-message bot" style="background: rgba(245, 240, 230, 0.1); border-left: 4px solid #d4c4a8; padding: 20px; margin-bottom: 20px; border-radius: 8px;">
+            <h5 style="margin: 0 0 15px 0; color: #f5f0e6; font-size: 1.2em; display: flex; align-items: center;">
+                <span style="margin-right: 10px;">🤖</span> 상담사 응답
+            </h5>
+            <div style="background: rgba(141, 110, 99, 0.1); padding: 15px; border-radius: 6px; line-height: 1.6;">
+                <p style="margin: 0; white-space: pre-wrap; color: #f5f0e6;">${safeBotMessage}</p>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px; padding: 10px; border-top: 1px solid rgba(245, 240, 230, 0.2);">
+            <p style="margin: 0; color: #d4c4a8; font-size: 0.9em;">이 대화는 상담 목적으로 기록되었습니다.</p>
         </div>
     `;
     
@@ -1747,7 +1770,6 @@ async function loadUrgentMessages() {
     try {
         const container = document.getElementById("urgent-messages");
         
-        // 일단 chatAnalytics 컬렉션이 있는지 확인
         const analyticsQuery = query(collection(window.db, 'chatAnalytics'), limit(1));
         const analyticsSnapshot = await getDocs(analyticsQuery);
         
@@ -1761,7 +1783,6 @@ async function loadUrgentMessages() {
             return;
         }
 
-        // urgencyLevel 필드가 있는 문서들만 조회
         const urgentQuery = query(collection(window.db, 'chatAnalytics'), limit(20));
         const urgentSnapshot = await getDocs(urgentQuery);
         
@@ -1783,7 +1804,6 @@ async function loadUrgentMessages() {
             return;
         }
 
-        // 최신순으로 정렬
         urgentMessages.sort((a, b) => {
             const timeA = a.timestamp?.toDate() || new Date(0);
             const timeB = b.timestamp?.toDate() || new Date(0);
@@ -1795,6 +1815,7 @@ async function loadUrgentMessages() {
             const timestamp = data.timestamp?.toDate();
             const timeString = timestamp ? 
                 timestamp.toLocaleString('ko-KR', {
+                    year: 'numeric',
                     month: 'short',
                     day: 'numeric',
                     hour: '2-digit',
@@ -1803,12 +1824,20 @@ async function loadUrgentMessages() {
             
             const urgencyIcon = data.urgencyLevel === 'high' ? '🚨' : '⚠️';
             const urgencyText = data.urgencyLevel === 'high' ? '높음' : '중간';
+            const urgencyColor = data.urgencyLevel === 'high' ? '#ff4444' : '#ff8800';
+            
+            const userMessage = data.userMessage || '메시지 없음';
+            const botMessage = data.botMessage || '응답 없음';
+            const timestampSeconds = timestamp ? Math.floor(timestamp.getTime() / 1000) : 0;
             
             html += `
-                <div class="content-item urgent-item">
-                    <h4>${urgencyIcon} 위험도: ${urgencyText}</h4>
-                    <p>${timeString} - 사용자 ID: ${data.userId?.substring(0, 8) || 'Unknown'}...</p>
-                    <p>감지된 주제: ${(data.detectedTopics || []).join(', ') || '미분류'}</p>
+                <div class="content-item urgent-item" onclick="openChatModal('${userMessage}', '${botMessage}', ${timestampSeconds})" style="cursor: pointer; border-left-color: ${urgencyColor};">
+                    <h4 style="color: ${urgencyColor};">${urgencyIcon} 위험도: ${urgencyText}</h4>
+                    <p><strong>시간:</strong> ${timeString}</p>
+                    <p><strong>사용자 ID:</strong> ${data.userId?.substring(0, 8) || 'Unknown'}...</p>
+                    <p><strong>감지된 주제:</strong> ${(data.detectedTopics || []).join(', ') || '미분류'}</p>
+                    <p><strong>메시지 미리보기:</strong> ${(data.userMessage || '메시지 없음').substring(0, 60)}${(data.userMessage || '').length > 60 ? '...' : ''}</p>
+                    <p style="font-size: 0.8em; color: #aaa; margin-top: 8px;">📱 클릭하여 전체 대화 보기</p>
                 </div>
             `;
         });
@@ -1855,24 +1884,39 @@ async function loadAllChats() {
             const timestamp = data.timestamp?.toDate();
             const timeString = timestamp ? 
                 timestamp.toLocaleString('ko-KR', {
+                    year: 'numeric',
                     month: 'short', 
                     day: 'numeric',
                     hour: '2-digit',
-                    minute: '2-digit'
+                    minute: '2-digit',
+                    second: '2-digit'
                 }) : '시간 미상';
             
             chatCount++;
             
-            // 작은따옴표와 백슬래시 처리를 더 안전하게
-            const safeUserMessage = (data.userMessage || '').replace(/'/g, "&apos;").replace(/\\/g, "\\\\");
-            const safeBotMessage = (data.botMessage || '').replace(/'/g, "&apos;").replace(/\\/g, "\\\\");
+            const userMessage = data.userMessage || '메시지 없음';
+            const botMessage = data.botMessage || '응답 없음';
             const timestampSeconds = timestamp ? Math.floor(timestamp.getTime() / 1000) : 0;
             
+            const sessionInfo = data.sessionId ? `세션: ${data.sessionId.substring(0, 8)}...` : '세션 정보 없음';
+            const userInfo = data.userId ? `사용자: ${data.userId.substring(0, 8)}...` : '사용자 정보 없음';
+            
             html += `
-                <div class="content-item" onclick="showChatDetail('${safeUserMessage}', '${safeBotMessage}', ${timestampSeconds})">
+                <div class="content-item" onclick="openChatModal('${userMessage}', '${botMessage}', ${timestampSeconds})" style="cursor: pointer;">
                     <h4>💬 대화 #${chatCount}</h4>
-                    <p>${timeString} - 사용자: ${data.userId?.substring(0, 8) || 'Unknown'}...</p>
-                    <p>미리보기: ${(data.userMessage || '메시지 없음').substring(0, 50)}${(data.userMessage || '').length > 50 ? '...' : ''}</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0;">
+                        <p><strong>📅 시간:</strong> ${timeString}</p>
+                        <p><strong>👤 ${userInfo}</strong></p>
+                    </div>
+                    <div style="background: rgba(245, 240, 230, 0.1); padding: 8px; border-radius: 4px; margin: 8px 0;">
+                        <p><strong>사용자 메시지:</strong></p>
+                        <p style="font-style: italic; color: #d4c4a8;">"${(data.userMessage || '메시지 없음').substring(0, 80)}${(data.userMessage || '').length > 80 ? '...' : ''}"</p>
+                    </div>
+                    <div style="background: rgba(141, 110, 99, 0.1); padding: 8px; border-radius: 4px; margin: 8px 0;">
+                        <p><strong>상담사 응답:</strong></p>
+                        <p style="font-style: italic; color: #d4c4a8;">"${(data.botMessage || '응답 없음').substring(0, 80)}${(data.botMessage || '').length > 80 ? '...' : ''}"</p>
+                    </div>
+                    <p style="font-size: 0.8em; color: #aaa; margin-top: 8px; text-align: center;">📱 클릭하여 전체 대화 보기</p>
                 </div>
             `;
         });
@@ -2396,7 +2440,7 @@ window.deleteArchiveGallery = async function(docId) {
     }
 };
 
-window.showChatDetail = showChatDetail;
+window.openChatModal = openChatModal;
 </script>
 
 </body>
