@@ -1273,23 +1273,26 @@ function setupChatDetailModal() {
 }
 
 function openChatModal(userMessage, botMessage, timestampSeconds) {
+    console.log('openChatModal 호출됨:', { userMessage, botMessage, timestampSeconds });
+    
     const modal = document.getElementById('chat-detail-modal');
     const title = document.getElementById('chat-detail-title');
     const body = document.getElementById('chat-detail-body');
     
     if (!modal || !title || !body) {
-        console.error('모달 요소를 찾을 수 없습니다.');
+        console.error('모달 요소를 찾을 수 없습니다:', { modal: !!modal, title: !!title, body: !!body });
         return;
     }
     
-    const timeString = timestampSeconds ? new Date(timestampSeconds * 1000).toLocaleString('ko-KR', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-    }) : '시간 미상';
+    const timeString = timestampSeconds && timestampSeconds > 0 ? 
+        new Date(timestampSeconds * 1000).toLocaleString('ko-KR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        }) : '시간 미상';
     
     title.textContent = `💬 대화 상세 내용`;
     
@@ -1326,6 +1329,10 @@ function openChatModal(userMessage, botMessage, timestampSeconds) {
     
     modal.style.display = 'flex';
     console.log('모달이 표시되었습니다.');
+    
+    setTimeout(() => {
+        modal.style.opacity = '1';
+    }, 10);
 }
 
 async function handleTimelineSubmit(e) {
@@ -1811,7 +1818,7 @@ async function loadUrgentMessages() {
         });
 
         let html = '';
-        urgentMessages.slice(0, 10).forEach(data => {
+        urgentMessages.slice(0, 10).forEach((data, index) => {
             const timestamp = data.timestamp?.toDate();
             const timeString = timestamp ? 
                 timestamp.toLocaleString('ko-KR', {
@@ -1831,7 +1838,7 @@ async function loadUrgentMessages() {
             const timestampSeconds = timestamp ? Math.floor(timestamp.getTime() / 1000) : 0;
             
             html += `
-                <div class="content-item urgent-item" onclick="openChatModal('${userMessage}', '${botMessage}', ${timestampSeconds})" style="cursor: pointer; border-left-color: ${urgencyColor};">
+                <div class="content-item urgent-item urgent-chat-${index}" style="cursor: pointer; border-left-color: ${urgencyColor};">
                     <h4 style="color: ${urgencyColor};">${urgencyIcon} 위험도: ${urgencyText}</h4>
                     <p><strong>시간:</strong> ${timeString}</p>
                     <p><strong>사용자 ID:</strong> ${data.userId?.substring(0, 8) || 'Unknown'}...</p>
@@ -1843,6 +1850,20 @@ async function loadUrgentMessages() {
         });
 
         container.innerHTML = html;
+
+        urgentMessages.slice(0, 10).forEach((data, index) => {
+            const element = document.querySelector(`.urgent-chat-${index}`);
+            if (element) {
+                element.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const userMessage = data.userMessage || '메시지 없음';
+                    const botMessage = data.botMessage || '응답 없음';
+                    const timestampSeconds = data.timestamp ? Math.floor(data.timestamp.toDate().getTime() / 1000) : 0;
+                    openChatModal(userMessage, botMessage, timestampSeconds);
+                });
+            }
+        });
 
     } catch (error) {
         console.error("긴급 메시지 로딩 실패:", error);
@@ -1902,7 +1923,7 @@ async function loadAllChats() {
             const userInfo = data.userId ? `사용자: ${data.userId.substring(0, 8)}...` : '사용자 정보 없음';
             
             html += `
-                <div class="content-item" onclick="openChatModal('${userMessage}', '${botMessage}', ${timestampSeconds})" style="cursor: pointer;">
+                <div class="content-item chat-item-${chatCount}" style="cursor: pointer;">
                     <h4>💬 대화 #${chatCount}</h4>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0;">
                         <p><strong>📅 시간:</strong> ${timeString}</p>
@@ -1922,6 +1943,23 @@ async function loadAllChats() {
         });
 
         container.innerHTML = html;
+
+        let count = 0;
+        chatSnapshot.forEach(doc => {
+            count++;
+            const data = doc.data();
+            const element = document.querySelector(`.chat-item-${count}`);
+            if (element) {
+                element.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const userMessage = data.userMessage || '메시지 없음';
+                    const botMessage = data.botMessage || '응답 없음';
+                    const timestampSeconds = data.timestamp ? Math.floor(data.timestamp.toDate().getTime() / 1000) : 0;
+                    openChatModal(userMessage, botMessage, timestampSeconds);
+                });
+            }
+        });
 
     } catch (error) {
         console.error("전체 대화 로딩 실패:", error);
