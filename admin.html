@@ -1217,23 +1217,23 @@ function setupChatDetailModal() {
     });
 }
 
-function showChatDetail(userMessage, botMessage, timestamp) {
+function showChatDetail(userMessage, botMessage, timestampSeconds) {
     const modal = document.getElementById('chat-detail-modal');
     const title = document.getElementById('chat-detail-title');
     const body = document.getElementById('chat-detail-body');
     
-    const timeString = timestamp ? new Date(timestamp.seconds * 1000).toLocaleString('ko-KR') : '시간 미상';
+    const timeString = timestampSeconds ? new Date(timestampSeconds * 1000).toLocaleString('ko-KR') : '시간 미상';
     
     title.textContent = `대화 내용 - ${timeString}`;
     
     body.innerHTML = `
         <div class="chat-message user">
             <h5>👤 사용자</h5>
-            <p>${userMessage}</p>
+            <p>${userMessage.replace(/\\n/g, '\n')}</p>
         </div>
         <div class="chat-message bot">
             <h5>🤖 상담사</h5>
-            <p>${botMessage}</p>
+            <p>${botMessage.replace(/\\n/g, '\n')}</p>
         </div>
     `;
     
@@ -1887,8 +1887,12 @@ async function loadUrgentMessages() {
         urgentMessages.forEach(urgent => {
             const timestamp = urgent.timestamp ? new Date(urgent.timestamp.seconds * 1000).toLocaleString('ko-KR') : '시간 미상';
             const message = urgent.message.substring(0, 100) + (urgent.message.length > 100 ? '...' : '');
+            
+            const userMsgEscaped = urgent.message.replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\n/g, '\\n');
+            const botMsgEscaped = (urgent.botMessage || '응답 없음').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\n/g, '\\n');
+            
             html += `
-                <div class="content-item urgent-item" onclick="showChatDetail('${urgent.message.replace(/'/g, "&#39;")}', '${urgent.botMessage.replace(/'/g, "&#39;")}', {seconds: ${urgent.timestamp?.seconds || 0}})">
+                <div class="content-item urgent-item" onclick="showChatDetail(\`${userMsgEscaped}\`, \`${botMsgEscaped}\`, ${urgent.timestamp ? urgent.timestamp.seconds : 0})">
                     <h4 style="color: #ff6b6b;">🚨 긴급 메시지</h4>
                     <p style="color: #f5f0e6; margin: 8px 0;">${message}</p>
                     <p style="font-size: 0.8em; color: #b8a082;">사용자: ${urgent.userId}</p>
@@ -1922,8 +1926,11 @@ async function loadAllChats() {
             const userMessage = data.userMessage ? data.userMessage.substring(0, 80) + (data.userMessage.length > 80 ? '...' : '') : '메시지 없음';
             const botMessage = data.botMessage ? data.botMessage.substring(0, 80) + (data.botMessage.length > 80 ? '...' : '') : '응답 없음';
             
+            const userMsgFull = (data.userMessage || '메시지 없음').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\n/g, '\\n');
+            const botMsgFull = (data.botMessage || '응답 없음').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\n/g, '\\n');
+            
             html += `
-                <div class="content-item" onclick="showChatDetail('${data.userMessage.replace(/'/g, "&#39;")}', '${data.botMessage.replace(/'/g, "&#39;")}', {seconds: ${data.timestamp?.seconds || 0}})">
+                <div class="content-item" onclick="showChatDetail(\`${userMsgFull}\`, \`${botMsgFull}\`, ${data.timestamp ? data.timestamp.seconds : 0})">
                     <h4>💬 대화 세션</h4>
                     <p><strong>사용자:</strong> ${userMessage}</p>
                     <p><strong>봇 응답:</strong> ${botMessage}</p>
