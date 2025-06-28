@@ -679,10 +679,14 @@
                     new Date(item.timestamp.seconds * 1000).toLocaleDateString('ko-KR') : 
                     '날짜 미상';
                 
+                const embedUrl = item.embedUrl.includes('autoplay=1') 
+                    ? item.embedUrl.replace('autoplay=1', 'autoplay=0')
+                    : item.embedUrl + (item.embedUrl.includes('?') ? '&' : '?') + 'autoplay=0';
+                
                 videoItem.innerHTML = `
                     <div class="video-thumbnail">
                         <iframe class="video-iframe" 
-                                src="${item.embedUrl}" 
+                                src="${embedUrl}" 
                                 allowfullscreen>
                         </iframe>
                     </div>
