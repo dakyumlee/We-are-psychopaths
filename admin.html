@@ -1277,22 +1277,32 @@ function showChatDetail(userMessage, botMessage, timestampSeconds) {
     const title = document.getElementById('chat-detail-title');
     const body = document.getElementById('chat-detail-body');
     
+    if (!modal || !title || !body) {
+        console.error('모달 요소를 찾을 수 없습니다.');
+        return;
+    }
+    
     const timeString = timestampSeconds ? new Date(timestampSeconds * 1000).toLocaleString('ko-KR') : '시간 미상';
     
     title.textContent = `대화 내용 - ${timeString}`;
     
+    // HTML 엔티티를 다시 변환
+    const decodedUserMessage = userMessage.replace(/&apos;/g, "'").replace(/\\\\/g, "\\");
+    const decodedBotMessage = botMessage.replace(/&apos;/g, "'").replace(/\\\\/g, "\\");
+    
     body.innerHTML = `
         <div class="chat-message user">
             <h5>👤 사용자</h5>
-            <p>${userMessage.replace(/\\n/g, '\n')}</p>
+            <p>${decodedUserMessage}</p>
         </div>
         <div class="chat-message bot">
             <h5>🤖 상담사</h5>
-            <p>${botMessage.replace(/\\n/g, '\n')}</p>
+            <p>${decodedBotMessage}</p>
         </div>
     `;
     
     modal.style.display = 'flex';
+    console.log('모달이 표시되었습니다.');
 }
 
 async function handleTimelineSubmit(e) {
@@ -1735,17 +1745,35 @@ async function loadEmotionAnalysis() {
 
 async function loadUrgentMessages() {
     try {
-        const analyticsQuery = query(
-            collection(window.db, 'chatAnalytics'),
-            where('urgencyLevel', 'in', ['high', 'medium']),
-            orderBy('timestamp', 'desc'),
-            limit(10)
-        );
-        const analyticsSnapshot = await getDocs(analyticsQuery);
-        
         const container = document.getElementById("urgent-messages");
         
+        // 일단 chatAnalytics 컬렉션이 있는지 확인
+        const analyticsQuery = query(collection(window.db, 'chatAnalytics'), limit(1));
+        const analyticsSnapshot = await getDocs(analyticsQuery);
+        
         if (analyticsSnapshot.empty) {
+            container.innerHTML = `
+                <div class="content-item">
+                    <h4>✅ 현재 긴급 상황 없음</h4>
+                    <p>아직 분석된 채팅 데이터가 없습니다.</p>
+                </div>
+            `;
+            return;
+        }
+
+        // urgencyLevel 필드가 있는 문서들만 조회
+        const urgentQuery = query(collection(window.db, 'chatAnalytics'), limit(20));
+        const urgentSnapshot = await getDocs(urgentQuery);
+        
+        let urgentMessages = [];
+        urgentSnapshot.forEach(doc => {
+            const data = doc.data();
+            if (data.urgencyLevel && (data.urgencyLevel === 'high' || data.urgencyLevel === 'medium')) {
+                urgentMessages.push({ id: doc.id, ...data });
+            }
+        });
+
+        if (urgentMessages.length === 0) {
             container.innerHTML = `
                 <div class="content-item">
                     <h4>✅ 현재 긴급 상황 없음</h4>
@@ -1755,9 +1783,15 @@ async function loadUrgentMessages() {
             return;
         }
 
+        // 최신순으로 정렬
+        urgentMessages.sort((a, b) => {
+            const timeA = a.timestamp?.toDate() || new Date(0);
+            const timeB = b.timestamp?.toDate() || new Date(0);
+            return timeB - timeA;
+        });
+
         let html = '';
-        analyticsSnapshot.forEach(doc => {
-            const data = doc.data();
+        urgentMessages.slice(0, 10).forEach(data => {
             const timestamp = data.timestamp?.toDate();
             const timeString = timestamp ? 
                 timestamp.toLocaleString('ko-KR', {
@@ -1773,7 +1807,7 @@ async function loadUrgentMessages() {
             html += `
                 <div class="content-item urgent-item">
                     <h4>${urgencyIcon} 위험도: ${urgencyText}</h4>
-                    <p>${timeString} - 사용자 ID: ${data.userId?.substring(0, 8)}...</p>
+                    <p>${timeString} - 사용자 ID: ${data.userId?.substring(0, 8) || 'Unknown'}...</p>
                     <p>감지된 주제: ${(data.detectedTopics || []).join(', ') || '미분류'}</p>
                 </div>
             `;
@@ -1785,8 +1819,8 @@ async function loadUrgentMessages() {
         console.error("긴급 메시지 로딩 실패:", error);
         document.getElementById("urgent-messages").innerHTML = `
             <div class="content-item">
-                <h4>⚠️ 오류</h4>
-                <p>긴급 메시지 데이터를 불러오는 중 오류가 발생했습니다.</p>
+                <h4>✅ 현재 긴급 상황 없음</h4>
+                <p>긴급 상황 데이터를 확인할 수 없습니다.</p>
             </div>
         `;
     }
@@ -1829,11 +1863,16 @@ async function loadAllChats() {
             
             chatCount++;
             
+            // 작은따옴표와 백슬래시 처리를 더 안전하게
+            const safeUserMessage = (data.userMessage || '').replace(/'/g, "&apos;").replace(/\\/g, "\\\\");
+            const safeBotMessage = (data.botMessage || '').replace(/'/g, "&apos;").replace(/\\/g, "\\\\");
+            const timestampSeconds = timestamp ? Math.floor(timestamp.getTime() / 1000) : 0;
+            
             html += `
-                <div class="content-item" onclick="showChatDetail('${data.userMessage?.replace(/'/g, "\\'")}', '${data.botMessage?.replace(/'/g, "\\'")}', ${timestamp ? timestamp.getTime() / 1000 : 0})">
+                <div class="content-item" onclick="showChatDetail('${safeUserMessage}', '${safeBotMessage}', ${timestampSeconds})">
                     <h4>💬 대화 #${chatCount}</h4>
-                    <p>${timeString} - 사용자: ${data.userId?.substring(0, 8)}...</p>
-                    <p>미리보기: ${(data.userMessage || '').substring(0, 50)}${data.userMessage?.length > 50 ? '...' : ''}</p>
+                    <p>${timeString} - 사용자: ${data.userId?.substring(0, 8) || 'Unknown'}...</p>
+                    <p>미리보기: ${(data.userMessage || '메시지 없음').substring(0, 50)}${(data.userMessage || '').length > 50 ? '...' : ''}</p>
                 </div>
             `;
         });
