@@ -1,21 +1,29 @@
 @media (max-width: 768px) {
     
+    nav {
+        height: 45px !important;
+        padding: 3px 0 !important;
+    }
+    
     .nav-container {
-        flex-direction: column;
-        gap: 8px;
-        padding: 10px;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 2px !important;
+        padding: 3px 5px !important;
+        justify-content: center !important;
         background: rgba(78, 46, 30, 0.98);
     }
     
     .nav-container li a {
-        font-size: 1.4em !important;
-        padding: 15px 25px !important;
+        font-size: 0.65em !important;
+        padding: 4px 6px !important;
         display: block;
         text-align: center;
-        min-height: 44px;
+        min-height: 32px !important;
         line-height: 1.2;
-        border-radius: 8px;
-        margin: 2px 0;
+        border-radius: 6px !important;
+        margin: 1px 0;
+        white-space: nowrap !important;
     }
     
     h1 {
@@ -89,7 +97,7 @@
     }
     
     .main-container {
-        padding: 120px 20px 40px !important;
+        padding: 70px 20px 40px !important;
     }
     
     .hero-section,
@@ -181,8 +189,9 @@
 @media (max-width: 480px) {
     
     .nav-container li a {
-        font-size: 1.2em !important;
-        padding: 18px 20px !important;
+        font-size: 0.6em !important;
+        padding: 3px 5px !important;
+        min-height: 28px !important;
     }
     
     h1 {
@@ -194,7 +203,7 @@
     }
 
     .main-container {
-        padding: 140px 15px 30px !important;
+        padding: 60px 15px 30px !important;
     }
 
     .contact-card,
@@ -241,17 +250,17 @@
     
     .nav-container {
         flex-direction: row !important;
-        flex-wrap: wrap !important;
-        gap: 5px !important;
+        flex-wrap: nowrap !important;
+        gap: 2px !important;
     }
     
     .nav-container li a {
-        font-size: 1em !important;
-        padding: 12px 15px !important;
+        font-size: 0.65em !important;
+        padding: 4px 6px !important;
     }
     
     .main-container {
-        padding-top: 100px !important;
+        padding-top: 55px !important;
     }
     
     h1 {
