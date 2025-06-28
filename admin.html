@@ -308,80 +308,6 @@ body {
     margin-bottom: 3rem;
 }
 
-.content-list {
-    max-height: 400px;
-    overflow-y: auto;
-    margin: 20px 0;
-    border-top: 1px solid rgba(245, 240, 230, 0.2);
-    padding-top: 20px;
-}
-
-.content-item {
-    background: rgba(245, 240, 230, 0.05);
-    border-left: 4px solid #8d6e63;
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 8px;
-    position: relative;
-    transition: all 0.3s ease;
-}
-
-.content-item:hover {
-    background: rgba(245, 240, 230, 0.1);
-    transform: translateX(5px);
-}
-
-.content-item h4 {
-    color: #f5f0e6;
-    margin: 0 0 8px 0;
-    padding-right: 120px;
-}
-
-.content-item p {
-    color: #d4c4a8;
-    margin: 5px 0 0 0;
-    font-size: 0.9em;
-    padding-right: 120px;
-}
-
-.content-actions {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    display: flex;
-    gap: 8px;
-}
-
-.content-actions button {
-    padding: 6px 12px;
-    font-size: 0.85em;
-    min-width: auto;
-}
-
-.hidden {
-    display: none !important;
-}
-
-.tab-content {
-    display: none;
-}
-
-.tab-content.active {
-    display: block;
-    animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-    from { 
-        opacity: 0; 
-        transform: translateY(10px); 
-    }
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
-    }
-}
-
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -408,6 +334,81 @@ body {
 .stat-label {
     color: #d4c4a8;
     font-size: 1em;
+}
+
+.content-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin: 20px 0;
+    border-top: 1px solid rgba(245, 240, 230, 0.2);
+    padding-top: 20px;
+}
+
+.content-item {
+    background: rgba(245, 240, 230, 0.05);
+    border-left: 4px solid #8d6e63;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.content-item:hover {
+    background: rgba(245, 240, 230, 0.1);
+    transform: translateX(5px);
+}
+
+.content-item h4 {
+    color: #f5f0e6;
+    margin: 0 0 8px 0;
+}
+
+.content-item p {
+    color: #d4c4a8;
+    margin: 5px 0 0 0;
+    font-size: 0.9em;
+}
+
+.urgent-item {
+    border-left-color: #dc3545 !important;
+    background: rgba(220, 53, 69, 0.1) !important;
+}
+
+.urgent-item h4 {
+    color: #ff6b6b !important;
+}
+
+.file-info {
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba(141, 110, 99, 0.2);
+    border-radius: 6px;
+    font-size: 0.9em;
+    color: #d4c4a8;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
 }
 
 @media (max-width: 768px) {
@@ -442,16 +443,6 @@ body {
     
     .management-card {
         padding: 1.5rem;
-    }
-    
-    .content-item h4,
-    .content-item p {
-        padding-right: 80px;
-    }
-    
-    .content-actions {
-        flex-direction: column;
-        gap: 5px;
     }
     
     .login-section {
@@ -492,7 +483,6 @@ body {
     <button class="tab-button" onclick="showTab('timeline')">⏰ 나의 타임라인</button>
     <button class="tab-button" onclick="showTab('gallery')">📸 기록 갤러리</button>
     <button class="tab-button" onclick="showTab('video')">🎥 다큐 영상</button>
-    <button class="tab-button" onclick="showTab('interview')">🎤 인터뷰</button>
     <button class="tab-button" onclick="showTab('archive')">📂 아카이브</button>
     <button class="tab-button" onclick="showTab('chatbot')">💬 챗봇 분석</button>
 </div>
@@ -624,52 +614,6 @@ body {
             <button type="submit">영상 업로드</button>
         </form>
         <div id="video-message"></div>
-    </div>
-</div>
-
-<div id="interview-tab" class="tab-content">
-    <div class="management-card">
-        <h2 class="card-title">🎤 인터뷰 영상 업로드</h2>
-        <div class="section-info">
-            <h4>📍 업로드 위치</h4>
-            <p>여기서 업로드한 영상은 <strong>"인터뷰 클립" 페이지</strong>에 표시됩니다.</p>
-        </div>
-        <form id="interview-form" class="form-section">
-            <div class="form-group">
-                <label for="interview-title">인터뷰 제목</label>
-                <input type="text" id="interview-title" placeholder="인터뷰 제목을 입력하세요" required />
-            </div>
-            <div class="form-group">
-                <label for="interview-description">인터뷰 설명</label>
-                <textarea id="interview-description" rows="3" placeholder="인터뷰에 대한 설명을 입력하세요"></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label>인터뷰 업로드 방식</label>
-                <div style="margin: 10px 0;">
-                    <label style="margin-right: 20px;">
-                        <input type="radio" name="interview-type" value="youtube" checked> YouTube 링크
-                    </label>
-                    <label>
-                        <input type="radio" name="interview-type" value="file"> 파일 업로드
-                    </label>
-                </div>
-            </div>
-            
-            <div id="interview-youtube-input" class="form-group">
-                <label for="interview-youtube-url">YouTube URL</label>
-                <input type="url" id="interview-youtube-url" placeholder="https://www.youtube.com/watch?v=..." />
-            </div>
-            
-            <div id="interview-file-input" class="form-group" style="display:none;">
-                <label for="interview-video-file">비디오 파일</label>
-                <input type="file" id="interview-video-file" accept=".mp4,.webm,.mov,.avi,.mkv,.flv,video/*" />
-                <div id="interview-video-file-info" class="file-info"></div>
-            </div>
-            
-            <button type="submit">인터뷰 업로드</button>
-        </form>
-        <div id="interview-message"></div>
     </div>
 </div>
 
@@ -814,12 +758,12 @@ body {
 
     <div class="management-grid">
         <div class="management-card">
-            <h2 class="card-title">💬 최근 대화</h2>
-            <div id="recent-chats" class="content-list">
-                <p style="text-align: center; color: #8d6e63;">최근 대화를 불러오는 중...</p>
+            <h2 class="card-title">💬 전체 대화 목록</h2>
+            <div id="all-chats" class="content-list">
+                <p style="text-align: center; color: #8d6e63;">전체 대화를 불러오는 중...</p>
             </div>
-            <button type="button" id="refresh-chats-btn" class="action-btn secondary-btn" style="width: 100%;">
-                대화 기록 새로고침
+            <button type="button" id="refresh-all-chats-btn" class="action-btn secondary-btn" style="width: 100%;">
+                전체 대화 새로고침
             </button>
         </div>
 
@@ -852,7 +796,7 @@ const firebaseConfig = {
   measurementId: "G-MG2X69DDK8"
 };
 
-const MASTER_KEY = "189512"; // 새로운 비밀번호
+const MASTER_KEY = "189512";
 
 const loginSection = document.getElementById("login-section");
 const adminPanel = document.getElementById("admin-panel");
@@ -863,7 +807,70 @@ const loginMessage = document.getElementById("login-message");
 
 let app, db, storage;
 
-// Firebase 초기화
+function showMessage(element, message, type = "success") {
+    if (!element) return;
+    element.innerHTML = `<div class="status-message ${type}">${message}</div>`;
+    setTimeout(() => {
+        if (element.innerHTML.includes(message)) {
+            element.innerHTML = "";
+        }
+    }, 5000);
+}
+
+function clearAllForms() {
+    const forms = document.querySelectorAll("form");
+    forms.forEach(form => form.reset());
+    
+    const fileInfoElements = document.querySelectorAll(".file-info");
+    fileInfoElements.forEach(el => el.innerHTML = "");
+    
+    const messageElements = document.querySelectorAll("[id$='-message']");
+    messageElements.forEach(el => el.innerHTML = "");
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function displayFileInfo(inputElement, infoElement) {
+    if (!inputElement || !infoElement) return;
+    
+    inputElement.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const fileSize = formatFileSize(file.size);
+            const fileType = file.type || '알 수 없음';
+            infoElement.innerHTML = `
+                <strong>선택된 파일:</strong> ${file.name}<br>
+                <strong>크기:</strong> ${fileSize}<br>
+                <strong>형식:</strong> ${fileType}
+            `;
+        } else {
+            infoElement.innerHTML = "";
+        }
+    });
+}
+
+function convertToEmbedUrl(url) {
+    if (!url) return '';
+    
+    const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+    if (youtubeMatch) {
+        return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
+    }
+    
+    const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+    if (vimeoMatch) {
+        return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+    }
+    
+    return url;
+}
+
 async function initializeFirebase() {
   try {
     if (!app) {
@@ -884,13 +891,11 @@ async function initializeFirebase() {
   }
 }
 
-// 페이지 로드 시 Firebase 초기화
 document.addEventListener("DOMContentLoaded", async () => {
     console.log("🔄 페이지 로드 - Firebase 초기화 시작");
     await initializeFirebase();
 });
 
-// 로그인 처리
 async function handleLogin() {
     const inputKey = masterKeyInput.value.trim();
     console.log("🔐 로그인 시도");
@@ -932,7 +937,6 @@ logoutBtn.addEventListener("click", () => {
     }
 });
 
-// 탭 전환 함수
 window.showTab = function(tabName) {
     document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
@@ -940,52 +944,44 @@ window.showTab = function(tabName) {
     event.target.classList.add('active');
     document.getElementById(tabName + '-tab').classList.add('active');
     
-    // 챗봇 탭이 선택되면 통계 로드
     if (tabName === 'chatbot') {
         loadChatbotStats();
     }
 };
 
-// 폼 초기화
 function initializeForms() {
     console.log("📝 폼 초기화 시작");
     
-    // 일기 폼
     const diaryForm = document.getElementById("diary-form");
     if (diaryForm) {
         diaryForm.addEventListener("submit", handleDiarySubmit);
     }
     
-    // 타임라인 폼
     const timelineForm = document.getElementById("timeline-form");
     if (timelineForm) {
         timelineForm.addEventListener("submit", handleTimelineSubmit);
     }
     
-    // 갤러리 폼
     const galleryForm = document.getElementById("gallery-form");
     if (galleryForm) {
         galleryForm.addEventListener("submit", handleGallerySubmit);
+        displayFileInfo(
+            document.getElementById("gallery-image"),
+            document.getElementById("gallery-file-info")
+        );
     }
     
-    // 비디오 폼
     const videoForm = document.getElementById("video-form");
     if (videoForm) {
         videoForm.addEventListener("submit", handleVideoSubmit);
         setupVideoForm();
+        displayFileInfo(
+            document.getElementById("video-file"),
+            document.getElementById("video-file-info")
+        );
     }
     
-    // 인터뷰 폼
-    const interviewForm = document.getElementById("interview-form");
-    if (interviewForm) {
-        interviewForm.addEventListener("submit", handleInterviewSubmit);
-        setupInterviewForm();
-    }
-    
-    // 아카이브 폼들
     initializeArchiveForms();
-    
-    // 챗봇 분석 버튼들
     initializeChatbotButtons();
     
     console.log("✅ 폼 초기화 완료");
@@ -1009,25 +1005,6 @@ function setupVideoForm() {
     });
 }
 
-function setupInterviewForm() {
-    const interviewTypeRadios = document.querySelectorAll('input[name="interview-type"]');
-    const youtubeInput = document.getElementById("interview-youtube-input");
-    const fileInput = document.getElementById("interview-file-input");
-    
-    interviewTypeRadios.forEach(radio => {
-        radio.addEventListener("change", () => {
-            if (radio.value === "youtube") {
-                youtubeInput.style.display = "block";
-                fileInput.style.display = "none";
-            } else {
-                youtubeInput.style.display = "none";
-                fileInput.style.display = "block";
-            }
-        });
-    });
-}
-
-// 일기 제출 처리
 async function handleDiarySubmit(e) {
     e.preventDefault();
     console.log("📝 일기 제출 처리 시작");
@@ -1064,7 +1041,6 @@ async function handleDiarySubmit(e) {
     }
 }
 
-// 타임라인 제출 처리
 async function handleTimelineSubmit(e) {
     e.preventDefault();
     
@@ -1095,7 +1071,6 @@ async function handleTimelineSubmit(e) {
     }
 }
 
-// 갤러리 제출 처리
 async function handleGallerySubmit(e) {
     e.preventDefault();
     
@@ -1120,13 +1095,13 @@ async function handleGallerySubmit(e) {
         
         showMessage(document.getElementById("gallery-message"), "사진이 성공적으로 업로드되었습니다!", "success");
         document.getElementById("gallery-form").reset();
+        document.getElementById("gallery-file-info").innerHTML = "";
     } catch (error) {
         console.error("❌ 사진 업로드 오류:", error);
         showMessage(document.getElementById("gallery-message"), "사진 업로드 중 오류가 발생했습니다.", "error");
     }
 }
 
-// 비디오 제출 처리
 async function handleVideoSubmit(e) {
     e.preventDefault();
     
@@ -1173,65 +1148,13 @@ async function handleVideoSubmit(e) {
         
         showMessage(document.getElementById("video-message"), "영상이 성공적으로 업로드되었습니다!", "success");
         document.getElementById("video-form").reset();
+        document.getElementById("video-file-info").innerHTML = "";
     } catch (error) {
         console.error("❌ 영상 업로드 오류:", error);
         showMessage(document.getElementById("video-message"), "영상 업로드 중 오류가 발생했습니다.", "error");
     }
 }
 
-// 인터뷰 제출 처리
-async function handleInterviewSubmit(e) {
-    e.preventDefault();
-    
-    const title = document.getElementById("interview-title").value.trim();
-    const description = document.getElementById("interview-description").value.trim();
-    const interviewType = document.querySelector('input[name="interview-type"]:checked').value;
-    
-    if (!title) {
-        showMessage(document.getElementById("interview-message"), "인터뷰 제목을 입력해주세요.", "error");
-        return;
-    }
-    
-    try {
-        let videoUrl = "";
-        let youtubeUrl = "";
-        
-        if (interviewType === "youtube") {
-            const inputUrl = document.getElementById("interview-youtube-url").value.trim();
-            if (!inputUrl) {
-                showMessage(document.getElementById("interview-message"), "YouTube 링크를 입력해주세요.", "error");
-                return;
-            }
-            youtubeUrl = inputUrl;
-        } else {
-            const videoFile = document.getElementById("interview-video-file").files[0];
-            if (!videoFile) {
-                showMessage(document.getElementById("interview-message"), "비디오 파일을 선택해주세요.", "error");
-                return;
-            }
-            
-            const storageRef = ref(window.storage, `interviewVideos/${videoFile.name}_${Date.now()}`);
-            await uploadBytes(storageRef, videoFile);
-            videoUrl = await getDownloadURL(storageRef);
-        }
-        
-        await addDoc(collection(window.db, "interviewVideos"), {
-            title,
-            description,
-            videoUrl,
-            youtubeUrl,
-            timestamp: serverTimestamp()
-        });
-        
-        showMessage(document.getElementById("interview-message"), "인터뷰가 성공적으로 업로드되었습니다!", "success");
-        document.getElementById("interview-form").reset();
-    } catch (error) {
-        console.error("❌ 인터뷰 업로드 오류:", error);
-        showMessage(document.getElementById("interview-message"), "인터뷰 업로드 중 오류가 발생했습니다.", "error");
-    }
-}
-
-// 아카이브 폼 초기화
 function initializeArchiveForms() {
     const archiveTimelineForm = document.getElementById("archive-timeline-form");
     if (archiveTimelineForm) {
@@ -1311,24 +1234,28 @@ function initializeArchiveForms() {
                 });
                 showMessage(document.getElementById("archive-gallery-message"), "갤러리에 추가되었습니다!", "success");
                 document.getElementById("archive-gallery-form").reset();
+                document.getElementById("archive-gallery-file-info").innerHTML = "";
             } catch (error) {
                 console.error("아카이브 갤러리 추가 오류:", error);
                 showMessage(document.getElementById("archive-gallery-message"), "갤러리 추가 중 오류가 발생했습니다.", "error");
             }
         });
+        
+        displayFileInfo(
+            document.getElementById("archive-gallery-image"),
+            document.getElementById("archive-gallery-file-info")
+        );
     }
 }
 
-// 챗봇 분석 버튼 초기화
 function initializeChatbotButtons() {
     document.getElementById("refresh-stats-btn")?.addEventListener("click", loadChatbotStats);
     document.getElementById("refresh-emotions-btn")?.addEventListener("click", loadEmotionAnalysis);
     document.getElementById("refresh-urgent-btn")?.addEventListener("click", loadUrgentMessages);
-    document.getElementById("refresh-chats-btn")?.addEventListener("click", loadRecentChats);
+    document.getElementById("refresh-all-chats-btn")?.addEventListener("click", loadAllChats);
     document.getElementById("refresh-topics-btn")?.addEventListener("click", loadTopicAnalysis);
 }
 
-// 챗봇 통계 로드
 async function loadChatbotStats() {
     try {
         if (!window.db) {
@@ -1338,7 +1265,6 @@ async function loadChatbotStats() {
         
         console.log("📊 챗봇 통계 로드 중...");
         
-        // 기본 통계 표시
         const totalChatsEl = document.getElementById("total-chats");
         const activeUsersEl = document.getElementById("active-users");
         const todayChatsEl = document.getElementById("today-chats");
@@ -1349,11 +1275,9 @@ async function loadChatbotStats() {
         if (todayChatsEl) todayChatsEl.textContent = "로딩 중...";
         if (avgMessagesEl) avgMessagesEl.textContent = "로딩 중...";
         
-        // 실제 데이터 로드
         const chatHistorySnaps = await getDocs(collection(window.db, "chatHistory"));
         const totalChats = chatHistorySnaps.size;
         
-        // 고유 사용자 수 계산
         const uniqueUsers = new Set();
         chatHistorySnaps.forEach(doc => {
             const data = doc.data();
@@ -1362,7 +1286,6 @@ async function loadChatbotStats() {
             }
         });
         
-        // 오늘 대화 수 계산
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const todayTimestamp = today.getTime() / 1000;
@@ -1375,7 +1298,6 @@ async function loadChatbotStats() {
             }
         });
         
-        // 평균 메시지 수 계산
         const avgMessages = uniqueUsers.size > 0 ? Math.round(totalChats / uniqueUsers.size) : 0;
         
         if (totalChatsEl) totalChatsEl.textContent = totalChats;
@@ -1392,10 +1314,9 @@ async function loadChatbotStats() {
     }
 }
 
-// 감정 분석 로드
 async function loadEmotionAnalysis() {
     try {
-        const analyticsSnaps = await getDocs(query(collection(window.db, "chatAnalytics"), orderBy("timestamp", "desc"), limit(100)));
+        const analyticsSnaps = await getDocs(query(collection(window.db, "chatAnalytics"), orderBy("timestamp", "desc"), limit(200)));
         const emotionAnalysisEl = document.getElementById("emotion-analysis");
         
         if (analyticsSnaps.empty) {
@@ -1415,17 +1336,34 @@ async function loadEmotionAnalysis() {
         
         const emotionLabels = {
             sad: '😢 슬픔',
-            anxious: '😰 불안',
+            anxious: '😰 불안', 
             angry: '😠 분노',
             hopeful: '🌟 희망',
-            confused: '😕 혼란'
+            confused: '😕 혼란',
+            frustrated: '😤 좌절',
+            lonely: '😔 외로움',
+            fearful: '😨 두려움',
+            grateful: '🙏 감사',
+            tired: '😴 피로',
+            overwhelmed: '🌀 압도감',
+            guilty: '😞 죄책감',
+            peaceful: '☮️ 평온',
+            excited: '🎉 흥분',
+            depressed: '🌧️ 우울',
+            nervous: '😬 긴장',
+            relieved: '😌 안도',
+            ashamed: '😳 부끄러움',
+            helpless: '🆘 무력감',
+            motivated: '💪 동기부여'
         };
         
         let html = '';
-        Object.entries(emotionCounts).forEach(([emotion, count]) => {
-            const label = emotionLabels[emotion] || emotion;
-            html += `<div class="content-item"><h4>${label}</h4><p>${count}회 감지</p></div>`;
-        });
+        Object.entries(emotionCounts)
+            .sort((a, b) => b[1] - a[1])
+            .forEach(([emotion, count]) => {
+                const label = emotionLabels[emotion] || emotion;
+                html += `<div class="content-item"><h4>${label}</h4><p>${count}회 감지</p></div>`;
+            });
         
         emotionAnalysisEl.innerHTML = html || '<p style="text-align: center; color: #f5f0e6;">감정 데이터가 충분하지 않습니다.</p>';
         
@@ -1435,26 +1373,45 @@ async function loadEmotionAnalysis() {
     }
 }
 
-// 긴급 메시지 로드
 async function loadUrgentMessages() {
     try {
-        const urgentSnaps = await getDocs(query(collection(window.db, "chatAnalytics"), where("urgencyLevel", "==", "high"), orderBy("timestamp", "desc"), limit(20)));
+        const chatHistorySnaps = await getDocs(query(collection(window.db, "chatHistory"), orderBy("timestamp", "desc"), limit(100)));
         const urgentMessagesEl = document.getElementById("urgent-messages");
         
-        if (urgentSnaps.empty) {
+        const urgentKeywords = ['죽고싶', '자살', '자해', '끝내고싶', '더이상못', '견딜수없', '해치고싶', '죽어버리고', '사라지고'];
+        const urgentMessages = [];
+        
+        chatHistorySnaps.forEach(doc => {
+            const data = doc.data();
+            if (data.userMessage) {
+                const hasUrgentKeyword = urgentKeywords.some(keyword => 
+                    data.userMessage.toLowerCase().includes(keyword)
+                );
+                
+                if (hasUrgentKeyword) {
+                    urgentMessages.push({
+                        message: data.userMessage,
+                        timestamp: data.timestamp,
+                        userId: data.userId || '익명'
+                    });
+                }
+            }
+        });
+        
+        if (urgentMessages.length === 0) {
             urgentMessagesEl.innerHTML = '<p style="text-align: center; color: #5cb85c;">다행히 긴급 상황은 없습니다.</p>';
             return;
         }
         
         let html = '';
-        urgentSnaps.forEach(doc => {
-            const data = doc.data();
-            const timestamp = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString('ko-KR') : '시간 미상';
-            const message = data.message ? data.message.substring(0, 100) + '...' : '메시지 없음';
+        urgentMessages.forEach(urgent => {
+            const timestamp = urgent.timestamp ? new Date(urgent.timestamp.seconds * 1000).toLocaleString('ko-KR') : '시간 미상';
+            const message = urgent.message.substring(0, 100) + (urgent.message.length > 100 ? '...' : '');
             html += `
-                <div class="content-item" style="border-left-color: #dc3545;">
-                    <h4 style="color: #ff6b6b;">긴급 메시지</h4>
-                    <p>${message}</p>
+                <div class="content-item urgent-item">
+                    <h4 style="color: #ff6b6b;">🚨 긴급 메시지</h4>
+                    <p style="color: #f5f0e6; margin: 8px 0;">${message}</p>
+                    <p style="font-size: 0.8em; color: #b8a082;">사용자: ${urgent.userId}</p>
                     <p style="font-size: 0.8em; color: #b8a082;">${timestamp}</p>
                 </div>
             `;
@@ -1468,43 +1425,44 @@ async function loadUrgentMessages() {
     }
 }
 
-// 최근 대화 로드
-async function loadRecentChats() {
+async function loadAllChats() {
     try {
-        const recentSnaps = await getDocs(query(collection(window.db, "chatHistory"), orderBy("timestamp", "desc"), limit(10)));
-        const recentChatsEl = document.getElementById("recent-chats");
+        const chatSnaps = await getDocs(query(collection(window.db, "chatHistory"), orderBy("timestamp", "desc"), limit(50)));
+        const allChatsEl = document.getElementById("all-chats");
         
-        if (recentSnaps.empty) {
-            recentChatsEl.innerHTML = '<p style="text-align: center; color: #f5f0e6;">최근 대화가 없습니다.</p>';
+        if (chatSnaps.empty) {
+            allChatsEl.innerHTML = '<p style="text-align: center; color: #f5f0e6;">대화 기록이 없습니다.</p>';
             return;
         }
         
         let html = '';
-        recentSnaps.forEach(doc => {
+        chatSnaps.forEach(doc => {
             const data = doc.data();
             const timestamp = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString('ko-KR') : '시간 미상';
-            const userMessage = data.userMessage ? data.userMessage.substring(0, 80) + '...' : '메시지 없음';
+            const userMessage = data.userMessage ? data.userMessage.substring(0, 80) + (data.userMessage.length > 80 ? '...' : '') : '메시지 없음';
+            const botMessage = data.botMessage ? data.botMessage.substring(0, 80) + (data.botMessage.length > 80 ? '...' : '') : '응답 없음';
+            
             html += `
                 <div class="content-item">
-                    <h4>사용자 메시지</h4>
-                    <p>${userMessage}</p>
+                    <h4>💬 대화 세션</h4>
+                    <p><strong>사용자:</strong> ${userMessage}</p>
+                    <p><strong>봇 응답:</strong> ${botMessage}</p>
                     <p style="font-size: 0.8em; color: #b8a082;">${timestamp}</p>
                 </div>
             `;
         });
         
-        recentChatsEl.innerHTML = html;
+        allChatsEl.innerHTML = html;
         
     } catch (error) {
-        console.error("최근 대화 로드 오류:", error);
-        document.getElementById("recent-chats").innerHTML = '<p style="color: #dc3545;">최근 대화 로드 중 오류가 발생했습니다.</p>';
+        console.error("전체 대화 로드 오류:", error);
+        document.getElementById("all-chats").innerHTML = '<p style="color: #dc3545;">전체 대화 로드 중 오류가 발생했습니다.</p>';
     }
 }
 
-// 주제별 분석 로드
 async function loadTopicAnalysis() {
     try {
-        const analyticsSnaps = await getDocs(query(collection(window.db, "chatAnalytics"), orderBy("timestamp", "desc"), limit(100)));
+        const analyticsSnaps = await getDocs(query(collection(window.db, "chatAnalytics"), orderBy("timestamp", "desc"), limit(200)));
         const topicAnalysisEl = document.getElementById("topic-analysis");
         
         if (analyticsSnaps.empty) {
@@ -1528,14 +1486,25 @@ async function loadTopicAnalysis() {
             work: '💼 직장',
             social: '👥 사회관계',
             symptoms: '🧠 증상',
-            daily: '📅 일상'
+            daily: '📅 일상',
+            treatment: '🏥 치료',
+            sleep: '😴 수면',
+            food: '🍽️ 식사',
+            exercise: '🏃 운동',
+            stress: '😰 스트레스',
+            school: '🎓 학교',
+            money: '💰 경제적 문제',
+            health: '⚕️ 건강',
+            relationship: '💕 연애관계'
         };
         
         let html = '';
-        Object.entries(topicCounts).forEach(([topic, count]) => {
-            const label = topicLabels[topic] || topic;
-            html += `<div class="content-item"><h4>${label}</h4><p>${count}회 언급</p></div>`;
-        });
+        Object.entries(topicCounts)
+            .sort((a, b) => b[1] - a[1])
+            .forEach(([topic, count]) => {
+                const label = topicLabels[topic] || topic;
+                html += `<div class="content-item"><h4>${label}</h4><p>${count}회 언급</p></div>`;
+            });
         
         topicAnalysisEl.innerHTML = html || '<p style="text-align: center; color: #f5f0e6;">주제 데이터가 충분하지 않습니다.</p>';
         
@@ -1545,57 +1514,6 @@ async function loadTopicAnalysis() {
     }
 }
 
-// YouTube URL을 embed URL로 변환
-function convertToEmbedUrl(url) {
-    try {
-        let videoId = '';
-        
-        if (url.includes('youtube.com/watch?v=')) {
-            const urlParams = new URLSearchParams(url.split('?')[1]);
-            videoId = urlParams.get('v');
-        } else if (url.includes('youtu.be/')) {
-            videoId = url.split('youtu.be/')[1].split('?')[0];
-        } else if (url.includes('youtube.com/embed/')) {
-            return url;
-        }
-        
-        if (videoId) {
-            return `https://www.youtube.com/embed/${videoId}`;
-        }
-        
-        return url;
-    } catch (error) {
-        console.error('URL 변환 오류:', error);
-        return url;
-    }
-}
-
-// 메시지 표시 함수
-function showMessage(element, message, type) {
-    if (!element) return;
-    element.innerHTML = `<div class="status-message ${type}">${message}</div>`;
-    setTimeout(() => {
-        element.innerHTML = "";
-    }, 5000);
-}
-
-// 모든 폼 초기화
-function clearAllForms() {
-    const forms = [
-        'diary-form', 'timeline-form', 'gallery-form', 'video-form', 
-        'interview-form', 'archive-timeline-form', 'archive-video-form', 'archive-gallery-form'
-    ];
-    forms.forEach(formId => {
-        const form = document.getElementById(formId);
-        if (form) form.reset();
-    });
-    
-    document.querySelectorAll('[id$="-message"]').forEach(el => {
-        el.innerHTML = "";
-    });
-}
-
-console.log("🚀 Admin 스크립트 로드 완료");
 </script>
 </body>
 </html>
