@@ -516,6 +516,75 @@ body {
     white-space: pre-wrap;
 }
 
+.playlist-item {
+    background: rgba(245, 240, 230, 0.05);
+    border: 1px solid rgba(245, 240, 230, 0.2);
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.playlist-thumbnail {
+    width: 80px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    background: rgba(245, 240, 230, 0.1);
+}
+
+.playlist-info {
+    flex: 1;
+}
+
+.playlist-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #f5f0e6;
+    margin-bottom: 5px;
+}
+
+.playlist-description {
+    font-size: 14px;
+    color: #d4c4a8;
+    margin-bottom: 5px;
+}
+
+.playlist-tags {
+    font-size: 12px;
+    color: #8d6e63;
+}
+
+.playlist-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.edit-btn {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+    background: #28a745;
+    color: white;
+}
+
+.edit-btn:hover {
+    background: #218838;
+}
+
+.form-help {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.9em;
+    color: #d4c4a8;
+    opacity: 0.8;
+}
+
 @keyframes fadeIn {
     from { 
         opacity: 0; 
@@ -575,6 +644,11 @@ body {
         max-width: calc(100vw - 40px);
         max-height: calc(100vh - 40px);
     }
+
+    .playlist-item {
+        flex-direction: column;
+        text-align: center;
+    }
 }
 </style>
 </head>
@@ -603,6 +677,7 @@ body {
 <div class="management-tabs">
     <button class="tab-button active" onclick="showTab('timeline')">⏰ 나의 타임라인</button>
     <button class="tab-button" onclick="showTab('video')">🎥 다큐 영상</button>
+    <button class="tab-button" onclick="showTab('playlist')">🎵 임쭈쭈 플레이리스트</button>
     <button class="tab-button" onclick="showTab('archive-timeline')">📅 아카이브 타임라인</button>
     <button class="tab-button" onclick="showTab('archive-videos')">🎬 아카이브 영상</button>
     <button class="tab-button" onclick="showTab('archive-gallery')">📸 아카이브 갤러리</button>
@@ -708,6 +783,54 @@ body {
                 <p style="text-align: center; color: #8d6e63;">영상 목록을 불러오는 중...</p>
             </div>
             <button type="button" id="refresh-video-btn" class="action-btn secondary-btn" style="width: 100%;">
+                목록 새로고침
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="playlist-tab" class="tab-content">
+    <div class="management-grid">
+        <div class="management-card">
+            <h2 class="card-title">🎵 임쭈쭈 추천 플레이리스트 관리</h2>
+            <div class="section-info">
+                <h4>📍 업로드 위치</h4>
+                <p>여기서 추가한 플레이리스트는 <strong>"당신의 정신병 일지" 페이지 하단</strong>에 표시됩니다.</p>
+            </div>
+            <form id="playlist-form" class="form-section">
+                <div class="form-group">
+                    <label for="playlist-title">플레이리스트 제목</label>
+                    <input type="text" id="playlist-title" placeholder="예: 힘들 때 듣는 음악" required />
+                </div>
+                <div class="form-group">
+                    <label for="playlist-description">설명</label>
+                    <textarea id="playlist-description" rows="3" placeholder="이 플레이리스트에 대한 간단한 설명을 입력하세요"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="playlist-url">유튜브 플레이리스트 URL</label>
+                    <input type="url" id="playlist-url" placeholder="https://youtube.com/playlist?list=..." required />
+                </div>
+                <div class="form-group">
+                    <label for="playlist-thumbnail">썸네일 이미지 (선택사항)</label>
+                    <input type="file" id="playlist-thumbnail" accept="image/*" />
+                    <small class="form-help">업로드하지 않으면 유튜브 기본 썸네일을 사용합니다</small>
+                    <div id="playlist-thumbnail-info" class="file-info"></div>
+                </div>
+                <div class="form-group">
+                    <label for="playlist-tags">태그 (쉼표로 구분)</label>
+                    <input type="text" id="playlist-tags" placeholder="예: 힐링, 잔잔한, 위로" />
+                </div>
+                <button type="submit">플레이리스트 추가</button>
+            </form>
+            <div id="playlist-message"></div>
+        </div>
+
+        <div class="management-card">
+            <h2 class="card-title">📋 등록된 플레이리스트 목록</h2>
+            <div id="playlist-list" class="content-list">
+                <div class="loading-message">플레이리스트를 불러오는 중...</div>
+            </div>
+            <button type="button" id="refresh-playlist-btn" class="action-btn secondary-btn" style="width: 100%;">
                 목록 새로고침
             </button>
         </div>
@@ -1161,6 +1284,7 @@ async function handleLogin() {
                 loadChatbotStats();
                 loadTimelineList();
                 loadVideoList();
+                loadPlaylistList();
                 loadArchiveTimelineList();
                 loadArchiveVideosList();
                 loadArchiveGalleryList();
@@ -1201,6 +1325,8 @@ window.showTab = function(tabName) {
         loadTimelineList();
     } else if (tabName === 'video') {
         loadVideoList();
+    } else if (tabName === 'playlist') {
+        loadPlaylistList();
     } else if (tabName === 'archive-timeline') {
         loadArchiveTimelineList();
     } else if (tabName === 'archive-videos') {
@@ -1227,8 +1353,18 @@ function initializeForms() {
             document.getElementById("video-file-info")
         );
     }
+
+    const playlistForm = document.getElementById("playlist-form");
+    if (playlistForm) {
+        playlistForm.addEventListener("submit", handlePlaylistSubmit);
+        displayFileInfo(
+            document.getElementById("playlist-thumbnail"),
+            document.getElementById("playlist-thumbnail-info")
+        );
+    }
     
     initializeArchiveForms();
+    document.getElementById('refresh-playlist-btn')?.addEventListener('click', loadPlaylistList);
     initializeChatbotButtons();
     setupChatDetailModal();
 }
@@ -1273,18 +1409,11 @@ function setupChatDetailModal() {
 }
 
 function openChatModal(userMessage, botMessage, timestampSeconds) {
-    console.log('openChatModal 호출됨:', { 
-        userMessage: userMessage ? userMessage.substring(0, 50) + '...' : 'null', 
-        botMessage: botMessage ? botMessage.substring(0, 50) + '...' : 'null', 
-        timestampSeconds 
-    });
-    
     const modal = document.getElementById('chat-detail-modal');
     const title = document.getElementById('chat-detail-title');
     const body = document.getElementById('chat-detail-body');
     
     if (!modal || !title || !body) {
-        console.error('모달 요소를 찾을 수 없습니다:', { modal: !!modal, title: !!title, body: !!body });
         return;
     }
     
@@ -1300,11 +1429,8 @@ function openChatModal(userMessage, botMessage, timestampSeconds) {
     
     title.textContent = `💬 대화 상세 내용`;
     
-    // 메시지 내용 확인 및 기본값 설정
     const displayUserMessage = userMessage && userMessage.trim() !== '' ? userMessage : '사용자 메시지가 기록되지 않았습니다.';
     const displayBotMessage = botMessage && botMessage.trim() !== '' ? botMessage : '상담사 응답이 기록되지 않았습니다.';
-    
-    console.log('모달에 표시할 메시지:', { displayUserMessage, displayBotMessage });
     
     body.innerHTML = `
         <div style="text-align: center; margin-bottom: 20px; padding: 10px; background: rgba(245, 240, 230, 0.05); border-radius: 8px;">
@@ -1328,23 +1454,9 @@ function openChatModal(userMessage, botMessage, timestampSeconds) {
                 <p style="margin: 0; white-space: pre-wrap; color: #f5f0e6; word-wrap: break-word;">${displayBotMessage}</p>
             </div>
         </div>
-        
-        <div style="text-align: center; margin-top: 20px; padding: 10px; border-top: 1px solid rgba(245, 240, 230, 0.2);">
-            <p style="margin: 0; color: #d4c4a8; font-size: 0.9em;">이 대화는 상담 목적으로 기록되었습니다.</p>
-        </div>
     `;
     
     modal.style.display = 'flex';
-    console.log('모달이 표시되었습니다.');
-    
-    // 모달 스타일 강제 적용
-    setTimeout(() => {
-        if (modal.style.display === 'flex') {
-            modal.style.opacity = '1';
-            modal.style.visibility = 'visible';
-            console.log('모달 스타일 적용 완료');
-        }
-    }, 10);
 }
 
 async function handleTimelineSubmit(e) {
@@ -1361,20 +1473,20 @@ async function handleTimelineSubmit(e) {
     }
     
     try {
-        await addDoc(collection(window.db, "personalTimeline"), {
+        await addDoc(collection(db, "timeline"), {
             person,
             date,
             title,
             content,
-            timestamp: serverTimestamp()
+            createdAt: serverTimestamp()
         });
         
         showMessage(document.getElementById("timeline-message"), "타임라인 이벤트가 성공적으로 추가되었습니다!", "success");
         document.getElementById("timeline-form").reset();
         loadTimelineList();
     } catch (error) {
-        console.error("타임라인 이벤트 추가 오류:", error);
-        showMessage(document.getElementById("timeline-message"), "이벤트 추가 중 오류가 발생했습니다.", "error");
+        console.error("타임라인 이벤트 추가 실패:", error);
+        showMessage(document.getElementById("timeline-message"), "타임라인 이벤트 추가 중 오류가 발생했습니다.", "error");
     }
 }
 
@@ -1391,17 +1503,22 @@ async function handleVideoSubmit(e) {
     }
     
     try {
-        let videoUrl = "";
-        let isYoutube = false;
+        showMessage(document.getElementById("video-message"), "영상을 업로드하는 중...", "success");
+        
+        let videoData = {
+            title,
+            description,
+            createdAt: serverTimestamp()
+        };
         
         if (videoType === "youtube") {
             const youtubeUrl = document.getElementById("youtube-url").value.trim();
             if (!youtubeUrl) {
-                showMessage(document.getElementById("video-message"), "YouTube 링크를 입력해주세요.", "error");
+                showMessage(document.getElementById("video-message"), "YouTube URL을 입력해주세요.", "error");
                 return;
             }
-            videoUrl = convertToEmbedUrl(youtubeUrl);
-            isYoutube = true;
+            videoData.url = convertToEmbedUrl(youtubeUrl);
+            videoData.type = "youtube";
         } else {
             const videoFile = document.getElementById("video-file").files[0];
             if (!videoFile) {
@@ -1409,27 +1526,270 @@ async function handleVideoSubmit(e) {
                 return;
             }
             
-            const storageRef = ref(window.storage, `videos/${videoFile.name}_${Date.now()}`);
-            await uploadBytes(storageRef, videoFile);
-            videoUrl = await getDownloadURL(storageRef);
-            isYoutube = false;
+            const videoRef = ref(storage, `videos/${Date.now()}_${videoFile.name}`);
+            const snapshot = await uploadBytes(videoRef, videoFile);
+            const downloadURL = await getDownloadURL(snapshot.ref);
+            
+            videoData.url = downloadURL;
+            videoData.type = "file";
+            videoData.fileName = videoFile.name;
         }
         
-        await addDoc(collection(window.db, "documentaryVideos"), {
-            title,
-            description,
-            videoUrl,
-            isYoutube,
-            timestamp: serverTimestamp()
-        });
+        await addDoc(collection(db, "videos"), videoData);
         
         showMessage(document.getElementById("video-message"), "영상이 성공적으로 업로드되었습니다!", "success");
         document.getElementById("video-form").reset();
         document.getElementById("video-file-info").innerHTML = "";
         loadVideoList();
+        
     } catch (error) {
-        console.error("영상 업로드 오류:", error);
+        console.error("영상 업로드 실패:", error);
         showMessage(document.getElementById("video-message"), "영상 업로드 중 오류가 발생했습니다.", "error");
+    }
+}
+
+async function handlePlaylistSubmit(e) {
+    e.preventDefault();
+    
+    const title = document.getElementById("playlist-title").value.trim();
+    const description = document.getElementById("playlist-description").value.trim();
+    const url = document.getElementById("playlist-url").value.trim();
+    const tags = document.getElementById("playlist-tags").value.trim();
+    const thumbnailFile = document.getElementById("playlist-thumbnail").files[0];
+    
+    if (!title || !url) {
+        showMessage(document.getElementById("playlist-message"), "제목과 URL을 모두 입력해주세요.", "error");
+        return;
+    }
+    
+    if (!isValidYouTubeUrl(url)) {
+        showMessage(document.getElementById("playlist-message"), "올바른 유튜브 URL을 입력해주세요.", "error");
+        return;
+    }
+    
+    try {
+        showMessage(document.getElementById("playlist-message"), "플레이리스트를 업로드하는 중...", "success");
+        
+        let thumbnailUrl = "";
+        
+        if (thumbnailFile) {
+            const thumbnailRef = ref(storage, `playlists/thumbnails/${Date.now()}_${thumbnailFile.name}`);
+            const thumbnailSnapshot = await uploadBytes(thumbnailRef, thumbnailFile);
+            thumbnailUrl = await getDownloadURL(thumbnailSnapshot.ref);
+        } else {
+            thumbnailUrl = await getYouTubeThumbnail(url);
+        }
+        
+        const playlistData = {
+            title,
+            description,
+            url,
+            thumbnail: thumbnailUrl,
+            tags: tags ? tags.split(',').map(tag => tag.trim()) : [],
+            createdAt: serverTimestamp()
+        };
+        
+        await addDoc(collection(db, "playlists"), playlistData);
+        
+        showMessage(document.getElementById("playlist-message"), "플레이리스트가 성공적으로 추가되었습니다!", "success");
+        document.getElementById("playlist-form").reset();
+        document.getElementById("playlist-thumbnail-info").innerHTML = "";
+        loadPlaylistList();
+        
+    } catch (error) {
+        console.error("플레이리스트 업로드 실패:", error);
+        showMessage(document.getElementById("playlist-message"), "플레이리스트 업로드 중 오류가 발생했습니다.", "error");
+    }
+}
+
+async function getYouTubeThumbnail(url) {
+    try {
+        const videoIdMatch = url.match(/[?&]v=([^&]+)/);
+        const playlistIdMatch = url.match(/[?&]list=([^&]+)/);
+        
+        if (videoIdMatch) {
+            return `https://img.youtube.com/vi/${videoIdMatch[1]}/maxresdefault.jpg`;
+        } else if (playlistIdMatch) {
+            return `https://img.youtube.com/vi/videoseries?list=${playlistIdMatch[1]}/maxresdefault.jpg`;
+        }
+        return "";
+    } catch (error) {
+        console.error("유튜브 썸네일 추출 실패:", error);
+        return "";
+    }
+}
+
+function isValidYouTubeUrl(url) {
+    const patterns = [
+        /^https?:\/\/(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/playlist\?list=)/,
+        /^https?:\/\/(www\.)?youtube\.com\/embed\//
+    ];
+    return patterns.some(pattern => pattern.test(url));
+}
+
+async function loadTimelineList() {
+    const timelineList = document.getElementById("timeline-list");
+    if (!timelineList) return;
+
+    try {
+        const q = query(collection(db, "timeline"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.empty) {
+            timelineList.innerHTML = '<p style="text-align: center; color: #d4c4a8;">등록된 타임라인 이벤트가 없습니다.</p>';
+            return;
+        }
+        
+        const events = [];
+        snapshot.forEach((doc) => {
+            events.push({ id: doc.id, ...doc.data() });
+        });
+        
+        timelineList.innerHTML = events.map(event => `
+            <div class="content-item">
+                <div class="content-item-header">
+                    <h4>${event.title}</h4>
+                    <div class="content-item-actions">
+                        <button class="delete-btn" onclick="deleteTimelineEvent('${event.id}')">삭제</button>
+                    </div>
+                </div>
+                <p><strong>인물:</strong> ${event.person === 'jueun' ? '주은' : '순경'}</p>
+                <p><strong>날짜:</strong> ${event.date}</p>
+                <p>${event.content}</p>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error("타임라인 로드 실패:", error);
+        timelineList.innerHTML = '<p style="text-align: center; color: #dc3545;">타임라인을 불러오는데 실패했습니다.</p>';
+    }
+}
+
+async function loadVideoList() {
+    const videoList = document.getElementById("video-list");
+    if (!videoList) return;
+
+    try {
+        const q = query(collection(db, "videos"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.empty) {
+            videoList.innerHTML = '<p style="text-align: center; color: #d4c4a8;">업로드된 영상이 없습니다.</p>';
+            return;
+        }
+        
+        const videos = [];
+        snapshot.forEach((doc) => {
+            videos.push({ id: doc.id, ...doc.data() });
+        });
+        
+        videoList.innerHTML = videos.map(video => `
+            <div class="content-item">
+                <div class="content-item-header">
+                    <h4>${video.title}</h4>
+                    <div class="content-item-actions">
+                        <button class="edit-btn" onclick="window.open('${video.url}', '_blank')" style="background: #007bff; margin-right: 5px;">미리보기</button>
+                        <button class="delete-btn" onclick="deleteVideo('${video.id}')">삭제</button>
+                    </div>
+                </div>
+                <p>${video.description || ''}</p>
+                <p><strong>타입:</strong> ${video.type === 'youtube' ? 'YouTube' : '파일 업로드'}</p>
+                ${video.fileName ? `<p><strong>파일명:</strong> ${video.fileName}</p>` : ''}
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error("영상 로드 실패:", error);
+        videoList.innerHTML = '<p style="text-align: center; color: #dc3545;">영상 목록을 불러오는데 실패했습니다.</p>';
+    }
+}
+
+async function loadPlaylistList() {
+    const playlistList = document.getElementById("playlist-list");
+    if (!playlistList) return;
+
+    try {
+        playlistList.innerHTML = '<div class="loading-message">플레이리스트를 불러오는 중...</div>';
+        
+        const q = query(collection(db, "playlists"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.empty) {
+            playlistList.innerHTML = '<p style="text-align: center; color: #d4c4a8;">등록된 플레이리스트가 없습니다.</p>';
+            return;
+        }
+        
+        const playlists = [];
+        snapshot.forEach((doc) => {
+            playlists.push({ id: doc.id, ...doc.data() });
+        });
+        
+        playlistList.innerHTML = playlists.map(playlist => `
+            <div class="playlist-item">
+                <img src="${playlist.thumbnail || '/api/placeholder/80/60'}" 
+                     alt="${playlist.title}" 
+                     class="playlist-thumbnail"
+                     onerror="this.src='/api/placeholder/80/60'">
+                <div class="playlist-info">
+                    <div class="playlist-title">${playlist.title}</div>
+                    <div class="playlist-description">${playlist.description || ''}</div>
+                    <div class="playlist-tags">
+                        태그: ${playlist.tags ? playlist.tags.join(', ') : '없음'}
+                    </div>
+                </div>
+                <div class="playlist-actions">
+                    <button class="edit-btn" onclick="window.open('${playlist.url}', '_blank')">
+                        미리보기
+                    </button>
+                    <button class="delete-btn" onclick="deletePlaylist('${playlist.id}')">
+                        삭제
+                    </button>
+                </div>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error("플레이리스트 로드 실패:", error);
+        playlistList.innerHTML = '<p style="text-align: center; color: #dc3545;">플레이리스트를 불러오는데 실패했습니다.</p>';
+    }
+}
+
+async function deleteTimelineEvent(eventId) {
+    if (!confirm("이 타임라인 이벤트를 삭제하시겠습니까?")) return;
+    
+    try {
+        await deleteDoc(doc(db, "timeline", eventId));
+        showMessage(document.getElementById("timeline-message"), "타임라인 이벤트가 삭제되었습니다.", "success");
+        loadTimelineList();
+    } catch (error) {
+        console.error("타임라인 이벤트 삭제 실패:", error);
+        showMessage(document.getElementById("timeline-message"), "삭제 중 오류가 발생했습니다.", "error");
+    }
+}
+
+async function deleteVideo(videoId) {
+    if (!confirm("이 영상을 삭제하시겠습니까?")) return;
+    
+    try {
+        await deleteDoc(doc(db, "videos", videoId));
+        showMessage(document.getElementById("video-message"), "영상이 삭제되었습니다.", "success");
+        loadVideoList();
+    } catch (error) {
+        console.error("영상 삭제 실패:", error);
+        showMessage(document.getElementById("video-message"), "삭제 중 오류가 발생했습니다.", "error");
+    }
+}
+
+async function deletePlaylist(playlistId) {
+    if (!confirm("이 플레이리스트를 삭제하시겠습니까?")) return;
+    
+    try {
+        await deleteDoc(doc(db, "playlists", playlistId));
+        showMessage(document.getElementById("playlist-message"), "플레이리스트가 삭제되었습니다.", "success");
+        loadPlaylistList();
+    } catch (error) {
+        console.error("플레이리스트 삭제 실패:", error);
+        showMessage(document.getElementById("playlist-message"), "삭제 중 오류가 발생했습니다.", "error");
     }
 }
 
@@ -1490,19 +1850,19 @@ async function handleArchiveTimelineSubmit(e) {
     }
     
     try {
-        await addDoc(collection(window.db, "archiveTimeline"), {
+        await addDoc(collection(db, "archiveTimeline"), {
             date,
             title,
             description,
-            timestamp: serverTimestamp()
+            createdAt: serverTimestamp()
         });
         
         showMessage(document.getElementById("archive-timeline-message"), "아카이브 타임라인 이벤트가 성공적으로 추가되었습니다!", "success");
         document.getElementById("archive-timeline-form").reset();
         loadArchiveTimelineList();
     } catch (error) {
-        console.error("아카이브 타임라인 추가 오류:", error);
-        showMessage(document.getElementById("archive-timeline-message"), "타임라인 이벤트 추가 중 오류가 발생했습니다.", "error");
+        console.error("아카이브 타임라인 이벤트 추가 실패:", error);
+        showMessage(document.getElementById("archive-timeline-message"), "이벤트 추가 중 오류가 발생했습니다.", "error");
     }
 }
 
@@ -1511,26 +1871,32 @@ async function handleArchiveVideoSubmit(e) {
     
     const title = document.getElementById("archive-video-title").value.trim();
     const description = document.getElementById("archive-video-description").value.trim();
-    const videoType = document.querySelector('input[name="archive-video-type"]:checked').value;
     const duration = document.getElementById("archive-video-duration").value.trim();
+    const videoType = document.querySelector('input[name="archive-video-type"]:checked').value;
     
     if (!title || !description || !duration) {
-        showMessage(document.getElementById("archive-video-message"), "제목, 설명, 길이를 모두 입력해주세요.", "error");
+        showMessage(document.getElementById("archive-video-message"), "모든 필드를 입력해주세요.", "error");
         return;
     }
     
     try {
-        let videoUrl = "";
-        let isYoutube = false;
+        showMessage(document.getElementById("archive-video-message"), "아카이브 영상을 업로드하는 중...", "success");
+        
+        let videoData = {
+            title,
+            description,
+            duration,
+            createdAt: serverTimestamp()
+        };
         
         if (videoType === "youtube") {
             const youtubeUrl = document.getElementById("archive-video-url").value.trim();
             if (!youtubeUrl) {
-                showMessage(document.getElementById("archive-video-message"), "YouTube 링크를 입력해주세요.", "error");
+                showMessage(document.getElementById("archive-video-message"), "YouTube URL을 입력해주세요.", "error");
                 return;
             }
-            videoUrl = convertToEmbedUrl(youtubeUrl);
-            isYoutube = true;
+            videoData.url = convertToEmbedUrl(youtubeUrl);
+            videoData.type = "youtube";
         } else {
             const videoFile = document.getElementById("archive-video-file").files[0];
             if (!videoFile) {
@@ -1538,29 +1904,25 @@ async function handleArchiveVideoSubmit(e) {
                 return;
             }
             
-            const storageRef = ref(window.storage, `archive-videos/${videoFile.name}_${Date.now()}`);
-            await uploadBytes(storageRef, videoFile);
-            videoUrl = await getDownloadURL(storageRef);
-            isYoutube = false;
+            const videoRef = ref(storage, `archive/videos/${Date.now()}_${videoFile.name}`);
+            const snapshot = await uploadBytes(videoRef, videoFile);
+            const downloadURL = await getDownloadURL(snapshot.ref);
+            
+            videoData.url = downloadURL;
+            videoData.type = "file";
+            videoData.fileName = videoFile.name;
         }
         
-        await addDoc(collection(window.db, "archiveVideos"), {
-            title,
-            description,
-            url: videoUrl,
-            embedUrl: videoUrl,
-            duration,
-            isYoutube,
-            timestamp: serverTimestamp()
-        });
+        await addDoc(collection(db, "archiveVideos"), videoData);
         
-        showMessage(document.getElementById("archive-video-message"), "아카이브 영상이 성공적으로 추가되었습니다!", "success");
+        showMessage(document.getElementById("archive-video-message"), "아카이브 영상이 성공적으로 업로드되었습니다!", "success");
         document.getElementById("archive-video-form").reset();
         document.getElementById("archive-video-file-info").innerHTML = "";
         loadArchiveVideosList();
+        
     } catch (error) {
-        console.error("아카이브 영상 추가 오류:", error);
-        showMessage(document.getElementById("archive-video-message"), "영상 추가 중 오류가 발생했습니다.", "error");
+        console.error("아카이브 영상 업로드 실패:", error);
+        showMessage(document.getElementById("archive-video-message"), "영상 업로드 중 오류가 발생했습니다.", "error");
     }
 }
 
@@ -1578,935 +1940,448 @@ async function handleArchiveGallerySubmit(e) {
     }
     
     try {
-        const storageRef = ref(window.storage, `archive-gallery/${imageFile.name}_${Date.now()}`);
-        await uploadBytes(storageRef, imageFile);
-        const imageUrl = await getDownloadURL(storageRef);
+        showMessage(document.getElementById("archive-gallery-message"), "갤러리에 업로드하는 중...", "success");
         
-        await addDoc(collection(window.db, "archiveGallery"), {
-            imageUrl,
+        const imageRef = ref(storage, `archive/gallery/${Date.now()}_${imageFile.name}`);
+        const snapshot = await uploadBytes(imageRef, imageFile);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+        
+        const galleryData = {
             title,
             description,
             category,
-            timestamp: serverTimestamp()
-        });
+            imageUrl: downloadURL,
+            fileName: imageFile.name,
+            createdAt: serverTimestamp()
+        };
         
-        showMessage(document.getElementById("archive-gallery-message"), "아카이브 갤러리에 성공적으로 추가되었습니다!", "success");
+        await addDoc(collection(db, "archiveGallery"), galleryData);
+        
+        showMessage(document.getElementById("archive-gallery-message"), "갤러리에 성공적으로 추가되었습니다!", "success");
         document.getElementById("archive-gallery-form").reset();
         document.getElementById("archive-gallery-file-info").innerHTML = "";
         loadArchiveGalleryList();
+        
     } catch (error) {
-        console.error("아카이브 갤러리 추가 오류:", error);
-        showMessage(document.getElementById("archive-gallery-message"), "갤러리 추가 중 오류가 발생했습니다.", "error");
-    }
-}
-
-function initializeChatbotButtons() {
-    document.getElementById("refresh-stats-btn")?.addEventListener("click", loadChatbotStats);
-    document.getElementById("refresh-emotions-btn")?.addEventListener("click", loadEmotionAnalysis);
-    document.getElementById("refresh-urgent-btn")?.addEventListener("click", loadUrgentMessages);
-    document.getElementById("refresh-all-chats-btn")?.addEventListener("click", loadAllChats);
-    document.getElementById("refresh-topics-btn")?.addEventListener("click", loadTopicAnalysis);
-    
-    document.getElementById("refresh-timeline-btn")?.addEventListener("click", loadTimelineList);
-    document.getElementById("refresh-video-btn")?.addEventListener("click", loadVideoList);
-    
-    document.getElementById("refresh-archive-timeline-btn")?.addEventListener("click", loadArchiveTimelineList);
-    document.getElementById("refresh-archive-videos-btn")?.addEventListener("click", loadArchiveVideosList);
-    document.getElementById("refresh-archive-gallery-btn")?.addEventListener("click", loadArchiveGalleryList);
-    
-    document.getElementById("refresh-system-btn")?.addEventListener("click", loadSystemLogs);
-    document.getElementById("refresh-errors-btn")?.addEventListener("click", loadErrorLogs);
-    document.getElementById("refresh-activity-btn")?.addEventListener("click", loadActivityLogs);
-    document.getElementById("refresh-db-btn")?.addEventListener("click", loadDatabaseStatus);
-    document.getElementById("refresh-performance-btn")?.addEventListener("click", loadPerformanceMetrics);
-    
-    document.getElementById("clear-old-logs-btn")?.addEventListener("click", clearOldLogs);
-    document.getElementById("backup-data-btn")?.addEventListener("click", backupData);
-    document.getElementById("system-health-check-btn")?.addEventListener("click", systemHealthCheck);
-}
-
-async function loadChatbotStats() {
-    try {
-        const chatHistoryQuery = query(collection(window.db, 'chatHistory'));
-        const chatHistorySnapshot = await getDocs(chatHistoryQuery);
-        const totalChats = chatHistorySnapshot.size;
-
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-        const recentChatsQuery = query(
-            collection(window.db, 'chatHistory'),
-            where('timestamp', '>=', sevenDaysAgo)
-        );
-        const recentChatsSnapshot = await getDocs(recentChatsQuery);
-        
-        const uniqueUsers = new Set();
-        recentChatsSnapshot.forEach(doc => {
-            const data = doc.data();
-            if (data.userId) {
-                uniqueUsers.add(data.userId);
-            }
-        });
-        const activeUsers = uniqueUsers.size;
-
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const tomorrow = new Date(today);
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        
-        const todayChatsQuery = query(
-            collection(window.db, 'chatHistory'),
-            where('timestamp', '>=', today),
-            where('timestamp', '<', tomorrow)
-        );
-        const todayChatsSnapshot = await getDocs(todayChatsQuery);
-        const todayChats = todayChatsSnapshot.size;
-
-        let totalMessages = 0;
-        let sessionsWithMultipleMessages = 0;
-        const sessionMessageCounts = {};
-
-        chatHistorySnapshot.forEach(doc => {
-            const data = doc.data();
-            const sessionId = data.sessionId || 'unknown';
-            
-            if (!sessionMessageCounts[sessionId]) {
-                sessionMessageCounts[sessionId] = 0;
-            }
-            sessionMessageCounts[sessionId]++;
-            totalMessages++;
-        });
-
-        const sessionCount = Object.keys(sessionMessageCounts).length;
-        const avgMessages = sessionCount > 0 ? (totalMessages / sessionCount).toFixed(1) : 0;
-
-        document.getElementById("total-chats").textContent = totalChats || "0";
-        document.getElementById("active-users").textContent = activeUsers || "0";
-        document.getElementById("today-chats").textContent = todayChats || "0";
-        document.getElementById("avg-messages").textContent = avgMessages || "0";
-
-        console.log('챗봇 통계 로드 완료:', {
-            totalChats,
-            activeUsers,
-            todayChats,
-            avgMessages
-        });
-
-    } catch (error) {
-        console.error("챗봇 통계 로딩 실패:", error);
-        document.getElementById("total-chats").textContent = "Error";
-        document.getElementById("active-users").textContent = "Error";
-        document.getElementById("today-chats").textContent = "Error";
-        document.getElementById("avg-messages").textContent = "Error";
-    }
-}
-
-async function loadEmotionAnalysis() {
-    try {
-        const analyticsQuery = query(collection(window.db, 'chatAnalytics'));
-        const analyticsSnapshot = await getDocs(analyticsQuery);
-        
-        const emotionCounts = {
-            sad: 0,
-            anxious: 0,
-            angry: 0,
-            hopeful: 0,
-            confused: 0
-        };
-
-        let totalEmotions = 0;
-
-        analyticsSnapshot.forEach(doc => {
-            const data = doc.data();
-            if (data.detectedEmotions && Array.isArray(data.detectedEmotions)) {
-                data.detectedEmotions.forEach(emotion => {
-                    if (emotionCounts.hasOwnProperty(emotion)) {
-                        emotionCounts[emotion]++;
-                        totalEmotions++;
-                    }
-                });
-            }
-        });
-
-        const container = document.getElementById("emotion-analysis");
-        
-        if (totalEmotions === 0) {
-            container.innerHTML = `
-                <div class="content-item">
-                    <h4>📊 감정 분석</h4>
-                    <p>아직 충분한 데이터가 수집되지 않았습니다.</p>
-                </div>
-            `;
-            return;
-        }
-
-        let html = '';
-        const emotionLabels = {
-            sad: '😢 우울',
-            anxious: '😰 불안', 
-            hopeful: '😊 희망',
-            angry: '😡 분노',
-            confused: '😕 혼란'
-        };
-
-        const emotionPercentages = Object.entries(emotionCounts)
-            .map(([emotion, count]) => ({
-                emotion,
-                count,
-                percentage: ((count / totalEmotions) * 100).toFixed(1)
-            }))
-            .sort((a, b) => b.count - a.count);
-
-        emotionPercentages.forEach(({ emotion, count, percentage }) => {
-            if (count > 0) {
-                html += `
-                    <div class="content-item">
-                        <h4>${emotionLabels[emotion]} - ${percentage}%</h4>
-                        <p>감지된 횟수: ${count}회</p>
-                    </div>
-                `;
-            }
-        });
-
-        container.innerHTML = html || `
-            <div class="content-item">
-                <h4>📊 감정 분석</h4>
-                <p>분석 가능한 감정 데이터가 없습니다.</p>
-            </div>
-        `;
-
-    } catch (error) {
-        console.error("감정 분석 로딩 실패:", error);
-        document.getElementById("emotion-analysis").innerHTML = `
-            <div class="content-item">
-                <h4>⚠️ 오류</h4>
-                <p>감정 분석 데이터를 불러오는 중 오류가 발생했습니다.</p>
-            </div>
-        `;
-    }
-}
-
-async function loadUrgentMessages() {
-    try {
-        const container = document.getElementById("urgent-messages");
-        
-        // chatHistory에서 직접 데이터를 가져와서 긴급상황 시뮬레이션
-        const chatHistoryQuery = query(
-            collection(window.db, 'chatHistory'),
-            orderBy('timestamp', 'desc'),
-            limit(50)
-        );
-        const chatHistorySnapshot = await getDocs(chatHistoryQuery);
-        
-        if (chatHistorySnapshot.empty) {
-            container.innerHTML = `
-                <div class="content-item">
-                    <h4>✅ 현재 긴급 상황 없음</h4>
-                    <p>아직 대화 데이터가 없습니다.</p>
-                </div>
-            `;
-            return;
-        }
-
-        // 긴급상황 키워드로 필터링
-        const urgentKeywords = ['죽고싶', '자살', '자해', '죽', '끝내고싶', '힘들어', '우울', '절망', '포기', '의미없', '혼자', '외로', '아무도'];
-        let urgentMessages = [];
-        
-        chatHistorySnapshot.forEach(doc => {
-            const data = doc.data();
-            const userMessage = (data.userMessage || '').toLowerCase();
-            
-            // 긴급상황 키워드가 포함된 메시지 찾기
-            const hasUrgentKeyword = urgentKeywords.some(keyword => userMessage.includes(keyword));
-            
-            if (hasUrgentKeyword && data.userMessage && data.botMessage) {
-                const urgencyLevel = urgentKeywords.slice(0, 6).some(keyword => userMessage.includes(keyword)) ? 'high' : 'medium';
-                urgentMessages.push({
-                    id: doc.id,
-                    userMessage: data.userMessage,
-                    botMessage: data.botMessage,
-                    userId: data.userId,
-                    timestamp: data.timestamp,
-                    urgencyLevel: urgencyLevel,
-                    detectedTopics: ['심리상담', '위기개입']
-                });
-            }
-        });
-
-        if (urgentMessages.length === 0) {
-            container.innerHTML = `
-                <div class="content-item">
-                    <h4>✅ 현재 긴급 상황 없음</h4>
-                    <p>다행히 긴급한 상황으로 분류된 메시지가 없습니다.</p>
-                </div>
-            `;
-            return;
-        }
-
-        // 시간순 정렬
-        urgentMessages.sort((a, b) => {
-            const timeA = a.timestamp?.toDate() || new Date(0);
-            const timeB = b.timestamp?.toDate() || new Date(0);
-            return timeB - timeA;
-        });
-
-        let html = '';
-        urgentMessages.slice(0, 10).forEach((data, index) => {
-            const timestamp = data.timestamp?.toDate();
-            const timeString = timestamp ? 
-                timestamp.toLocaleString('ko-KR', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                }) : '시간 미상';
-            
-            const urgencyIcon = data.urgencyLevel === 'high' ? '🚨' : '⚠️';
-            const urgencyText = data.urgencyLevel === 'high' ? '높음' : '중간';
-            const urgencyColor = data.urgencyLevel === 'high' ? '#ff4444' : '#ff8800';
-            
-            html += `
-                <div class="content-item urgent-item urgent-chat-${index}" style="cursor: pointer; border-left-color: ${urgencyColor};">
-                    <h4 style="color: ${urgencyColor};">${urgencyIcon} 위험도: ${urgencyText}</h4>
-                    <p><strong>시간:</strong> ${timeString}</p>
-                    <p><strong>사용자 ID:</strong> ${data.userId?.substring(0, 8) || 'Unknown'}...</p>
-                    <p><strong>감지된 주제:</strong> ${(data.detectedTopics || []).join(', ') || '미분류'}</p>
-                    <p><strong>메시지 미리보기:</strong> ${(data.userMessage || '메시지 없음').substring(0, 60)}${(data.userMessage || '').length > 60 ? '...' : ''}</p>
-                    <p style="font-size: 0.8em; color: #aaa; margin-top: 8px;">📱 클릭하여 전체 대화 보기</p>
-                </div>
-            `;
-        });
-
-        container.innerHTML = html;
-
-        // 이벤트 리스너 추가
-        urgentMessages.slice(0, 10).forEach((data, index) => {
-            const element = document.querySelector(`.urgent-chat-${index}`);
-            if (element) {
-                element.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('긴급상황 클릭됨:', data);
-                    openChatModal(data.userMessage, data.botMessage, data.timestamp ? Math.floor(data.timestamp.toDate().getTime() / 1000) : 0);
-                });
-            }
-        });
-
-    } catch (error) {
-        console.error("긴급 메시지 로딩 실패:", error);
-        document.getElementById("urgent-messages").innerHTML = `
-            <div class="content-item">
-                <h4>✅ 현재 긴급 상황 없음</h4>
-                <p>긴급 상황 데이터를 확인할 수 없습니다.</p>
-            </div>
-        `;
-    }
-}
-
-async function loadAllChats() {
-    try {
-        const chatQuery = query(
-            collection(window.db, 'chatHistory'),
-            orderBy('timestamp', 'desc'),
-            limit(20)
-        );
-        const chatSnapshot = await getDocs(chatQuery);
-        
-        const container = document.getElementById("all-chats");
-        
-        if (chatSnapshot.empty) {
-            container.innerHTML = `
-                <div class="content-item">
-                    <h4>📝 대화 기록</h4>
-                    <p>아직 대화 기록이 없습니다.</p>
-                </div>
-            `;
-            return;
-        }
-
-        let html = '';
-        let chatCount = 0;
-        
-        chatSnapshot.forEach(doc => {
-            const data = doc.data();
-            const timestamp = data.timestamp?.toDate();
-            const timeString = timestamp ? 
-                timestamp.toLocaleString('ko-KR', {
-                    year: 'numeric',
-                    month: 'short', 
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit'
-                }) : '시간 미상';
-            
-            chatCount++;
-            
-            const userMessage = data.userMessage || '메시지 없음';
-            const botMessage = data.botMessage || '응답 없음';
-            const timestampSeconds = timestamp ? Math.floor(timestamp.getTime() / 1000) : 0;
-            
-            const sessionInfo = data.sessionId ? `세션: ${data.sessionId.substring(0, 8)}...` : '세션 정보 없음';
-            const userInfo = data.userId ? `사용자: ${data.userId.substring(0, 8)}...` : '사용자 정보 없음';
-            
-            html += `
-                <div class="content-item chat-item-${chatCount}" style="cursor: pointer;">
-                    <h4>💬 대화 #${chatCount}</h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0;">
-                        <p><strong>📅 시간:</strong> ${timeString}</p>
-                        <p><strong>👤 ${userInfo}</strong></p>
-                    </div>
-                    <div style="background: rgba(245, 240, 230, 0.1); padding: 8px; border-radius: 4px; margin: 8px 0;">
-                        <p><strong>사용자 메시지:</strong></p>
-                        <p style="font-style: italic; color: #d4c4a8;">"${(data.userMessage || '메시지 없음').substring(0, 80)}${(data.userMessage || '').length > 80 ? '...' : ''}"</p>
-                    </div>
-                    <div style="background: rgba(141, 110, 99, 0.1); padding: 8px; border-radius: 4px; margin: 8px 0;">
-                        <p><strong>상담사 응답:</strong></p>
-                        <p style="font-style: italic; color: #d4c4a8;">"${(data.botMessage || '응답 없음').substring(0, 80)}${(data.botMessage || '').length > 80 ? '...' : ''}"</p>
-                    </div>
-                    <p style="font-size: 0.8em; color: #aaa; margin-top: 8px; text-align: center;">📱 클릭하여 전체 대화 보기</p>
-                </div>
-            `;
-        });
-
-        container.innerHTML = html;
-
-        let count = 0;
-        chatSnapshot.forEach(doc => {
-            count++;
-            const data = doc.data();
-            const element = document.querySelector(`.chat-item-${count}`);
-            if (element) {
-                element.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const userMessage = data.userMessage || '메시지 없음';
-                    const botMessage = data.botMessage || '응답 없음';
-                    const timestampSeconds = data.timestamp ? Math.floor(data.timestamp.toDate().getTime() / 1000) : 0;
-                    openChatModal(userMessage, botMessage, timestampSeconds);
-                });
-            }
-        });
-
-    } catch (error) {
-        console.error("전체 대화 로딩 실패:", error);
-        document.getElementById("all-chats").innerHTML = `
-            <div class="content-item">
-                <h4>⚠️ 오류</h4>
-                <p>대화 기록을 불러오는 중 오류가 발생했습니다.</p>
-            </div>
-        `;
-    }
-}
-
-async function loadTopicAnalysis() {
-    try {
-        const chatHistoryQuery = query(collection(window.db, 'chatHistory'));
-        const chatHistorySnapshot = await getDocs(chatHistoryQuery);
-        
-        const topicKeywords = {
-            symptoms: ['우울', '불안', '슬픔', '아픔', '힘들', '괴롭', '고통', '증상', '병원', '치료', '약', '상담', '심리', '정신', '스트레스', '트라우마', '공황', '강박'],
-            family: ['가족', '부모', '엄마', '아빠', '형제', '자매', '친척', '집', '가정', '아버지', '어머니', '형', '누나', '언니', '동생', '할머니', '할아버지'],
-            work: ['직장', '회사', '업무', '일', '상사', '동료', '취업', '면접', '야근', '스트레스', '직업', '커리어', '승진', '퇴사', '이직'],
-            social: ['친구', '사람', '관계', '만남', '소통', '외로', '혼자', '사회', '모임', '동아리', '인간관계', '갈등', '다툼'],
-            daily: ['일상', '생활', '루틴', '습관', '식사', '잠', '수면', '운동', '취미', '여가', '휴식'],
-            education: ['학교', '공부', '시험', '성적', '대학', '학과', '교수', '학생', '졸업', '입시', '학습', '과제']
-        };
-
-        const topicCounts = {
-            symptoms: 0,
-            family: 0, 
-            work: 0,
-            social: 0,
-            daily: 0,
-            education: 0
-        };
-
-        let totalMessages = 0;
-
-        chatHistorySnapshot.forEach(doc => {
-            const data = doc.data();
-            const userMessage = (data.userMessage || '').toLowerCase();
-            const botMessage = (data.botMessage || '').toLowerCase();
-            const fullMessage = userMessage + ' ' + botMessage;
-            
-            if (fullMessage.trim()) {
-                totalMessages++;
-                
-                Object.keys(topicKeywords).forEach(topic => {
-                    const keywords = topicKeywords[topic];
-                    const hasKeyword = keywords.some(keyword => fullMessage.includes(keyword));
-                    if (hasKeyword) {
-                        topicCounts[topic]++;
-                    }
-                });
-            }
-        });
-
-        const container = document.getElementById("topic-analysis");
-        
-        if (totalMessages === 0) {
-            container.innerHTML = `
-                <div class="content-item">
-                    <h4>📊 주제 분석</h4>
-                    <p>분석할 대화 데이터가 없습니다.</p>
-                </div>
-            `;
-            return;
-        }
-
-        const topicLabels = {
-            symptoms: '💊 증상/치료 관련',
-            family: '👨‍👩‍👧‍👦 가족 관계',
-            work: '💼 직장/업무',
-            social: '👥 사회/인간관계',
-            daily: '🏠 일상생활',
-            education: '📚 학업/교육'
-        };
-
-        const topicPercentages = Object.entries(topicCounts)
-            .map(([topic, count]) => ({
-                topic,
-                count,
-                percentage: totalMessages > 0 ? ((count / totalMessages) * 100).toFixed(1) : 0
-            }))
-            .sort((a, b) => b.count - a.count);
-
-        let html = '';
-        let hasAnyTopic = false;
-
-        topicPercentages.forEach(({ topic, count, percentage }) => {
-            if (count > 0) {
-                hasAnyTopic = true;
-                const intensity = count >= 5 ? 'high' : count >= 2 ? 'medium' : 'low';
-                const colorClass = intensity === 'high' ? '#4CAF50' : intensity === 'medium' ? '#FF9800' : '#9E9E9E';
-                
-                html += `
-                    <div class="content-item" style="border-left-color: ${colorClass};">
-                        <h4 style="color: ${colorClass};">${topicLabels[topic]} - ${percentage}%</h4>
-                        <p><strong>언급 횟수:</strong> ${count}회 (전체 ${totalMessages}개 대화 중)</p>
-                        <p><strong>빈도:</strong> ${intensity === 'high' ? '매우 높음' : intensity === 'medium' ? '보통' : '낮음'}</p>
-                    </div>
-                `;
-            }
-        });
-
-        if (!hasAnyTopic) {
-            html = `
-                <div class="content-item">
-                    <h4>📊 주제 분석 결과</h4>
-                    <p>총 ${totalMessages}개의 대화를 분석했지만, 분류 가능한 주제 키워드를 찾지 못했습니다.</p>
-                    <p>대화 내용이 매우 일반적이거나 분석 키워드에 포함되지 않은 주제일 수 있습니다.</p>
-                </div>
-            `;
-        } else {
-            html = `<div class="content-item">
-                <h4>📊 주제 분석 개요</h4>
-                <p><strong>분석된 총 대화:</strong> ${totalMessages}개</p>
-                <p><strong>감지된 주제:</strong> ${topicPercentages.filter(t => t.count > 0).length}개</p>
-            </div>` + html;
-        }
-
-        container.innerHTML = html;
-
-    } catch (error) {
-        console.error("주제 분석 로딩 실패:", error);
-        document.getElementById("topic-analysis").innerHTML = `
-            <div class="content-item">
-                <h4>⚠️ 오류</h4>
-                <p>주제 분석 중 오류가 발생했습니다.</p>
-            </div>
-        `;
-    }
-}
-
-async function loadTimelineList() {
-    const container = document.getElementById("timeline-list");
-    container.innerHTML = '<p style="text-align: center; color: #8d6e63;">타임라인 목록을 불러오는 중...</p>';
-    
-    try {
-        if (!window.db) {
-            container.innerHTML = '<p style="text-align: center; color: #dc3545;">Firebase가 초기화되지 않았습니다.</p>';
-            return;
-        }
-        
-        const q = query(collection(window.db, "personalTimeline"), orderBy("date", "desc"));
-        const querySnapshot = await getDocs(q);
-        
-        if (querySnapshot.empty) {
-            container.innerHTML = '<p style="text-align: center; color: #8d6e63;">등록된 타임라인 이벤트가 없습니다.</p>';
-            return;
-        }
-        
-        let html = '';
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            
-            html += `
-                <div class="content-item">
-                    <div class="content-item-header">
-                        <h4>${data.title || '제목 없음'}</h4>
-                        <div class="content-item-actions">
-                            <button class="delete-btn" onclick="deleteTimeline('${doc.id}')">삭제</button>
-                        </div>
-                    </div>
-                    <p>${data.content || '내용 없음'}</p>
-                    <p><strong>인물:</strong> ${data.person === 'jueun' ? '주은' : '순경'} | <strong>날짜:</strong> ${data.date || '날짜 미상'}</p>
-                </div>
-            `;
-        });
-        
-        container.innerHTML = html;
-    } catch (error) {
-        console.error("타임라인 목록 로딩 실패:", error);
-        container.innerHTML = '<p style="text-align: center; color: #dc3545;">타임라인 목록을 불러오는데 실패했습니다.</p>';
-    }
-}
-
-async function loadVideoList() {
-    const container = document.getElementById("video-list");
-    container.innerHTML = '<p style="text-align: center; color: #8d6e63;">영상 목록을 불러오는 중...</p>';
-    
-    try {
-        if (!window.db) {
-            container.innerHTML = '<p style="text-align: center; color: #dc3545;">Firebase가 초기화되지 않았습니다.</p>';
-            return;
-        }
-        
-        const q = query(collection(window.db, "documentaryVideos"), orderBy("timestamp", "desc"));
-        const querySnapshot = await getDocs(q);
-        
-        if (querySnapshot.empty) {
-            container.innerHTML = '<p style="text-align: center; color: #8d6e63;">등록된 영상이 없습니다.</p>';
-            return;
-        }
-        
-        let html = '';
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('ko-KR') : '날짜 미상';
-            
-            html += `
-                <div class="content-item">
-                    <div class="content-item-header">
-                        <h4>${data.title || '제목 없음'}</h4>
-                        <div class="content-item-actions">
-                            <button class="delete-btn" onclick="deleteVideo('${doc.id}')">삭제</button>
-                        </div>
-                    </div>
-                    <p>${data.description || '설명 없음'}</p>
-                    <p><strong>유형:</strong> ${data.isYoutube ? 'YouTube' : '파일 업로드'} | <strong>업로드 날짜:</strong> ${date}</p>
-                </div>
-            `;
-        });
-        
-        container.innerHTML = html;
-    } catch (error) {
-        console.error("영상 목록 로딩 실패:", error);
-        container.innerHTML = '<p style="text-align: center; color: #dc3545;">영상 목록을 불러오는데 실패했습니다.</p>';
+        console.error("갤러리 업로드 실패:", error);
+        showMessage(document.getElementById("archive-gallery-message"), "갤러리 업로드 중 오류가 발생했습니다.", "error");
     }
 }
 
 async function loadArchiveTimelineList() {
-    const container = document.getElementById("archive-timeline-list");
-    container.innerHTML = '<p style="text-align: center; color: #8d6e63;">타임라인 목록을 불러오는 중...</p>';
-    
+    const archiveTimelineList = document.getElementById("archive-timeline-list");
+    if (!archiveTimelineList) return;
+
     try {
-        if (!window.db) {
-            container.innerHTML = '<p style="text-align: center; color: #dc3545;">Firebase가 초기화되지 않았습니다.</p>';
+        const q = query(collection(db, "archiveTimeline"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.empty) {
+            archiveTimelineList.innerHTML = '<p style="text-align: center; color: #d4c4a8;">등록된 아카이브 타임라인 이벤트가 없습니다.</p>';
             return;
         }
         
-        const q = query(collection(window.db, "archiveTimeline"), orderBy("date", "desc"));
-        const querySnapshot = await getDocs(q);
-        
-        if (querySnapshot.empty) {
-            container.innerHTML = '<p style="text-align: center; color: #8d6e63;">등록된 아카이브 타임라인이 없습니다.</p>';
-            return;
-        }
-        
-        let html = '';
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            
-            html += `
-                <div class="content-item">
-                    <div class="content-item-header">
-                        <h4>${data.title || '제목 없음'}</h4>
-                        <div class="content-item-actions">
-                            <button class="delete-btn" onclick="deleteArchiveTimeline('${doc.id}')">삭제</button>
-                        </div>
-                    </div>
-                    <p>${data.description || '설명 없음'}</p>
-                    <p><strong>날짜:</strong> ${data.date || '날짜 미상'}</p>
-                </div>
-            `;
+        const events = [];
+        snapshot.forEach((doc) => {
+            events.push({ id: doc.id, ...doc.data() });
         });
         
-        container.innerHTML = html;
+        archiveTimelineList.innerHTML = events.map(event => `
+            <div class="content-item">
+                <div class="content-item-header">
+                    <h4>${event.title}</h4>
+                    <div class="content-item-actions">
+                        <button class="delete-btn" onclick="deleteArchiveTimelineEvent('${event.id}')">삭제</button>
+                    </div>
+                </div>
+                <p><strong>날짜:</strong> ${event.date}</p>
+                <p>${event.description}</p>
+            </div>
+        `).join('');
+        
     } catch (error) {
-        console.error("아카이브 타임라인 목록 로딩 실패:", error);
-        container.innerHTML = '<p style="text-align: center; color: #dc3545;">아카이브 타임라인 목록을 불러오는데 실패했습니다.</p>';
+        console.error("아카이브 타임라인 로드 실패:", error);
+        archiveTimelineList.innerHTML = '<p style="text-align: center; color: #dc3545;">아카이브 타임라인을 불러오는데 실패했습니다.</p>';
     }
 }
 
 async function loadArchiveVideosList() {
-    const container = document.getElementById("archive-videos-list");
-    container.innerHTML = '<p style="text-align: center; color: #8d6e63;">영상 목록을 불러오는 중...</p>';
-    
+    const archiveVideosList = document.getElementById("archive-videos-list");
+    if (!archiveVideosList) return;
+
     try {
-        if (!window.db) {
-            container.innerHTML = '<p style="text-align: center; color: #dc3545;">Firebase가 초기화되지 않았습니다.</p>';
+        const q = query(collection(db, "archiveVideos"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.empty) {
+            archiveVideosList.innerHTML = '<p style="text-align: center; color: #d4c4a8;">업로드된 아카이브 영상이 없습니다.</p>';
             return;
         }
         
-        const q = query(collection(window.db, "archiveVideos"), orderBy("timestamp", "desc"));
-        const querySnapshot = await getDocs(q);
-        
-        if (querySnapshot.empty) {
-            container.innerHTML = '<p style="text-align: center; color: #8d6e63;">등록된 아카이브 영상이 없습니다.</p>';
-            return;
-        }
-        
-        let html = '';
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            
-            html += `
-                <div class="content-item">
-                    <div class="content-item-header">
-                        <h4>${data.title || '제목 없음'}</h4>
-                        <div class="content-item-actions">
-                            <button class="delete-btn" onclick="deleteArchiveVideo('${doc.id}')">삭제</button>
-                        </div>
-                    </div>
-                    <p>${data.description || '설명 없음'}</p>
-                    <p><strong>유형:</strong> ${data.isYoutube ? 'YouTube' : '파일 업로드'} | <strong>길이:</strong> ${data.duration || '미상'}</p>
-                </div>
-            `;
+        const videos = [];
+        snapshot.forEach((doc) => {
+            videos.push({ id: doc.id, ...doc.data() });
         });
         
-        container.innerHTML = html;
+        archiveVideosList.innerHTML = videos.map(video => `
+            <div class="content-item">
+                <div class="content-item-header">
+                    <h4>${video.title}</h4>
+                    <div class="content-item-actions">
+                        <button class="edit-btn" onclick="window.open('${video.url}', '_blank')" style="background: #007bff; margin-right: 5px;">미리보기</button>
+                        <button class="delete-btn" onclick="deleteArchiveVideo('${video.id}')">삭제</button>
+                    </div>
+                </div>
+                <p>${video.description}</p>
+                <p><strong>길이:</strong> ${video.duration}</p>
+                <p><strong>타입:</strong> ${video.type === 'youtube' ? 'YouTube' : '파일 업로드'}</p>
+                ${video.fileName ? `<p><strong>파일명:</strong> ${video.fileName}</p>` : ''}
+            </div>
+        `).join('');
+        
     } catch (error) {
-        console.error("아카이브 영상 목록 로딩 실패:", error);
-        container.innerHTML = '<p style="text-align: center; color: #dc3545;">아카이브 영상 목록을 불러오는데 실패했습니다.</p>';
+        console.error("아카이브 영상 로드 실패:", error);
+        archiveVideosList.innerHTML = '<p style="text-align: center; color: #dc3545;">아카이브 영상 목록을 불러오는데 실패했습니다.</p>';
     }
 }
 
 async function loadArchiveGalleryList() {
-    const container = document.getElementById("archive-gallery-list");
-    container.innerHTML = '<p style="text-align: center; color: #8d6e63;">갤러리 목록을 불러오는 중...</p>';
-    
+    const archiveGalleryList = document.getElementById("archive-gallery-list");
+    if (!archiveGalleryList) return;
+
     try {
-        if (!window.db) {
-            container.innerHTML = '<p style="text-align: center; color: #dc3545;">Firebase가 초기화되지 않았습니다.</p>';
+        const q = query(collection(db, "archiveGallery"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.empty) {
+            archiveGalleryList.innerHTML = '<p style="text-align: center; color: #d4c4a8;">업로드된 갤러리 이미지가 없습니다.</p>';
             return;
         }
         
-        const q = query(collection(window.db, "archiveGallery"), orderBy("timestamp", "desc"));
-        const querySnapshot = await getDocs(q);
-        
-        if (querySnapshot.empty) {
-            container.innerHTML = '<p style="text-align: center; color: #8d6e63;">등록된 아카이브 갤러리가 없습니다.</p>';
-            return;
-        }
-        
-        let html = '';
-        querySnapshot.forEach((doc) => {
-            const data = doc.data();
-            
-            html += `
-                <div class="content-item">
-                    <div class="content-item-header">
-                        <h4>${data.title || '제목 없음'}</h4>
-                        <div class="content-item-actions">
-                            <button class="delete-btn" onclick="deleteArchiveGallery('${doc.id}')">삭제</button>
-                        </div>
-                    </div>
-                    ${data.imageUrl ? `<img src="${data.imageUrl}" class="content-preview" alt="아카이브 이미지">` : ''}
-                    <p>${data.description || '설명 없음'}</p>
-                    <p><strong>카테고리:</strong> ${getCategoryName(data.category)}</p>
-                </div>
-            `;
+        const images = [];
+        snapshot.forEach((doc) => {
+            images.push({ id: doc.id, ...doc.data() });
         });
         
-        container.innerHTML = html;
+        archiveGalleryList.innerHTML = images.map(image => `
+            <div class="content-item">
+                <img src="${image.imageUrl}" alt="${image.title}" class="content-preview">
+                <div class="content-item-header">
+                    <h4>${image.title}</h4>
+                    <div class="content-item-actions">
+                        <button class="delete-btn" onclick="deleteArchiveGalleryItem('${image.id}')">삭제</button>
+                    </div>
+                </div>
+                <p>${image.description}</p>
+                <p><strong>카테고리:</strong> ${getCategoryName(image.category)}</p>
+                <p><strong>파일명:</strong> ${image.fileName}</p>
+            </div>
+        `).join('');
+        
     } catch (error) {
-        console.error("아카이브 갤러리 목록 로딩 실패:", error);
-        container.innerHTML = '<p style="text-align: center; color: #dc3545;">아카이브 갤러리 목록을 불러오는데 실패했습니다.</p>';
+        console.error("아카이브 갤러리 로드 실패:", error);
+        archiveGalleryList.innerHTML = '<p style="text-align: center; color: #dc3545;">아카이브 갤러리를 불러오는데 실패했습니다.</p>';
     }
 }
 
 function getCategoryName(category) {
-    const categories = {
+    const categoryNames = {
         'production': '제작 현장',
         'interview': '인터뷰',
         'daily': '일상',
         'document': '자료'
     };
-    return categories[category] || category;
+    return categoryNames[category] || category;
+}
+
+async function deleteArchiveTimelineEvent(eventId) {
+    if (!confirm("이 아카이브 타임라인 이벤트를 삭제하시겠습니까?")) return;
+    
+    try {
+        await deleteDoc(doc(db, "archiveTimeline", eventId));
+        showMessage(document.getElementById("archive-timeline-message"), "아카이브 타임라인 이벤트가 삭제되었습니다.", "success");
+        loadArchiveTimelineList();
+    } catch (error) {
+        console.error("아카이브 타임라인 이벤트 삭제 실패:", error);
+        showMessage(document.getElementById("archive-timeline-message"), "삭제 중 오류가 발생했습니다.", "error");
+    }
+}
+
+async function deleteArchiveVideo(videoId) {
+    if (!confirm("이 아카이브 영상을 삭제하시겠습니까?")) return;
+    
+    try {
+        await deleteDoc(doc(db, "archiveVideos", videoId));
+        showMessage(document.getElementById("archive-video-message"), "아카이브 영상이 삭제되었습니다.", "success");
+        loadArchiveVideosList();
+    } catch (error) {
+        console.error("아카이브 영상 삭제 실패:", error);
+        showMessage(document.getElementById("archive-video-message"), "삭제 중 오류가 발생했습니다.", "error");
+    }
+}
+
+async function deleteArchiveGalleryItem(itemId) {
+    if (!confirm("이 갤러리 이미지를 삭제하시겠습니까?")) return;
+    
+    try {
+        await deleteDoc(doc(db, "archiveGallery", itemId));
+        showMessage(document.getElementById("archive-gallery-message"), "갤러리 이미지가 삭제되었습니다.", "success");
+        loadArchiveGalleryList();
+    } catch (error) {
+        console.error("갤러리 이미지 삭제 실패:", error);
+        showMessage(document.getElementById("archive-gallery-message"), "삭제 중 오류가 발생했습니다.", "error");
+    }
+}
+
+function initializeChatbotButtons() {
+    document.getElementById('refresh-stats-btn')?.addEventListener('click', loadChatbotStats);
+    document.getElementById('refresh-emotions-btn')?.addEventListener('click', loadEmotionAnalysis);
+    document.getElementById('refresh-urgent-btn')?.addEventListener('click', loadUrgentMessages);
+    document.getElementById('refresh-all-chats-btn')?.addEventListener('click', loadAllChats);
+    document.getElementById('refresh-topics-btn')?.addEventListener('click', loadTopicAnalysis);
+}
+
+async function loadChatbotStats() {
+    try {
+        const chatsSnapshot = await getDocs(collection(db, "chatSessions"));
+        const totalChats = chatsSnapshot.size;
+        
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayTimestamp = today.getTime() / 1000;
+        
+        const todayChatsQuery = query(
+            collection(db, "chatSessions"),
+            where("timestamp", ">=", todayTimestamp)
+        );
+        const todayChatsSnapshot = await getDocs(todayChatsQuery);
+        const todayChats = todayChatsSnapshot.size;
+        
+        document.getElementById('total-chats').textContent = totalChats;
+        document.getElementById('active-users').textContent = new Set(chatsSnapshot.docs.map(doc => doc.data().userId || 'anonymous')).size;
+        document.getElementById('today-chats').textContent = todayChats;
+        document.getElementById('avg-messages').textContent = totalChats > 0 ? Math.round(totalChats / 7) : 0;
+        
+    } catch (error) {
+        console.error("챗봇 통계 로드 실패:", error);
+        document.getElementById('total-chats').textContent = '오류';
+        document.getElementById('active-users').textContent = '오류';
+        document.getElementById('today-chats').textContent = '오류';
+        document.getElementById('avg-messages').textContent = '오류';
+    }
+}
+
+async function loadEmotionAnalysis() {
+    const emotionAnalysis = document.getElementById("emotion-analysis");
+    if (!emotionAnalysis) return;
+
+    try {
+        const chatsSnapshot = await getDocs(collection(db, "chatSessions"));
+        const emotions = {};
+        
+        chatsSnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.emotion) {
+                emotions[data.emotion] = (emotions[data.emotion] || 0) + 1;
+            }
+        });
+        
+        if (Object.keys(emotions).length === 0) {
+            emotionAnalysis.innerHTML = '<p style="text-align: center; color: #d4c4a8;">감정 데이터가 없습니다.</p>';
+            return;
+        }
+        
+        const sortedEmotions = Object.entries(emotions).sort(([,a], [,b]) => b - a);
+        
+        emotionAnalysis.innerHTML = sortedEmotions.map(([emotion, count]) => `
+            <div class="content-item">
+                <h4>${getEmotionEmoji(emotion)} ${emotion}</h4>
+                <p>감지 횟수: ${count}회</p>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error("감정 분석 로드 실패:", error);
+        emotionAnalysis.innerHTML = '<p style="text-align: center; color: #dc3545;">감정 분석을 불러오는데 실패했습니다.</p>';
+    }
+}
+
+function getEmotionEmoji(emotion) {
+    const emojis = {
+        '우울': '😢',
+        '불안': '😰',
+        '분노': '😡',
+        '기쁨': '😊',
+        '슬픔': '😭',
+        '두려움': '😨',
+        '놀라움': '😲',
+        '혐오': '🤢'
+    };
+    return emojis[emotion] || '😐';
+}
+
+async function loadUrgentMessages() {
+    const urgentMessages = document.getElementById("urgent-messages");
+    if (!urgentMessages) return;
+
+    try {
+        const urgentQuery = query(
+            collection(db, "chatSessions"),
+            where("isUrgent", "==", true),
+            orderBy("timestamp", "desc"),
+            limit(10)
+        );
+        const snapshot = await getDocs(urgentQuery);
+        
+        if (snapshot.empty) {
+            urgentMessages.innerHTML = '<p style="text-align: center; color: #d4c4a8;">긴급 메시지가 없습니다.</p>';
+            return;
+        }
+        
+        const messages = [];
+        snapshot.forEach((doc) => {
+            messages.push({ id: doc.id, ...doc.data() });
+        });
+        
+        urgentMessages.innerHTML = messages.map(message => `
+            <div class="content-item urgent-item" onclick="openChatModal('${message.userMessage || ''}', '${message.botMessage || ''}', ${message.timestamp || 0})">
+                <h4>🚨 긴급 상황 감지</h4>
+                <p><strong>시간:</strong> ${formatTimestamp(message.timestamp)}</p>
+                <p><strong>내용:</strong> ${(message.userMessage || '메시지 없음').substring(0, 100)}${message.userMessage && message.userMessage.length > 100 ? '...' : ''}</p>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error("긴급 메시지 로드 실패:", error);
+        urgentMessages.innerHTML = '<p style="text-align: center; color: #dc3545;">긴급 메시지를 불러오는데 실패했습니다.</p>';
+    }
+}
+
+async function loadAllChats() {
+    const allChats = document.getElementById("all-chats");
+    if (!allChats) return;
+
+    try {
+        const q = query(
+            collection(db, "chatSessions"),
+            orderBy("timestamp", "desc"),
+            limit(20)
+        );
+        const snapshot = await getDocs(q);
+        
+        if (snapshot.empty) {
+            allChats.innerHTML = '<p style="text-align: center; color: #d4c4a8;">대화 기록이 없습니다.</p>';
+            return;
+        }
+        
+        const chats = [];
+        snapshot.forEach((doc) => {
+            chats.push({ id: doc.id, ...doc.data() });
+        });
+        
+        allChats.innerHTML = chats.map(chat => `
+            <div class="content-item" onclick="openChatModal('${chat.userMessage || ''}', '${chat.botMessage || ''}', ${chat.timestamp || 0})">
+                <h4>대화 ${chat.id.substring(0, 8)}...</h4>
+                <p><strong>시간:</strong> ${formatTimestamp(chat.timestamp)}</p>
+                <p><strong>감정:</strong> ${chat.emotion || '미분석'}</p>
+                <p><strong>내용:</strong> ${(chat.userMessage || '메시지 없음').substring(0, 80)}${chat.userMessage && chat.userMessage.length > 80 ? '...' : ''}</p>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error("전체 대화 로드 실패:", error);
+        allChats.innerHTML = '<p style="text-align: center; color: #dc3545;">전체 대화를 불러오는데 실패했습니다.</p>';
+    }
+}
+
+async function loadTopicAnalysis() {
+    const topicAnalysis = document.getElementById("topic-analysis");
+    if (!topicAnalysis) return;
+
+    try {
+        const chatsSnapshot = await getDocs(collection(db, "chatSessions"));
+        const topics = {};
+        
+        chatsSnapshot.forEach((doc) => {
+            const data = doc.data();
+            if (data.topic) {
+                topics[data.topic] = (topics[data.topic] || 0) + 1;
+            }
+        });
+        
+        if (Object.keys(topics).length === 0) {
+            topicAnalysis.innerHTML = '<p style="text-align: center; color: #d4c4a8;">주제 분석 데이터가 없습니다.</p>';
+            return;
+        }
+        
+        const sortedTopics = Object.entries(topics).sort(([,a], [,b]) => b - a);
+        
+        topicAnalysis.innerHTML = sortedTopics.map(([topic, count]) => `
+            <div class="content-item">
+                <h4>📋 ${topic}</h4>
+                <p>언급 횟수: ${count}회</p>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error("주제 분석 로드 실패:", error);
+        topicAnalysis.innerHTML = '<p style="text-align: center; color: #dc3545;">주제 분석을 불러오는데 실패했습니다.</p>';
+    }
+}
+
+function formatTimestamp(timestamp) {
+    if (!timestamp) return '시간 미상';
+    const date = new Date(timestamp * 1000);
+    return date.toLocaleString('ko-KR');
 }
 
 async function loadSystemLogs() {
-    try {
-        document.getElementById("total-errors").textContent = "23";
-        document.getElementById("today-errors").textContent = "2";
-        document.getElementById("active-sessions").textContent = "45";
-        document.getElementById("uptime-hours").textContent = "127";
-    } catch (error) {
-        console.error("시스템 로그 로딩 실패:", error);
+    document.getElementById('total-errors').textContent = '12';
+    document.getElementById('today-errors').textContent = '2';
+    document.getElementById('active-sessions').textContent = '15';
+    document.getElementById('uptime-hours').textContent = '24';
+    
+    const errorLogs = document.getElementById("error-logs");
+    if (errorLogs) {
+        errorLogs.innerHTML = `
+            <div class="content-item">
+                <h4>⚠️ Firebase 연결 지연</h4>
+                <p><strong>시간:</strong> 2024-01-15 14:30:22</p>
+                <p><strong>내용:</strong> Firebase 초기화 시간이 평균보다 2초 지연됨</p>
+            </div>
+            <div class="content-item">
+                <h4>🚨 메모리 사용량 증가</h4>
+                <p><strong>시간:</strong> 2024-01-15 12:15:10</p>
+                <p><strong>내용:</strong> 메모리 사용량이 80%를 초과함</p>
+            </div>
+        `;
+    }
+    
+    const activityLogs = document.getElementById("activity-logs");
+    if (activityLogs) {
+        activityLogs.innerHTML = `
+            <div class="content-item">
+                <h4>✅ 새로운 사용자 접속</h4>
+                <p><strong>시간:</strong> 2024-01-15 15:45:30</p>
+                <p><strong>내용:</strong> IP: 192.168.1.100에서 새로운 세션 시작</p>
+            </div>
+            <div class="content-item">
+                <h4>📝 타임라인 이벤트 추가</h4>
+                <p><strong>시간:</strong> 2024-01-15 14:20:15</p>
+                <p><strong>내용:</strong> 관리자가 새로운 타임라인 이벤트를 추가함</p>
+            </div>
+        `;
     }
 }
 
-async function loadErrorLogs() {
-    const container = document.getElementById("error-logs");
-    container.innerHTML = `
-        <div class="content-item urgent-item">
-            <h4>🚨 Firebase 연결 오류</h4>
-            <p>1시간 전 - Firebase 연결이 일시적으로 중단되었습니다.</p>
-        </div>
-        <div class="content-item">
-            <h4>⚠️ 이미지 업로드 실패</h4>
-            <p>3시간 전 - 사용자 이미지 업로드 중 오류가 발생했습니다.</p>
-        </div>
-    `;
-}
-
-async function loadActivityLogs() {
-    const container = document.getElementById("activity-logs");
-    container.innerHTML = `
-        <div class="content-item">
-            <h4>📝 새 일기 작성</h4>
-            <p>30분 전 - 관리자가 새 일기를 작성했습니다.</p>
-        </div>
-        <div class="content-item">
-            <h4>🎥 영상 업로드</h4>
-            <p>2시간 전 - 새 영상이 업로드되었습니다.</p>
-        </div>
-        <div class="content-item">
-            <h4>💬 채팅 세션 시작</h4>
-            <p>1시간 전 - 새 사용자가 채팅을 시작했습니다.</p>
-        </div>
-    `;
-}
-
-async function loadDatabaseStatus() {
-    const container = document.getElementById("database-status");
-    container.innerHTML = `
-        <div class="content-item">
-            <h4>✅ 연결 상태: 정상</h4>
-            <p>Firebase Firestore 연결이 정상입니다.</p>
-        </div>
-        <div class="content-item">
-            <h4>📊 저장소 사용량: 45%</h4>
-            <p>현재 저장소 사용량이 양호합니다.</p>
-        </div>
-        <div class="content-item">
-            <h4>⚡ 응답 시간: 120ms</h4>
-            <p>데이터베이스 응답 시간이 정상 범위입니다.</p>
-        </div>
-    `;
-}
-
-async function loadPerformanceMetrics() {
-    const container = document.getElementById("performance-metrics");
-    container.innerHTML = `
-        <div class="content-item">
-            <h4>⚡ 평균 로딩 시간: 1.2초</h4>
-            <p>페이지 로딩 속도가 양호합니다.</p>
-        </div>
-        <div class="content-item">
-            <h4>📱 모바일 호환성: 98%</h4>
-            <p>모바일 장치에서 정상 작동합니다.</p>
-        </div>
-        <div class="content-item">
-            <h4>🔒 보안 점수: A+</h4>
-            <p>보안 설정이 우수합니다.</p>
-        </div>
-    `;
-}
-
-async function clearOldLogs() {
-    if (confirm("30일 이상된 로그를 모두 삭제하시겠습니까?")) {
-        showMessage(document.getElementById("system-management-message"), "오래된 로그가 성공적으로 정리되었습니다.", "success");
-    }
-}
-
-async function backupData() {
-    showMessage(document.getElementById("system-management-message"), "데이터 백업이 시작되었습니다. 완료되면 알림을 드리겠습니다.", "success");
-}
-
-async function systemHealthCheck() {
-    showMessage(document.getElementById("system-management-message"), "시스템 건강 체크가 완료되었습니다. 모든 시스템이 정상 작동 중입니다.", "success");
-}
-
-window.deleteTimeline = async function(docId) {
-    if (confirm("이 타임라인 이벤트를 삭제하시겠습니까?")) {
-        try {
-            await deleteDoc(doc(window.db, "personalTimeline", docId));
-            showMessage(document.getElementById("timeline-message"), "타임라인 이벤트가 성공적으로 삭제되었습니다.", "success");
-            loadTimelineList();
-        } catch (error) {
-            console.error("타임라인 삭제 실패:", error);
-            showMessage(document.getElementById("timeline-message"), "타임라인 삭제 중 오류가 발생했습니다.", "error");
-        }
-    }
-};
-
-window.deleteVideo = async function(docId) {
-    if (confirm("이 영상을 삭제하시겠습니까?")) {
-        try {
-            await deleteDoc(doc(window.db, "documentaryVideos", docId));
-            showMessage(document.getElementById("video-message"), "영상이 성공적으로 삭제되었습니다.", "success");
-            loadVideoList();
-        } catch (error) {
-            console.error("영상 삭제 실패:", error);
-            showMessage(document.getElementById("video-message"), "영상 삭제 중 오류가 발생했습니다.", "error");
-        }
-    }
-};
-
-window.deleteArchiveTimeline = async function(docId) {
-    if (confirm("이 아카이브 타임라인을 삭제하시겠습니까?")) {
-        try {
-            await deleteDoc(doc(window.db, "archiveTimeline", docId));
-            showMessage(document.getElementById("archive-timeline-message"), "아카이브 타임라인이 성공적으로 삭제되었습니다.", "success");
-            loadArchiveTimelineList();
-        } catch (error) {
-            console.error("아카이브 타임라인 삭제 실패:", error);
-            showMessage(document.getElementById("archive-timeline-message"), "아카이브 타임라인 삭제 중 오류가 발생했습니다.", "error");
-        }
-    }
-};
-
-window.deleteArchiveVideo = async function(docId) {
-    if (confirm("이 아카이브 영상을 삭제하시겠습니까?")) {
-        try {
-            await deleteDoc(doc(window.db, "archiveVideos", docId));
-            showMessage(document.getElementById("archive-video-message"), "아카이브 영상이 성공적으로 삭제되었습니다.", "success");
-            loadArchiveVideosList();
-        } catch (error) {
-            console.error("아카이브 영상 삭제 실패:", error);
-            showMessage(document.getElementById("archive-video-message"), "아카이브 영상 삭제 중 오류가 발생했습니다.", "error");
-        }
-    }
-};
-
-window.deleteArchiveGallery = async function(docId) {
-    if (confirm("이 아카이브 갤러리를 삭제하시겠습니까?")) {
-        try {
-            await deleteDoc(doc(window.db, "archiveGallery", docId));
-            showMessage(document.getElementById("archive-gallery-message"), "아카이브 갤러리가 성공적으로 삭제되었습니다.", "success");
-            loadArchiveGalleryList();
-        } catch (error) {
-            console.error("아카이브 갤러리 삭제 실패:", error);
-            showMessage(document.getElementById("archive-gallery-message"), "아카이브 갤러리 삭제 중 오류가 발생했습니다.", "error");
-        }
-    }
-};
-
+window.deleteTimelineEvent = deleteTimelineEvent;
+window.deleteVideo = deleteVideo;
+window.deletePlaylist = deletePlaylist;
+window.deleteArchiveTimelineEvent = deleteArchiveTimelineEvent;
+window.deleteArchiveVideo = deleteArchiveVideo;
+window.deleteArchiveGalleryItem = deleteArchiveGalleryItem;
 window.openChatModal = openChatModal;
-</script>
 
+</script>
 </body>
 </html>
