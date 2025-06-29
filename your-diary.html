@@ -354,24 +354,37 @@
     </div>
 
     <!-- 댓글 모달 -->
-    <div id="comments-modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
-        <div style="background-color: #2d1b0e; margin: 5% auto; padding: 20px; border-radius: 12px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(245, 240, 230, 0.2); padding-bottom: 15px;">
-                <h3 style="color: #f5f0e6; margin: 0;">💬 댓글</h3>
-                <button onclick="closeComments()" style="background: none; border: none; color: #f5f0e6; font-size: 24px; cursor: pointer;">&times;</button>
+    <div id="comments-modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px);">
+        <div style="background: linear-gradient(135deg, #2d1b0e 0%, #1a0f08 100%); margin: 3% auto; padding: 0; border-radius: 15px; width: 90%; max-width: 700px; max-height: 85vh; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.5); border: 1px solid rgba(139, 69, 19, 0.3);">
+            
+            <!-- 모달 헤더 -->
+            <div style="background: linear-gradient(135deg, #8B4513, #A0522D); color: #f5f0e6; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(245, 240, 230, 0.2);">
+                <h3 style="margin: 0; font-size: 1.3em; display: flex; align-items: center; gap: 10px;">
+                    <span>💬</span>
+                    <span>댓글</span>
+                </h3>
+                <button onclick="closeComments()" style="background: rgba(245, 240, 230, 0.1); border: 1px solid rgba(245, 240, 230, 0.3); color: #f5f0e6; font-size: 18px; cursor: pointer; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(245, 240, 230, 0.2)'" onmouseout="this.style.background='rgba(245, 240, 230, 0.1)'">
+                    ✕
+                </button>
             </div>
             
-            <div id="comments-list" style="margin-bottom: 20px; max-height: 300px; overflow-y: auto;">
-                <p style="text-align: center; color: #d4c4a8;">댓글을 불러오는 중...</p>
+            <!-- 댓글 목록 -->
+            <div style="padding: 20px; max-height: 400px; overflow-y: auto;">
+                <div id="comments-list">
+                    <p style="text-align: center; color: #d4c4a8; font-style: italic; padding: 20px;">댓글을 불러오는 중...</p>
+                </div>
             </div>
             
-            <form id="comment-form" style="border-top: 1px solid rgba(245, 240, 230, 0.2); padding-top: 15px;">
-                <div style="margin-bottom: 10px;">
-                    <textarea id="comment-input" rows="3" placeholder="댓글을 입력하세요..." required style="width: 100%; padding: 10px; border: 1px solid rgba(139, 69, 19, 0.4); border-radius: 6px; background: rgba(139, 69, 19, 0.1); color: #f5f0e6; resize: vertical; font-family: inherit;"></textarea>
+            <!-- 댓글 작성 폼 -->
+            <form id="comment-form" style="border-top: 1px solid rgba(139, 69, 19, 0.3); padding: 20px; background: rgba(139, 69, 19, 0.05);">
+                <div style="margin-bottom: 15px;">
+                    <textarea id="comment-input" rows="3" placeholder="따뜻한 댓글을 남겨주세요..." required style="width: 100%; padding: 12px; border: 1px solid rgba(139, 69, 19, 0.4); border-radius: 8px; background: rgba(139, 69, 19, 0.1); color: #f5f0e6; resize: vertical; font-family: inherit; font-size: 14px; line-height: 1.5; transition: all 0.3s ease;" onfocus="this.style.borderColor='#8B4513'; this.style.background='rgba(139, 69, 19, 0.15)'" onblur="this.style.borderColor='rgba(139, 69, 19, 0.4)'; this.style.background='rgba(139, 69, 19, 0.1)'"></textarea>
                 </div>
                 <div style="display: flex; gap: 10px; align-items: center;">
-                    <input type="text" id="comment-nickname" placeholder="익명" maxlength="15" style="padding: 8px; border: 1px solid rgba(139, 69, 19, 0.4); border-radius: 6px; background: rgba(139, 69, 19, 0.1); color: #f5f0e6; flex: 1;">
-                    <button type="submit" style="background: linear-gradient(45deg, #8B4513, #A0522D); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">댓글 작성</button>
+                    <input type="text" id="comment-nickname" placeholder="닉네임 (선택사항)" maxlength="15" style="padding: 10px 12px; border: 1px solid rgba(139, 69, 19, 0.4); border-radius: 6px; background: rgba(139, 69, 19, 0.1); color: #f5f0e6; flex: 1; font-size: 14px; transition: all 0.3s ease;" onfocus="this.style.borderColor='#8B4513'; this.style.background='rgba(139, 69, 19, 0.15)'" onblur="this.style.borderColor='rgba(139, 69, 19, 0.4)'; this.style.background='rgba(139, 69, 19, 0.1)'">
+                    <button type="submit" style="background: linear-gradient(45deg, #8B4513, #A0522D); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.3s ease; box-shadow: 0 2px 10px rgba(139, 69, 19, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(139, 69, 19, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(139, 69, 19, 0.3)'">
+                        댓글 작성
+                    </button>
                 </div>
             </form>
         </div>
@@ -695,20 +708,29 @@
                 });
 
                 if (comments.length === 0) {
-                    commentsList.innerHTML = '<p style="text-align: center; color: #d4c4a8;">아직 댓글이 없습니다.</p>';
+                    commentsList.innerHTML = `
+                        <div style="text-align: center; padding: 40px 20px; color: #d4c4a8;">
+                            <div style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;">💬</div>
+                            <h4 style="margin: 0 0 8px 0; color: #8B4513;">아직 댓글이 없습니다</h4>
+                            <p style="margin: 0; font-size: 14px; opacity: 0.8;">첫 번째 댓글을 남겨보세요!</p>
+                        </div>
+                    `;
                     return;
                 }
 
                 commentsList.innerHTML = comments.map(comment => `
-                    <div class="comment-item">
-                        <div class="comment-header">
-                            <span class="comment-author">${comment.nickname || '익명'}</span>
-                            <span class="comment-date">${formatDate(comment.createdAt)}</span>
+                    <div class="comment-item" style="background: rgba(139, 69, 19, 0.08); border: 1px solid rgba(139, 69, 19, 0.2); border-radius: 10px; padding: 15px; margin-bottom: 12px; transition: all 0.3s ease;">
+                        <div class="comment-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span style="width: 24px; height: 24px; background: linear-gradient(45deg, #8B4513, #A0522D); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;">👤</span>
+                                <span class="comment-author" style="color: #8B4513; font-weight: bold; font-size: 14px;">${comment.nickname || '익명'}</span>
+                            </div>
+                            <span class="comment-date" style="color: #b8a082; font-size: 12px; font-style: italic;">${formatDate(comment.createdAt)}</span>
                         </div>
-                        <div class="comment-content">${comment.content}</div>
-                        <div class="comment-actions">
-                            <button class="comment-delete-btn" onclick="deleteComment('${storyId}', '${comment.id}')">
-                                삭제
+                        <div class="comment-content" style="color: #f5f0e6; line-height: 1.6; margin-bottom: 10px; font-size: 14px; word-wrap: break-word;">${comment.content}</div>
+                        <div class="comment-actions" style="display: flex; justify-content: flex-end;">
+                            <button class="comment-delete-btn" onclick="deleteComment('${storyId}', '${comment.id}')" style="background: rgba(220, 53, 69, 0.1); color: #dc3545; border: 1px solid rgba(220, 53, 69, 0.3); padding: 4px 10px; border-radius: 15px; font-size: 11px; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.background='#dc3545'; this.style.color='white'" onmouseout="this.style.background='rgba(220, 53, 69, 0.1)'; this.style.color='#dc3545'">
+                                🗑️ 삭제
                             </button>
                         </div>
                     </div>
@@ -716,7 +738,13 @@
 
             } catch (error) {
                 console.error('댓글 로드 실패:', error);
-                commentsList.innerHTML = '<p style="text-align: center; color: #dc3545;">댓글을 불러오는데 실패했습니다.</p>';
+                commentsList.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; color: #dc3545;">
+                        <div style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;">⚠️</div>
+                        <h4 style="margin: 0 0 8px 0;">댓글을 불러오는데 실패했습니다</h4>
+                        <p style="margin: 0; font-size: 14px; opacity: 0.8;">잠시 후 다시 시도해주세요.</p>
+                    </div>
+                `;
             }
         }
 
