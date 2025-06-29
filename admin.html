@@ -1154,7 +1154,10 @@ body {
     </div>
 </div>
 
+
 <script type="module">
+    window.loadChatbotStats = loadChatbotStats;
+    setTimeout(() => loadChatbotStats(), 3000);
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, deleteDoc, doc, where, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL, uploadBytesResumable, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
