@@ -353,6 +353,30 @@
         </div>
     </div>
 
+    <!-- 댓글 모달 -->
+    <div id="comments-modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);">
+        <div style="background-color: #2d1b0e; margin: 5% auto; padding: 20px; border-radius: 12px; width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid rgba(245, 240, 230, 0.2); padding-bottom: 15px;">
+                <h3 style="color: #f5f0e6; margin: 0;">💬 댓글</h3>
+                <button onclick="closeComments()" style="background: none; border: none; color: #f5f0e6; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            
+            <div id="comments-list" style="margin-bottom: 20px; max-height: 300px; overflow-y: auto;">
+                <p style="text-align: center; color: #d4c4a8;">댓글을 불러오는 중...</p>
+            </div>
+            
+            <form id="comment-form" style="border-top: 1px solid rgba(245, 240, 230, 0.2); padding-top: 15px;">
+                <div style="margin-bottom: 10px;">
+                    <textarea id="comment-input" rows="3" placeholder="댓글을 입력하세요..." required style="width: 100%; padding: 10px; border: 1px solid rgba(139, 69, 19, 0.4); border-radius: 6px; background: rgba(139, 69, 19, 0.1); color: #f5f0e6; resize: vertical; font-family: inherit;"></textarea>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="text" id="comment-nickname" placeholder="익명" maxlength="15" style="padding: 8px; border: 1px solid rgba(139, 69, 19, 0.4); border-radius: 6px; background: rgba(139, 69, 19, 0.1); color: #f5f0e6; flex: 1;">
+                    <button type="submit" style="background: linear-gradient(45deg, #8B4513, #A0522D); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold;">댓글 작성</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script type="module">
         import { 
             collection, 
@@ -391,6 +415,23 @@
             document.getElementById('load-more-btn')?.addEventListener('click', loadStories);
             document.getElementById('story-form')?.addEventListener('submit', handleStorySubmit);
             document.getElementById('category-filter')?.addEventListener('change', resetAndLoadStories);
+            document.getElementById('comment-form')?.addEventListener('submit', handleCommentSubmit);
+            
+            window.onclick = function(event) {
+                const modal = document.getElementById('comments-modal');
+                if (event.target == modal) {
+                    closeComments();
+                }
+            };
+        }
+
+        let currentCommentStoryId = null;
+
+        function resetAndLoadStories() {
+            lastDoc = null;
+            document.getElementById('stories-list').innerHTML = '';
+            document.getElementById('load-more-btn').style.display = 'block';
+            loadStories();
         }
 
         async function loadStories() {
@@ -398,6 +439,12 @@
             if (!storiesList) return;
 
             try {
+                if (!window.db) {
+                    storiesList.innerHTML = '<p style="text-align: center; color: #dc3545;">Firebase 연결을 확인하는 중...</p>';
+                    setTimeout(loadStories, 1000);
+                    return;
+                }
+
                 let q;
                 const storiesRef = collection(window.db, 'stories');
                 
@@ -435,6 +482,11 @@
                     storiesList.innerHTML = '';
                 }
 
+                if (filteredStories.length === 0 && lastDoc === null) {
+                    storiesList.innerHTML = '<p style="text-align: center; color: #d4c4a8;">아직 등록된 이야기가 없습니다. 첫 번째 이야기를 공유해보세요!</p>';
+                    return;
+                }
+
                 filteredStories.forEach(story => {
                     const storyElement = createStoryElement(story);
                     storiesList.appendChild(storyElement);
@@ -446,7 +498,7 @@
 
             } catch (error) {
                 console.error('스토리 로드 실패:', error);
-                storiesList.innerHTML = '<p style="text-align: center; color: #dc3545;">이야기를 불러오는데 실패했습니다.</p>';
+                storiesList.innerHTML = '<p style="text-align: center; color: #dc3545;">이야기를 불러오는데 실패했습니다. 잠시 후 다시 시도해주세요.</p>';
             }
         }
 
@@ -475,6 +527,13 @@
                                 onclick="handleDislike('${story.id}')">
                             <span>👎</span>
                             <span>${story.dislikes || 0}</span>
+                        </button>
+                        <button class="comment-btn" onclick="openComments('${story.id}')">
+                            <span>💬</span>
+                            <span>${story.commentCount || 0}</span>
+                        </button>
+                        <button class="delete-story-btn" onclick="deleteStory('${story.id}')" style="background: rgba(220, 53, 69, 0.1); color: #dc3545; border: 1px solid rgba(220, 53, 69, 0.3); padding: 4px 8px; border-radius: 4px; font-size: 12px; cursor: pointer;">
+                            삭제
                         </button>
                     </div>
                     <div class="story-meta">
@@ -595,11 +654,123 @@
             }
         }
 
-        function resetAndLoadStories() {
-            lastDoc = null;
-            document.getElementById('stories-list').innerHTML = '';
-            document.getElementById('load-more-btn').style.display = 'block';
-            loadStories();
+        window.deleteStory = async function(storyId) {
+            const password = prompt('게시글을 삭제하려면 비밀번호를 입력하세요:');
+            if (!password) return;
+
+            try {
+                await deleteDoc(doc(window.db, 'stories', storyId));
+                alert('게시글이 삭제되었습니다.');
+                resetAndLoadStories();
+            } catch (error) {
+                console.error('게시글 삭제 실패:', error);
+                alert('삭제 중 오류가 발생했습니다.');
+            }
+        };
+
+        window.openComments = function(storyId) {
+            currentCommentStoryId = storyId;
+            loadComments(storyId);
+            document.getElementById('comments-modal').style.display = 'block';
+        };
+
+        window.closeComments = function() {
+            document.getElementById('comments-modal').style.display = 'none';
+            currentCommentStoryId = null;
+        };
+
+        async function loadComments(storyId) {
+            const commentsList = document.getElementById('comments-list');
+            try {
+                const q = query(
+                    collection(window.db, 'stories', storyId, 'comments'),
+                    orderBy('createdAt', 'desc')
+                );
+                
+                const snapshot = await getDocs(q);
+                const comments = [];
+                
+                snapshot.forEach((doc) => {
+                    comments.push({ id: doc.id, ...doc.data() });
+                });
+
+                if (comments.length === 0) {
+                    commentsList.innerHTML = '<p style="text-align: center; color: #d4c4a8;">아직 댓글이 없습니다.</p>';
+                    return;
+                }
+
+                commentsList.innerHTML = comments.map(comment => `
+                    <div class="comment-item">
+                        <div class="comment-header">
+                            <span class="comment-author">${comment.nickname || '익명'}</span>
+                            <span class="comment-date">${formatDate(comment.createdAt)}</span>
+                        </div>
+                        <div class="comment-content">${comment.content}</div>
+                        <div class="comment-actions">
+                            <button class="comment-delete-btn" onclick="deleteComment('${storyId}', '${comment.id}')">
+                                삭제
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('댓글 로드 실패:', error);
+                commentsList.innerHTML = '<p style="text-align: center; color: #dc3545;">댓글을 불러오는데 실패했습니다.</p>';
+            }
+        }
+
+        window.deleteComment = async function(storyId, commentId) {
+            const password = prompt('댓글을 삭제하려면 비밀번호를 입력하세요:');
+            if (!password) return;
+
+            try {
+                await deleteDoc(doc(window.db, 'stories', storyId, 'comments', commentId));
+                await updateDoc(doc(window.db, 'stories', storyId), {
+                    commentCount: increment(-1)
+                });
+                alert('댓글이 삭제되었습니다.');
+                loadComments(storyId);
+                resetAndLoadStories();
+            } catch (error) {
+                console.error('댓글 삭제 실패:', error);
+                alert('삭제 중 오류가 발생했습니다.');
+            }
+        };
+
+        async function handleCommentSubmit(e) {
+            e.preventDefault();
+            
+            if (!currentCommentStoryId) return;
+            
+            const content = document.getElementById('comment-input').value.trim();
+            const nickname = document.getElementById('comment-nickname').value.trim() || '익명';
+            
+            if (!content) {
+                alert('댓글 내용을 입력해주세요.');
+                return;
+            }
+            
+            try {
+                await addDoc(collection(window.db, 'stories', currentCommentStoryId, 'comments'), {
+                    content: content,
+                    nickname: nickname,
+                    createdAt: serverTimestamp()
+                });
+                
+                await updateDoc(doc(window.db, 'stories', currentCommentStoryId), {
+                    commentCount: increment(1)
+                });
+                
+                document.getElementById('comment-form').reset();
+                loadComments(currentCommentStoryId);
+                resetAndLoadStories();
+                alert('댓글이 등록되었습니다!');
+                
+            } catch (error) {
+                console.error('댓글 등록 실패:', error);
+                alert('댓글 등록 중 오류가 발생했습니다.');
+            }
         }
 
         function formatDate(timestamp) {
