@@ -9,6 +9,20 @@
     <link href="movie.css" rel="stylesheet"/>
     <link rel="stylesheet" href="css/chatbot.css">
     <script src="js/chatbot.js"></script>
+    <style>
+        .director-photo img {
+            width: 200px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 3px solid rgba(245, 240, 230, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .director-photo .photo-placeholder {
+            display: none;
+        }
+    </style>
 </head>
 <body class="song-myung-regular">
     <nav>
@@ -35,6 +49,7 @@
                 <h3>감독의 말</h3>
                 <div class="message-content">
                     <div class="director-photo">
+                        <img src="주은.jpeg" alt="감독 주은" />
                         <div class="photo-placeholder">
                             <span>📷</span>
                             <p>감독 사진</p>
@@ -211,206 +226,6 @@
         </section>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAIU8q64ZB6g8D72SPcCxxkOQmhtREN9cg",
-            authDomain: "we-are-psychopath.firebaseapp.com",
-            projectId: "we-are-psychopath",
-            storageBucket: "we-are-psychopath.firebasestorage.app",
-            messagingSenderId: "1020831167882",
-            appId: "1:1020831167882:web:addcfd266307c3bb71c473",
-            measurementId: "G-MG2X69DDK8"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        function convertToEmbedUrl(url) {
-            if (!url) return '';
-            
-            const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
-            if (youtubeMatch) {
-                return `https://www.youtube.com/embed/${youtubeMatch[1]}`;
-            }
-            
-            const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
-            if (vimeoMatch) {
-                return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
-            }
-            
-            return url;
-        }
-
-        // 다큐 영상 로드
-        async function loadDocumentaryVideos() {
-            const loadingElement = document.getElementById('videos-loading');
-            const gridElement = document.getElementById('videos-grid');
-            const noVideosElement = document.getElementById('no-videos');
-
-            try {
-                const q = query(collection(db, "documentaryVideos"), orderBy("timestamp", "desc"));
-                const querySnapshot = await getDocs(q);
-
-                loadingElement.style.display = 'none';
-
-                if (querySnapshot.empty) {
-                    noVideosElement.style.display = 'block';
-                    return;
-                }
-
-                let videosHtml = '';
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const date = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleDateString('ko-KR') : '날짜 미상';
-                    
-                    let videoElement = '';
-                    if (data.isYoutube) {
-                        const embedUrl = convertToEmbedUrl(data.videoUrl);
-                        videoElement = `
-                            <div class="video-wrapper">
-                                <iframe 
-                                    src="${embedUrl}" 
-                                    frameborder="0" 
-                                    allowfullscreen
-                                    title="${data.title || '다큐 영상'}"
-                                ></iframe>
-                            </div>
-                        `;
-                    } else {
-                        videoElement = `
-                            <div class="video-wrapper">
-                                <video controls>
-                                    <source src="${data.videoUrl}" type="video/mp4">
-                                    브라우저가 비디오를 지원하지 않습니다.
-                                </video>
-                            </div>
-                        `;
-                    }
-
-                    videosHtml += `
-                        <div class="video-item">
-                            ${videoElement}
-                            <div class="video-info">
-                                <h3>${data.title || '제목 없음'}</h3>
-                                <p class="video-description">${data.description || '설명이 없습니다.'}</p>
-                                <p class="video-date">업로드: ${date}</p>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                gridElement.innerHTML = videosHtml;
-            } catch (error) {
-                console.error("영상 로딩 실패:", error);
-                loadingElement.innerHTML = '<p style="color: #dc3545;">영상을 불러오는데 실패했습니다.</p>';
-            }
-        }
-
-        // 페이지 로드 시 영상 로드
-        document.addEventListener('DOMContentLoaded', () => {
-            loadDocumentaryVideos();
-        });
-    </script>
-
-    <style>
-        .videos-container {
-            width: 100%;
-        }
-
-        .loading-message, .no-content {
-            text-align: center;
-            padding: 20px;
-            color: #d4c4a8;
-            font-size: 1.1em;
-        }
-
-        .videos-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-            margin-top: 20px;
-        }
-
-        .video-item {
-            background: rgba(245, 240, 230, 0.08);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(245, 240, 230, 0.1);
-        }
-
-        .video-item:hover {
-            background: rgba(245, 240, 230, 0.12);
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-        }
-
-        .video-wrapper {
-            position: relative;
-            width: 100%;
-            height: 0;
-            padding-bottom: 56.25%;
-            background: #000;
-        }
-
-        .video-wrapper iframe,
-        .video-wrapper video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        .video-info {
-            padding: 20px;
-        }
-
-        .video-info h3 {
-            font-size: 1.3em;
-            margin-bottom: 10px;
-            color: #f5f0e6;
-            line-height: 1.4;
-        }
-
-        .video-description {
-            color: #d4c4a8;
-            line-height: 1.6;
-            margin-bottom: 10px;
-            font-size: 0.95em;
-        }
-
-        .video-date {
-            color: #8d6e63;
-            font-size: 0.9em;
-            margin: 0;
-            font-style: italic;
-        }
-
-        @media (max-width: 768px) {
-            .videos-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .video-info {
-                padding: 15px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .videos-grid {
-                gap: 15px;
-            }
-
-            .video-info {
-                padding: 12px;
-            }
-        }
-    </style>
+    <script type="module" src="js/movie.js"></script>
 </body>
 </html>
