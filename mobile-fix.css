@@ -1,13 +1,13 @@
 @media (max-width: 768px) {
     
     nav {
-        height: 45px !important;
-        padding: 3px 0 !important;
+        height: auto !important;
+        padding: 5px 0 !important;
     }
     
     .nav-container {
         flex-direction: row !important;
-        flex-wrap: nowrap !important;
+        flex-wrap: wrap !important;
         gap: 2px !important;
         padding: 3px 5px !important;
         justify-content: center !important;
@@ -27,36 +27,36 @@
     }
     
     h1 {
-        font-size: 2.8em !important;
+        font-size: 1.8em !important;
         line-height: 1.2;
-        margin: 20px 0 !important;
+        margin: 15px 0 !important;
         word-break: keep-all;
     }
     
     h2 {
-        font-size: 2.2em !important;
+        font-size: 1.5em !important;
         line-height: 1.3;
-        margin: 25px 0 20px 0 !important;
+        margin: 18px 0 12px 0 !important;
     }
     
     h3 {
-        font-size: 1.8em !important;
+        font-size: 1.3em !important;
         line-height: 1.3;
-        margin: 20px 0 15px 0 !important;
+        margin: 15px 0 10px 0 !important;
     }
     
     p, .intro-text {
-        font-size: 1.3em !important;
-        line-height: 1.6 !important;
-        margin: 20px 0 !important;
+        font-size: 1em !important;
+        line-height: 1.5 !important;
+        margin: 12px 0 !important;
     }
     
     .contact-card,
     .nav-card,
     .story-card {
-        padding: 25px 20px !important;
-        margin: 15px 0 !important;
-        border-radius: 12px !important;
+        padding: 15px 12px !important;
+        margin: 10px 0 !important;
+        border-radius: 8px !important;
     }
     
     .contact-value,
@@ -64,10 +64,10 @@
     button,
     .nav-card,
     .story-card {
-        min-height: 44px !important;
-        padding: 15px 20px !important;
-        font-size: 1.2em !important;
-        border-radius: 10px !important;
+        min-height: 36px !important;
+        padding: 10px 15px !important;
+        font-size: 0.95em !important;
+        border-radius: 8px !important;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -78,41 +78,41 @@
     input[type="email"],
     textarea,
     select {
-        font-size: 1.2em !important;
-        padding: 18px !important;
-        border-radius: 8px !important;
-        min-height: 44px !important;
+        font-size: 1em !important;
+        padding: 12px !important;
+        border-radius: 6px !important;
+        min-height: 36px !important;
         line-height: 1.4;
     }
     
     .form-group {
-        margin: 25px 0 !important;
+        margin: 18px 0 !important;
     }
     
     .form-group label {
-        font-size: 1.3em !important;
-        margin-bottom: 10px !important;
+        font-size: 1.1em !important;
+        margin-bottom: 8px !important;
         display: block;
         font-weight: bold;
     }
     
     .main-container {
-        padding: 70px 20px 40px !important;
+        padding: 80px 20px 40px !important;
     }
     
     .hero-section,
     .intro-section,
     .contact-section {
-        padding: 30px 20px !important;
-        margin: 25px 0 !important;
+        padding: 20px 15px !important;
+        margin: 18px 0 !important;
     }
     
     .chatbot-float-btn {
-        width: 70px !important;
-        height: 70px !important;
-        font-size: 28px !important;
-        bottom: 25px !important;
-        right: 25px !important;
+        width: 55px !important;
+        height: 55px !important;
+        font-size: 22px !important;
+        bottom: 20px !important;
+        right: 20px !important;
     }
     
     .modal-content {
@@ -169,20 +169,20 @@
     }
     
     .contact-label {
-        font-size: 1.3em !important;
-        margin-bottom: 12px !important;
+        font-size: 1.1em !important;
+        margin-bottom: 8px !important;
     }
     
     .contact-value {
-        font-size: 1.1em !important;
-        padding: 18px !important;
+        font-size: 0.9em !important;
+        padding: 12px !important;
         word-break: break-all;
         line-height: 1.4;
     }
     
     .contact-icon {
-        font-size: 3.2em !important;
-        margin-bottom: 15px !important;
+        font-size: 2.2em !important;
+        margin-bottom: 10px !important;
     }
 }
 
