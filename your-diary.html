@@ -9,6 +9,219 @@
     <link href="diary-board.css" rel="stylesheet"/>
     <link rel="stylesheet" href="css/chatbot.css">
     <script src="js/chatbot.js"></script>
+    <style>
+        .story-item {
+            background: rgba(245, 240, 230, 0.05);
+            border: 1px solid rgba(245, 240, 230, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .story-item:hover {
+            background: rgba(245, 240, 230, 0.08);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .story-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #d4c4a8;
+        }
+
+        .story-author {
+            font-weight: bold;
+        }
+
+        .story-date {
+            opacity: 0.7;
+        }
+
+        .story-content {
+            color: #f5f0e6;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .story-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid rgba(245, 240, 230, 0.1);
+            padding-top: 15px;
+        }
+
+        .like-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .like-btn, .dislike-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: none;
+            border: 1px solid rgba(245, 240, 230, 0.3);
+            color: #d4c4a8;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .like-btn:hover {
+            background: rgba(40, 167, 69, 0.2);
+            border-color: #28a745;
+            color: #28a745;
+        }
+
+        .like-btn.active {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .dislike-btn:hover {
+            background: rgba(220, 53, 69, 0.2);
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+
+        .dislike-btn.active {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .story-meta {
+            font-size: 12px;
+            color: #8B4513;
+        }
+
+        .youtube-link {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid #ff0000;
+        }
+
+        .youtube-link a {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .youtube-link a:hover {
+            text-decoration: underline;
+        }
+
+        .playlist-section {
+            margin-top: 50px;
+            padding: 30px;
+            background: rgba(245, 240, 230, 0.03);
+            border-radius: 15px;
+            border: 1px solid rgba(245, 240, 230, 0.1);
+        }
+
+        .playlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .playlist-card {
+            background: rgba(245, 240, 230, 0.05);
+            border: 1px solid rgba(245, 240, 230, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .playlist-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .playlist-thumbnail {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .playlist-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #f5f0e6;
+            margin-bottom: 8px;
+        }
+
+        .playlist-description {
+            color: #d4c4a8;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .playlist-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .playlist-tag {
+            background: rgba(139, 69, 19, 0.3);
+            color: #f5f0e6;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .playlist-link {
+            display: inline-block;
+            background: #ff0000;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .playlist-link:hover {
+            background: #cc0000;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .story-actions {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+
+            .like-section {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .playlist-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body class="song-myung-regular">
     <nav>
@@ -48,14 +261,9 @@
             </div>
         </div>
 
-        <div class="write-section">
-            <h3>✍️ 당신의 이야기를 들려주세요</h3>
+        <div class="share-section">
+            <h3>📝 이야기 나누기</h3>
             <form id="story-form" class="story-form">
-                <div class="form-group">
-                    <label for="story-title">제목 (선택사항)</label>
-                    <input type="text" id="story-title" placeholder="제목을 입력하세요 (비워두면 '익명의 이야기'로 표시됩니다)">
-                </div>
-                
                 <div class="form-group">
                     <label for="story-category">카테고리</label>
                     <select id="story-category" required>
@@ -73,8 +281,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="story-content">내용</label>
-                    <textarea id="story-content" rows="8" placeholder="자유롭게 이야기를 써주세요. 힘든 일, 기쁜 일, 일상의 소소한 것들까지... 무엇이든 좋습니다." required></textarea>
+                    <label for="story-content">이야기</label>
+                    <textarea id="story-content" rows="5" placeholder="힘든 일, 기쁜 일, 일상의 소소한 것들까지... 무엇이든 좋습니다." required></textarea>
                 </div>
 
                 <div class="form-group">
@@ -139,52 +347,284 @@
             <p style="color: #d4c4a8; margin-bottom: 30px; text-align: center;">
                 감독 주은이 추천하는 음악들을 들어보세요.
             </p>
-            <div class="youtube-playlists" id="youtubePlaylists">
-            </div>
-        </div>
-
-        <div class="emergency-info">
-            <div class="emergency-content">
-                <h4>🚨 긴급한 도움이 필요하신가요?</h4>
-                <p>혼자 견디지 마시고 전문가의 도움을 받으세요.</p>
-                <div class="emergency-contacts">
-                    <a href="tel:129" class="emergency-link">
-                        📞 정신건강 상담전화 129
-                    </a>
-                    <a href="tel:119" class="emergency-link">
-                        🚑 응급상황 119
-                    </a>
-                </div>
+            <div id="playlist-grid" class="playlist-grid">
+                <div class="loading-message">플레이리스트를 불러오는 중...</div>
             </div>
         </div>
     </div>
 
-    <div id="story-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="modal-title"></h3>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div id="modal-story-content"></div>
-                <div id="modal-youtube" class="youtube-container" style="display: none;"></div>
+    <script type="module">
+        import { 
+            collection, 
+            addDoc, 
+            getDocs, 
+            doc, 
+            updateDoc, 
+            increment,
+            serverTimestamp,
+            orderBy,
+            query,
+            limit,
+            startAfter 
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        let currentSort = 'recent';
+        let lastDoc = null;
+        let userLikes = JSON.parse(localStorage.getItem('userLikes') || '{}');
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStories();
+            loadPlaylists();
+            initializeEventListeners();
+        });
+
+        function initializeEventListeners() {
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentSort = this.dataset.sort;
+                    resetAndLoadStories();
+                });
+            });
+
+            document.getElementById('load-more-btn')?.addEventListener('click', loadStories);
+            document.getElementById('story-form')?.addEventListener('submit', handleStorySubmit);
+            document.getElementById('category-filter')?.addEventListener('change', resetAndLoadStories);
+        }
+
+        async function loadStories() {
+            const storiesList = document.getElementById('stories-list');
+            if (!storiesList) return;
+
+            try {
+                let q;
+                const storiesRef = collection(window.db, 'stories');
                 
-                <div class="comments-section">
-                    <h4>💬 댓글</h4>
-                    <div id="comments-list" class="comments-list"></div>
-                    
-                    <form id="comment-form" class="comment-form">
-                        <textarea id="comment-content" rows="3" placeholder="따뜻한 댓글을 남겨주세요..." required></textarea>
-                        <div class="comment-actions">
-                            <input type="text" id="comment-nickname" placeholder="익명" maxlength="15">
-                            <button type="submit">댓글 작성</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+                switch(currentSort) {
+                    case 'likes':
+                        q = query(storiesRef, orderBy('likes', 'desc'), limit(10));
+                        break;
+                    case 'comments':
+                        q = query(storiesRef, orderBy('commentCount', 'desc'), limit(10));
+                        break;
+                    default:
+                        q = query(storiesRef, orderBy('createdAt', 'desc'), limit(10));
+                }
 
-    <script type="module" src="js/your-diary.js"></script>
+                if (lastDoc) {
+                    q = query(q, startAfter(lastDoc));
+                }
+
+                const snapshot = await getDocs(q);
+                const stories = [];
+                
+                snapshot.forEach((doc) => {
+                    stories.push({ id: doc.id, ...doc.data() });
+                });
+
+                if (stories.length > 0) {
+                    lastDoc = snapshot.docs[snapshot.docs.length - 1];
+                }
+
+                const categoryFilter = document.getElementById('category-filter')?.value;
+                const filteredStories = categoryFilter ? 
+                    stories.filter(story => story.category === categoryFilter) : stories;
+
+                if (lastDoc === null) {
+                    storiesList.innerHTML = '';
+                }
+
+                filteredStories.forEach(story => {
+                    const storyElement = createStoryElement(story);
+                    storiesList.appendChild(storyElement);
+                });
+
+                if (stories.length < 10) {
+                    document.getElementById('load-more-btn').style.display = 'none';
+                }
+
+            } catch (error) {
+                console.error('스토리 로드 실패:', error);
+                storiesList.innerHTML = '<p style="text-align: center; color: #dc3545;">이야기를 불러오는데 실패했습니다.</p>';
+            }
+        }
+
+        function createStoryElement(story) {
+            const div = document.createElement('div');
+            div.className = 'story-item';
+            div.innerHTML = `
+                <div class="story-header">
+                    <span class="story-author">${story.nickname || '익명'}</span>
+                    <span class="story-date">${formatDate(story.createdAt)}</span>
+                </div>
+                <div class="story-content">${story.content}</div>
+                ${story.youtubeLink ? `<div class="youtube-link">
+                    <a href="${story.youtubeLink}" target="_blank" rel="noopener noreferrer">
+                        🎵 추천 음악: ${story.youtubeLink}
+                    </a>
+                </div>` : ''}
+                <div class="story-actions">
+                    <div class="like-section">
+                        <button class="like-btn ${userLikes[story.id] === 'like' ? 'active' : ''}" 
+                                onclick="handleLike('${story.id}')">
+                            <span>👍</span>
+                            <span>${story.likes || 0}</span>
+                        </button>
+                        <button class="dislike-btn ${userLikes[story.id] === 'dislike' ? 'active' : ''}" 
+                                onclick="handleDislike('${story.id}')">
+                            <span>👎</span>
+                            <span>${story.dislikes || 0}</span>
+                        </button>
+                    </div>
+                    <div class="story-meta">
+                        카테고리: ${getCategoryName(story.category)}
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+
+        window.handleLike = async function(storyId) {
+            try {
+                const currentLike = userLikes[storyId];
+                const storyRef = doc(window.db, 'stories', storyId);
+                
+                if (currentLike === 'like') {
+                    await updateDoc(storyRef, { likes: increment(-1) });
+                    delete userLikes[storyId];
+                } else {
+                    if (currentLike === 'dislike') {
+                        await updateDoc(storyRef, { dislikes: increment(-1) });
+                    }
+                    await updateDoc(storyRef, { likes: increment(1) });
+                    userLikes[storyId] = 'like';
+                }
+                
+                localStorage.setItem('userLikes', JSON.stringify(userLikes));
+                resetAndLoadStories();
+            } catch (error) {
+                console.error('좋아요 처리 실패:', error);
+            }
+        };
+
+        window.handleDislike = async function(storyId) {
+            try {
+                const currentLike = userLikes[storyId];
+                const storyRef = doc(window.db, 'stories', storyId);
+                
+                if (currentLike === 'dislike') {
+                    await updateDoc(storyRef, { dislikes: increment(-1) });
+                    delete userLikes[storyId];
+                } else {
+                    if (currentLike === 'like') {
+                        await updateDoc(storyRef, { likes: increment(-1) });
+                    }
+                    await updateDoc(storyRef, { dislikes: increment(1) });
+                    userLikes[storyId] = 'dislike';
+                }
+                
+                localStorage.setItem('userLikes', JSON.stringify(userLikes));
+                resetAndLoadStories();
+            } catch (error) {
+                console.error('싫어요 처리 실패:', error);
+            }
+        };
+
+        async function handleStorySubmit(e) {
+            e.preventDefault();
+            
+            const formData = {
+                category: document.getElementById('story-category').value,
+                content: document.getElementById('story-content').value,
+                youtubeLink: document.getElementById('youtube-link').value,
+                nickname: document.getElementById('story-nickname').value || '익명',
+                likes: 0,
+                dislikes: 0,
+                commentCount: 0,
+                createdAt: serverTimestamp()
+            };
+            
+            try {
+                await addDoc(collection(window.db, 'stories'), formData);
+                alert('이야기가 성공적으로 공유되었습니다!');
+                document.getElementById('story-form').reset();
+                resetAndLoadStories();
+            } catch (error) {
+                console.error('이야기 저장 실패:', error);
+                alert('이야기 저장 중 오류가 발생했습니다.');
+            }
+        }
+
+        async function loadPlaylists() {
+            const playlistGrid = document.getElementById('playlist-grid');
+            if (!playlistGrid) return;
+
+            try {
+                const snapshot = await getDocs(collection(window.db, 'playlists'));
+                const playlists = [];
+                
+                snapshot.forEach((doc) => {
+                    playlists.push({ id: doc.id, ...doc.data() });
+                });
+
+                if (playlists.length === 0) {
+                    playlistGrid.innerHTML = '<p style="text-align: center; color: #d4c4a8;">등록된 플레이리스트가 없습니다.</p>';
+                    return;
+                }
+
+                playlistGrid.innerHTML = playlists.map(playlist => `
+                    <div class="playlist-card">
+                        <img src="${playlist.thumbnail || '/api/placeholder/300/150'}" 
+                             alt="${playlist.title}" 
+                             class="playlist-thumbnail">
+                        <div class="playlist-title">${playlist.title}</div>
+                        <div class="playlist-description">${playlist.description || ''}</div>
+                        <div class="playlist-tags">
+                            ${playlist.tags ? playlist.tags.map(tag => `<span class="playlist-tag">${tag}</span>`).join('') : ''}
+                        </div>
+                        <a href="${playlist.url}" target="_blank" rel="noopener noreferrer" class="playlist-link">
+                            플레이리스트 듣기
+                        </a>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('플레이리스트 로드 실패:', error);
+                playlistGrid.innerHTML = '<p style="text-align: center; color: #dc3545;">플레이리스트를 불러오는데 실패했습니다.</p>';
+            }
+        }
+
+        function resetAndLoadStories() {
+            lastDoc = null;
+            document.getElementById('stories-list').innerHTML = '';
+            document.getElementById('load-more-btn').style.display = 'block';
+            loadStories();
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return '';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            return date.toLocaleDateString('ko-KR') + ' ' + date.toLocaleTimeString('ko-KR', {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function getCategoryName(category) {
+            const categoryNames = {
+                'daily': '일상 이야기',
+                'family': '가족 이야기',
+                'treatment': '치료 경험',
+                'emotion': '감정 나누기',
+                'recovery': '회복 과정',
+                'music': '음악 추천',
+                'support': '응원 메시지',
+                'question': '질문/고민',
+                'other': '기타'
+            };
+            return categoryNames[category] || category;
+        }
+    </script>
 </body>
 </html>
