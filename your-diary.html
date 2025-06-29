@@ -101,6 +101,31 @@
             border-color: #dc3545;
         }
 
+        .comment-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: none;
+            border: 1px solid rgba(139, 69, 19, 0.4);
+            color: #8B4513;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .comment-btn:hover {
+            background: rgba(139, 69, 19, 0.2);
+            border-color: #8B4513;
+            color: #f5f0e6;
+        }
+
+        .delete-story-btn:hover {
+            background: #dc3545 !important;
+            color: white !important;
+        }
+
         .story-meta {
             font-size: 12px;
             color: #8B4513;
@@ -353,11 +378,9 @@
         </div>
     </div>
 
-    <!-- 댓글 모달 -->
     <div id="comments-modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px);">
         <div style="background: linear-gradient(135deg, #2d1b0e 0%, #1a0f08 100%); margin: 3% auto; padding: 0; border-radius: 15px; width: 90%; max-width: 700px; max-height: 85vh; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.5); border: 1px solid rgba(139, 69, 19, 0.3);">
             
-            <!-- 모달 헤더 -->
             <div style="background: linear-gradient(135deg, #8B4513, #A0522D); color: #f5f0e6; padding: 20px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(245, 240, 230, 0.2);">
                 <h3 style="margin: 0; font-size: 1.3em; display: flex; align-items: center; gap: 10px;">
                     <span>💬</span>
@@ -368,14 +391,12 @@
                 </button>
             </div>
             
-            <!-- 댓글 목록 -->
             <div style="padding: 20px; max-height: 400px; overflow-y: auto;">
                 <div id="comments-list">
                     <p style="text-align: center; color: #d4c4a8; font-style: italic; padding: 20px;">댓글을 불러오는 중...</p>
                 </div>
             </div>
             
-            <!-- 댓글 작성 폼 -->
             <form id="comment-form" style="border-top: 1px solid rgba(139, 69, 19, 0.3); padding: 20px; background: rgba(139, 69, 19, 0.05);">
                 <div style="margin-bottom: 15px;">
                     <textarea id="comment-input" rows="3" placeholder="따뜻한 댓글을 남겨주세요..." required style="width: 100%; padding: 12px; border: 1px solid rgba(139, 69, 19, 0.4); border-radius: 8px; background: rgba(139, 69, 19, 0.1); color: #f5f0e6; resize: vertical; font-family: inherit; font-size: 14px; line-height: 1.5; transition: all 0.3s ease;" onfocus="this.style.borderColor='#8B4513'; this.style.background='rgba(139, 69, 19, 0.15)'" onblur="this.style.borderColor='rgba(139, 69, 19, 0.4)'; this.style.background='rgba(139, 69, 19, 0.1)'"></textarea>
@@ -414,6 +435,7 @@
         let currentSort = 'recent';
         let lastDoc = null;
         let userLikes = JSON.parse(localStorage.getItem('userLikes') || '{}');
+        let currentCommentStoryId = null;
 
         document.addEventListener('DOMContentLoaded', function() {
             loadStories();
@@ -443,8 +465,6 @@
                 }
             };
         }
-
-        let currentCommentStoryId = null;
 
         function resetAndLoadStories() {
             lastDoc = null;
@@ -759,7 +779,6 @@
             if (!password) return;
 
             try {
-                // 해당 댓글의 비밀번호 확인
                 const commentDoc = await getDoc(doc(window.db, 'stories', storyId, 'comments', commentId));
                 if (!commentDoc.exists()) {
                     alert('댓글을 찾을 수 없습니다.');
