@@ -380,12 +380,16 @@
                 <div style="margin-bottom: 15px;">
                     <textarea id="comment-input" rows="3" placeholder="따뜻한 댓글을 남겨주세요..." required style="width: 100%; padding: 12px; border: 1px solid rgba(139, 69, 19, 0.4); border-radius: 8px; background: rgba(139, 69, 19, 0.1); color: #f5f0e6; resize: vertical; font-family: inherit; font-size: 14px; line-height: 1.5; transition: all 0.3s ease;" onfocus="this.style.borderColor='#8B4513'; this.style.background='rgba(139, 69, 19, 0.15)'" onblur="this.style.borderColor='rgba(139, 69, 19, 0.4)'; this.style.background='rgba(139, 69, 19, 0.1)'"></textarea>
                 </div>
-                <div style="display: flex; gap: 10px; align-items: center;">
+                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
                     <input type="text" id="comment-nickname" placeholder="닉네임 (선택사항)" maxlength="15" style="padding: 10px 12px; border: 1px solid rgba(139, 69, 19, 0.4); border-radius: 6px; background: rgba(139, 69, 19, 0.1); color: #f5f0e6; flex: 1; font-size: 14px; transition: all 0.3s ease;" onfocus="this.style.borderColor='#8B4513'; this.style.background='rgba(139, 69, 19, 0.15)'" onblur="this.style.borderColor='rgba(139, 69, 19, 0.4)'; this.style.background='rgba(139, 69, 19, 0.1)'">
+                    <input type="password" id="comment-password" placeholder="삭제용 비밀번호" maxlength="20" required style="padding: 10px 12px; border: 1px solid rgba(139, 69, 19, 0.4); border-radius: 6px; background: rgba(139, 69, 19, 0.1); color: #f5f0e6; flex: 1; font-size: 14px; transition: all 0.3s ease;" onfocus="this.style.borderColor='#8B4513'; this.style.background='rgba(139, 69, 19, 0.15)'" onblur="this.style.borderColor='rgba(139, 69, 19, 0.4)'; this.style.background='rgba(139, 69, 19, 0.1)'">
+                </div>
+                <div style="display: flex; justify-content: flex-end;">
                     <button type="submit" style="background: linear-gradient(45deg, #8B4513, #A0522D); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: all 0.3s ease; box-shadow: 0 2px 10px rgba(139, 69, 19, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 15px rgba(139, 69, 19, 0.4)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 10px rgba(139, 69, 19, 0.3)'">
                         댓글 작성
                     </button>
                 </div>
+                <p style="font-size: 12px; color: #8B4513; margin: 10px 0 0 0; text-align: center;">💡 댓글 삭제 시 설정한 비밀번호가 필요합니다</p>
             </form>
         </div>
     </div>
@@ -395,8 +399,10 @@
             collection, 
             addDoc, 
             getDocs, 
+            getDoc,
             doc, 
             updateDoc, 
+            deleteDoc,
             increment,
             serverTimestamp,
             orderBy,
@@ -749,10 +755,25 @@
         }
 
         window.deleteComment = async function(storyId, commentId) {
-            const password = prompt('댓글을 삭제하려면 비밀번호를 입력하세요:');
+            const password = prompt('댓글 삭제용 비밀번호를 입력하세요:');
             if (!password) return;
 
             try {
+                // 해당 댓글의 비밀번호 확인
+                const commentDoc = await getDoc(doc(window.db, 'stories', storyId, 'comments', commentId));
+                if (!commentDoc.exists()) {
+                    alert('댓글을 찾을 수 없습니다.');
+                    return;
+                }
+                
+                const commentData = commentDoc.data();
+                const hashedInputPassword = btoa(password);
+                
+                if (commentData.password !== hashedInputPassword) {
+                    alert('비밀번호가 일치하지 않습니다.');
+                    return;
+                }
+
                 await deleteDoc(doc(window.db, 'stories', storyId, 'comments', commentId));
                 await updateDoc(doc(window.db, 'stories', storyId), {
                     commentCount: increment(-1)
@@ -773,16 +794,25 @@
             
             const content = document.getElementById('comment-input').value.trim();
             const nickname = document.getElementById('comment-nickname').value.trim() || '익명';
+            const password = document.getElementById('comment-password').value.trim();
             
             if (!content) {
                 alert('댓글 내용을 입력해주세요.');
                 return;
             }
             
+            if (!password) {
+                alert('삭제용 비밀번호를 설정해주세요.');
+                return;
+            }
+            
             try {
+                const hashedPassword = btoa(password);
+                
                 await addDoc(collection(window.db, 'stories', currentCommentStoryId, 'comments'), {
                     content: content,
                     nickname: nickname,
+                    password: hashedPassword,
                     createdAt: serverTimestamp()
                 });
                 
