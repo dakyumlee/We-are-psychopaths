@@ -5,12 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>감독 관리 패널</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Song+Myung&display=swap');
+
 .song-myung-regular {
-            font-family: "Song Myung", serif;
-            font-weight: 400;
-            font-style: normal;
-        }
-    
+    font-family: "Song Myung", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
 body {
     background-color: #4e2e1e;
     color: #f5f0e6;
@@ -1326,20 +1328,35 @@ function openChatModal(userMessage, botMessage, timestampSeconds) {
         return;
     }
     
-    const timeString = timestampSeconds && timestampSeconds > 0 ? 
-        new Date(timestampSeconds * 1000).toLocaleString('ko-KR', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit'
-        }) : '시간 미상';
+    // 타임스탬프 처리 개선
+    let timeString = '시간 미상';
+    if (timestampSeconds && timestampSeconds > 0) {
+        try {
+            timeString = new Date(timestampSeconds * 1000).toLocaleString('ko-KR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        } catch (e) {
+            console.warn('타임스탬프 변환 오류:', e);
+            timeString = '시간 미상';
+        }
+    }
     
     title.textContent = `💬 대화 상세 내용`;
     
+    // 메시지 내용 확인 및 기본값 설정
     const displayUserMessage = userMessage && userMessage.trim() !== '' ? userMessage : '사용자 메시지가 기록되지 않았습니다.';
     const displayBotMessage = botMessage && botMessage.trim() !== '' ? botMessage : '상담사 응답이 기록되지 않았습니다.';
+    
+    console.log('모달에 표시할 메시지:', { 
+        displayUserMessage: displayUserMessage.substring(0, 100), 
+        displayBotMessage: displayBotMessage.substring(0, 100),
+        timeString 
+    });
     
     body.innerHTML = `
         <div style="text-align: center; margin-bottom: 20px; padding: 10px; background: rgba(245, 240, 230, 0.05); border-radius: 8px;">
@@ -1369,7 +1386,21 @@ function openChatModal(userMessage, botMessage, timestampSeconds) {
         </div>
     `;
     
+    // 모달 표시
     modal.style.display = 'flex';
+    modal.style.visibility = 'visible';
+    modal.style.opacity = '1';
+    
+    console.log('모달이 표시되었습니다. display:', modal.style.display);
+    
+    // 모달이 제대로 표시되었는지 확인
+    setTimeout(() => {
+        if (modal.style.display === 'flex') {
+            console.log('모달 표시 확인됨');
+        } else {
+            console.warn('모달 표시 실패');
+        }
+    }, 100);
 }
 
 async function loadChatbotStats() {
@@ -1686,28 +1717,69 @@ async function loadAllChats() {
                 </div>
             `;
         } else {
+            let index = 0;
             chatsSnapshot.forEach(doc => {
                 const data = doc.data();
-                const timeString = data.timestamp ? 
-                    new Date(data.timestamp.seconds * 1000).toLocaleString('ko-KR') : 
-                    '시간 미상';
+                const timestamp = data.timestamp?.toDate ? data.timestamp.toDate() : null;
+                const timeString = timestamp ? 
+                    timestamp.toLocaleString('ko-KR', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }) : '시간 미상';
                 
                 const userMessage = data.userMessage || '';
                 const botMessage = data.botMessage || '';
                 const preview = userMessage.length > 50 ? userMessage.substring(0, 50) + '...' : userMessage;
                 
+                // 메시지 내용을 JSON에 안전하게 전달하기 위해 이스케이프 처리
+                const safeUserMessage = userMessage.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+                const safeBotMessage = botMessage.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+                const timestampSeconds = timestamp ? Math.floor(timestamp.getTime() / 1000) : 0;
+                
                 html += `
-                    <div class="content-item" onclick="openChatModal('${userMessage.replace(/'/g, '&#39;')}', '${botMessage.replace(/'/g, '&#39;')}', ${data.timestamp ? data.timestamp.seconds : 0})">
+                    <div class="content-item chat-item-${index}" 
+                         style="cursor: pointer;"
+                         data-user-message="${safeUserMessage}"
+                         data-bot-message="${safeBotMessage}"
+                         data-timestamp="${timestampSeconds}">
                         <h4>💬 대화 - ${timeString}</h4>
-                        <p><strong>사용자:</strong> ${preview || '메시지 없음'}</p>
-                        <p><strong>사용자 ID:</strong> ${data.userId || '알 수 없음'}</p>
-                        <p style="font-size: 0.8em; color: #8d6e63;">클릭하여 전체 대화 보기</p>
+                        <div style="background: rgba(141, 110, 99, 0.1); padding: 8px; border-radius: 4px; margin: 8px 0;">
+                            <p><strong>사용자 메시지:</strong></p>
+                            <p style="font-style: italic; color: #d4c4a8;">"${preview || '메시지 없음'}"</p>
+                        </div>
+                        <div style="background: rgba(245, 240, 230, 0.1); padding: 8px; border-radius: 4px; margin: 8px 0;">
+                            <p><strong>상담사 응답:</strong></p>
+                            <p style="font-style: italic; color: #d4c4a8;">"${(botMessage || '응답 없음').substring(0, 80)}${botMessage && botMessage.length > 80 ? '...' : ''}"</p>
+                        </div>
+                        <p><strong>사용자 ID:</strong> ${data.userId?.substring(0, 8) || '알 수 없음'}...</p>
+                        <p style="font-size: 0.8em; color: #aaa; margin-top: 8px; text-align: center;">📱 클릭하여 전체 대화 보기</p>
                     </div>
                 `;
+                index++;
             });
         }
 
-        document.getElementById("all-chats").innerHTML = html;
+        const container = document.getElementById("all-chats");
+        container.innerHTML = html;
+
+        // 이벤트 리스너 추가 - 컨테이너에 위임
+        container.addEventListener('click', (e) => {
+            const chatItem = e.target.closest('[class*="chat-item-"]');
+            if (chatItem) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const userMessage = chatItem.getAttribute('data-user-message').replace(/&#39;/g, "'").replace(/&quot;/g, '"');
+                const botMessage = chatItem.getAttribute('data-bot-message').replace(/&#39;/g, "'").replace(/&quot;/g, '"');
+                const timestampSeconds = parseInt(chatItem.getAttribute('data-timestamp')) || 0;
+                
+                console.log('대화 클릭됨:', { userMessage: userMessage.substring(0, 50), botMessage: botMessage.substring(0, 50), timestampSeconds });
+                openChatModal(userMessage, botMessage, timestampSeconds);
+            }
+        });
 
     } catch (error) {
         console.error("전체 대화 로딩 실패:", error);
