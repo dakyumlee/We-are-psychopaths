@@ -1535,43 +1535,120 @@ async function loadEmotionAnalysis() {
 
 async function loadUrgentMessages() {
     try {
-        const urgentQuery = query(
-            collection(window.db, 'chatAnalytics'),
-            where('urgencyLevel', '==', 'high'),
+        const container = document.getElementById("urgent-messages");
+        
+        // chatHistory에서 직접 데이터를 가져와서 긴급상황 키워드 분석
+        const chatHistoryQuery = query(
+            collection(window.db, 'chatHistory'),
             orderBy('timestamp', 'desc'),
-            limit(10)
+            limit(50)
         );
-        const urgentSnapshot = await getDocs(urgentQuery);
+        const chatHistorySnapshot = await getDocs(chatHistoryQuery);
         
-        let html = '';
-        
-        if (urgentSnapshot.empty) {
-            html = `
+        if (chatHistorySnapshot.empty) {
+            container.innerHTML = `
                 <div class="content-item">
-                    <h4>✅ 안전 상태</h4>
-                    <p>현재 긴급 상황으로 분류된 메시지가 없습니다.</p>
-                    <p>시스템이 지속적으로 모니터링하고 있습니다.</p>
+                    <h4>✅ 현재 긴급 상황 없음</h4>
+                    <p>아직 대화 데이터가 없습니다.</p>
                 </div>
             `;
-        } else {
-            urgentSnapshot.forEach(doc => {
-                const data = doc.data();
-                const timeString = data.timestamp ? 
-                    new Date(data.timestamp.seconds * 1000).toLocaleString('ko-KR') : 
-                    '시간 미상';
-                
-                html += `
-                    <div class="content-item urgent-item" onclick="openChatModal('${data.message || ''}', '', ${data.timestamp ? data.timestamp.seconds : 0})">
-                        <h4>🚨 긴급 메시지</h4>
-                        <p><strong>시간:</strong> ${timeString}</p>
-                        <p><strong>내용:</strong> ${data.message ? data.message.substring(0, 100) + '...' : '내용 없음'}</p>
-                        <p><strong>사용자 ID:</strong> ${data.userId || '알 수 없음'}</p>
-                    </div>
-                `;
-            });
+            return;
         }
 
-        document.getElementById("urgent-messages").innerHTML = html;
+        // 긴급상황 키워드로 필터링
+        const urgentKeywords = ['죽고싶', '자살', '자해', '죽', '끝내고싶', '힘들어', '우울', '절망', '포기', '의미없', '혼자', '외로', '아무도'];
+        let urgentMessages = [];
+        
+        chatHistorySnapshot.forEach(doc => {
+            const data = doc.data();
+            const userMessage = (data.userMessage || '').toLowerCase();
+            
+            // 긴급상황 키워드가 포함된 메시지 찾기
+            const hasUrgentKeyword = urgentKeywords.some(keyword => userMessage.includes(keyword));
+            
+            if (hasUrgentKeyword && data.userMessage && data.botMessage) {
+                const urgencyLevel = urgentKeywords.slice(0, 6).some(keyword => userMessage.includes(keyword)) ? 'high' : 'medium';
+                urgentMessages.push({
+                    id: doc.id,
+                    userMessage: data.userMessage,
+                    botMessage: data.botMessage,
+                    userId: data.userId,
+                    timestamp: data.timestamp,
+                    urgencyLevel: urgencyLevel
+                });
+            }
+        });
+
+        if (urgentMessages.length === 0) {
+            container.innerHTML = `
+                <div class="content-item">
+                    <h4>✅ 현재 긴급 상황 없음</h4>
+                    <p>다행히 긴급한 상황으로 분류된 메시지가 없습니다.</p>
+                </div>
+            `;
+            return;
+        }
+
+        // 시간순 정렬
+        urgentMessages.sort((a, b) => {
+            const timeA = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(0);
+            const timeB = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(0);
+            return timeB - timeA;
+        });
+
+        let html = '';
+        urgentMessages.slice(0, 10).forEach((data, index) => {
+            const timestamp = data.timestamp?.toDate ? data.timestamp.toDate() : null;
+            const timeString = timestamp ? 
+                timestamp.toLocaleString('ko-KR', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                }) : '시간 미상';
+            
+            const urgencyIcon = data.urgencyLevel === 'high' ? '🚨' : '⚠️';
+            const urgencyText = data.urgencyLevel === 'high' ? '높음' : '중간';
+            const urgencyColor = data.urgencyLevel === 'high' ? '#ff4444' : '#ff8800';
+            
+            // 메시지 내용을 JSON에 안전하게 전달하기 위해 이스케이프 처리
+            const safeUserMessage = (data.userMessage || '').replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+            const safeBotMessage = (data.botMessage || '').replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+            const timestampSeconds = timestamp ? Math.floor(timestamp.getTime() / 1000) : 0;
+            
+            html += `
+                <div class="content-item urgent-item urgent-chat-${index}" 
+                     style="cursor: pointer; border-left-color: ${urgencyColor};"
+                     data-user-message="${safeUserMessage}"
+                     data-bot-message="${safeBotMessage}"
+                     data-timestamp="${timestampSeconds}">
+                    <h4 style="color: ${urgencyColor};">${urgencyIcon} 위험도: ${urgencyText}</h4>
+                    <p><strong>시간:</strong> ${timeString}</p>
+                    <p><strong>사용자 ID:</strong> ${data.userId?.substring(0, 8) || 'Unknown'}...</p>
+                    <p><strong>메시지 미리보기:</strong> ${(data.userMessage || '메시지 없음').substring(0, 60)}${(data.userMessage || '').length > 60 ? '...' : ''}</p>
+                    <p style="font-size: 0.8em; color: #aaa; margin-top: 8px;">📱 클릭하여 전체 대화 보기</p>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+
+        // 이벤트 리스너 추가 - 더 안전한 방식으로
+        container.addEventListener('click', (e) => {
+            const urgentItem = e.target.closest('.urgent-item');
+            if (urgentItem) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const userMessage = urgentItem.getAttribute('data-user-message').replace(/&#39;/g, "'").replace(/&quot;/g, '"');
+                const botMessage = urgentItem.getAttribute('data-bot-message').replace(/&#39;/g, "'").replace(/&quot;/g, '"');
+                const timestampSeconds = parseInt(urgentItem.getAttribute('data-timestamp')) || 0;
+                
+                console.log('긴급상황 클릭됨:', { userMessage: userMessage.substring(0, 50), botMessage: botMessage.substring(0, 50), timestampSeconds });
+                openChatModal(userMessage, botMessage, timestampSeconds);
+            }
+        });
 
     } catch (error) {
         console.error("긴급 메시지 로딩 실패:", error);
