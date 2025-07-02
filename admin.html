@@ -585,6 +585,55 @@ body {
     background: #218838;
 }
 
+.content-item.private {
+    background: rgba(128, 128, 128, 0.1);
+    border-left: 4px solid #666;
+    opacity: 0.7;
+}
+
+.content-item.private h4::before {
+    content: "🔒 ";
+    color: #666;
+}
+
+.content-item.private .visibility-status {
+    background: rgba(128, 128, 128, 0.3);
+    color: #f5f0e6;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.content-item.public .visibility-status {
+    background: rgba(76, 175, 80, 0.3);
+    color: #f5f0e6;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.visibility-toggle-btn {
+    background: rgba(245, 240, 230, 0.1);
+    color: #f5f0e6;
+    border: 1px solid rgba(245, 240, 230, 0.2);
+    padding: 5px 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.8em;
+    margin-left: 5px;
+    min-width: auto;
+}
+
+.visibility-toggle-btn:hover {
+    background: #8d6e63;
+    border-color: #8d6e63;
+}
+
 @keyframes fadeIn {
     from { 
         opacity: 0; 
@@ -842,6 +891,13 @@ body {
             <div class="section-info">
                 <h4>📍 업로드 위치</h4>
                 <p>여기서 추가한 이벤트는 <strong>"아카이빙" 페이지의 타임라인</strong>에 표시됩니다.</p>
+                <div style="background: rgba(245, 240, 230, 0.1); padding: 15px; border-radius: 8px; margin-top: 10px;">
+                    <h5 style="color: #8d6e63; margin-bottom: 8px;">🔒 공개/비공개 설정</h5>
+                    <p style="font-size: 0.9em; color: #d4c4a8; line-height: 1.4;">
+                        • <strong>공개:</strong> 모든 방문자가 볼 수 있습니다 (기본값)<br>
+                        • <strong>비공개:</strong> 외부에서는 보이지 않으며, 관리자 패널에서만 확인 가능합니다
+                    </p>
+                </div>
             </div>
             <form id="archive-timeline-form" class="form-section">
                 <div class="form-group">
@@ -856,6 +912,13 @@ body {
                     <label for="archive-event-description">이벤트 설명</label>
                     <textarea id="archive-event-description" rows="4" placeholder="이벤트에 대한 상세 설명을 입력하세요" required></textarea>
                 </div>
+                <div class="form-group">
+                    <label for="archive-event-visibility">공개 설정</label>
+                    <select id="archive-event-visibility" required>
+                        <option value="true">공개 (모든 방문자가 볼 수 있음)</option>
+                        <option value="false">비공개 (관리자만 볼 수 있음)</option>
+                    </select>
+                </div>
                 <button type="submit">타임라인 이벤트 추가</button>
             </form>
             <div id="archive-timeline-message"></div>
@@ -863,6 +926,13 @@ body {
 
         <div class="management-card">
             <h2 class="card-title">📋 아카이브 타임라인 목록</h2>
+            <div style="background: rgba(245, 240, 230, 0.1); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                <h5 style="color: #8d6e63; margin-bottom: 8px;">💡 관리자 전용 뷰</h5>
+                <p style="font-size: 0.9em; color: #d4c4a8; line-height: 1.4;">
+                    아래 목록은 공개/비공개 상관없이 <strong>모든 타임라인 이벤트</strong>를 표시합니다.<br>
+                    비공개 이벤트는 🔒 표시와 함께 회색으로 표시됩니다.
+                </p>
+            </div>
             <div id="archive-timeline-list" class="content-list">
                 <p style="text-align: center; color: #8d6e63;">타임라인 목록을 불러오는 중...</p>
             </div>
@@ -1067,7 +1137,7 @@ body {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, deleteDoc, doc, where, limit } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp, getDocs, query, orderBy, deleteDoc, doc, where, limit, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL, uploadBytesResumable, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 
 const firebaseConfig = {
@@ -1328,7 +1398,6 @@ function openChatModal(userMessage, botMessage, timestampSeconds) {
         return;
     }
     
-    // 타임스탬프 처리 개선
     let timeString = '시간 미상';
     if (timestampSeconds && timestampSeconds > 0) {
         try {
@@ -1348,7 +1417,6 @@ function openChatModal(userMessage, botMessage, timestampSeconds) {
     
     title.textContent = `💬 대화 상세 내용`;
     
-    // 메시지 내용 확인 및 기본값 설정
     const displayUserMessage = userMessage && userMessage.trim() !== '' ? userMessage : '사용자 메시지가 기록되지 않았습니다.';
     const displayBotMessage = botMessage && botMessage.trim() !== '' ? botMessage : '상담사 응답이 기록되지 않았습니다.';
     
@@ -1386,14 +1454,12 @@ function openChatModal(userMessage, botMessage, timestampSeconds) {
         </div>
     `;
     
-    // 모달 표시
     modal.style.display = 'flex';
     modal.style.visibility = 'visible';
     modal.style.opacity = '1';
     
     console.log('모달이 표시되었습니다. display:', modal.style.display);
     
-    // 모달이 제대로 표시되었는지 확인
     setTimeout(() => {
         if (modal.style.display === 'flex') {
             console.log('모달 표시 확인됨');
@@ -1412,12 +1478,10 @@ async function loadChatbotStats() {
             return;
         }
         
-        // 전체 대화 수 가져오기
         const chatHistoryQuery = query(collection(window.db, 'chatHistory'));
         const chatHistorySnapshot = await getDocs(chatHistoryQuery);
         const totalChats = chatHistorySnapshot.size;
         
-        // 고유 사용자 수 계산
         const uniqueUsers = new Set();
         chatHistorySnapshot.forEach((doc) => {
             const data = doc.data();
@@ -1427,10 +1491,9 @@ async function loadChatbotStats() {
         });
         const activeUsers = uniqueUsers.size;
 
-        // 오늘 대화 수 계산 (Firestore timestamp 방식 수정)
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        const todayTimestamp = today.getTime() / 1000; // Firestore는 초 단위
+        const todayTimestamp = today.getTime() / 1000;
 
         const tomorrow = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1);
@@ -1447,7 +1510,6 @@ async function loadChatbotStats() {
             }
         });
 
-        // 평균 메시지 수 계산
         let totalMessages = 0;
         let sessionsWithMultipleMessages = 0;
         const sessionMessageCounts = {};
@@ -1466,7 +1528,6 @@ async function loadChatbotStats() {
         const sessionCount = Object.keys(sessionMessageCounts).length;
         const avgMessages = sessionCount > 0 ? (totalMessages / sessionCount).toFixed(1) : 0;
 
-        // DOM 업데이트
         document.getElementById("total-chats").textContent = totalChats || "0";
         document.getElementById("active-users").textContent = activeUsers || "0";
         document.getElementById("today-chats").textContent = todayChats || "0";
@@ -1479,7 +1540,6 @@ async function loadChatbotStats() {
             avgMessages
         });
 
-        // 추가 데이터 로드
         await loadEmotionAnalysis();
         await loadUrgentMessages();
         await loadAllChats();
@@ -1574,7 +1634,6 @@ async function loadUrgentMessages() {
     try {
         const container = document.getElementById("urgent-messages");
         
-        // chatHistory에서 직접 데이터를 가져와서 긴급상황 키워드 분석
         const chatHistoryQuery = query(
             collection(window.db, 'chatHistory'),
             orderBy('timestamp', 'desc'),
@@ -1592,7 +1651,6 @@ async function loadUrgentMessages() {
             return;
         }
 
-        // 긴급상황 키워드로 필터링
         const urgentKeywords = ['죽고싶', '자살', '자해', '죽', '끝내고싶', '힘들어', '우울', '절망', '포기', '의미없', '혼자', '외로', '아무도'];
         let urgentMessages = [];
         
@@ -1600,7 +1658,6 @@ async function loadUrgentMessages() {
             const data = doc.data();
             const userMessage = (data.userMessage || '').toLowerCase();
             
-            // 긴급상황 키워드가 포함된 메시지 찾기
             const hasUrgentKeyword = urgentKeywords.some(keyword => userMessage.includes(keyword));
             
             if (hasUrgentKeyword && data.userMessage && data.botMessage) {
@@ -1626,7 +1683,6 @@ async function loadUrgentMessages() {
             return;
         }
 
-        // 시간순 정렬
         urgentMessages.sort((a, b) => {
             const timeA = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(0);
             const timeB = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(0);
@@ -1649,7 +1705,6 @@ async function loadUrgentMessages() {
             const urgencyText = data.urgencyLevel === 'high' ? '높음' : '중간';
             const urgencyColor = data.urgencyLevel === 'high' ? '#ff4444' : '#ff8800';
             
-            // 메시지 내용을 JSON에 안전하게 전달하기 위해 이스케이프 처리
             const safeUserMessage = (data.userMessage || '').replace(/'/g, "&#39;").replace(/"/g, "&quot;");
             const safeBotMessage = (data.botMessage || '').replace(/'/g, "&#39;").replace(/"/g, "&quot;");
             const timestampSeconds = timestamp ? Math.floor(timestamp.getTime() / 1000) : 0;
@@ -1671,7 +1726,6 @@ async function loadUrgentMessages() {
 
         container.innerHTML = html;
 
-        // 이벤트 리스너 추가 - 더 안전한 방식으로
         container.addEventListener('click', (e) => {
             const urgentItem = e.target.closest('.urgent-item');
             if (urgentItem) {
@@ -1734,7 +1788,6 @@ async function loadAllChats() {
                 const botMessage = data.botMessage || '';
                 const preview = userMessage.length > 50 ? userMessage.substring(0, 50) + '...' : userMessage;
                 
-                // 메시지 내용을 JSON에 안전하게 전달하기 위해 이스케이프 처리
                 const safeUserMessage = userMessage.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
                 const safeBotMessage = botMessage.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
                 const timestampSeconds = timestamp ? Math.floor(timestamp.getTime() / 1000) : 0;
@@ -1765,7 +1818,6 @@ async function loadAllChats() {
         const container = document.getElementById("all-chats");
         container.innerHTML = html;
 
-        // 이벤트 리스너 추가 - 컨테이너에 위임
         container.addEventListener('click', (e) => {
             const chatItem = e.target.closest('[class*="chat-item-"]');
             if (chatItem) {
@@ -1893,7 +1945,6 @@ function initializeChatbotButtons() {
     document.getElementById("refresh-topics-btn").addEventListener("click", loadTopicAnalysis);
 }
 
-// 타임라인 관련 함수들
 async function handleTimelineSubmit(e) {
     e.preventDefault();
     
@@ -1979,7 +2030,6 @@ window.deleteTimeline = async function(docId) {
 
 document.getElementById("refresh-timeline-btn").addEventListener("click", loadTimelineList);
 
-// 비디오 관련 함수들
 async function handleVideoSubmit(e) {
     e.preventDefault();
     
@@ -2007,7 +2057,6 @@ async function handleVideoSubmit(e) {
                 return;
             }
             
-            // 파일 업로드
             const fileRef = ref(window.storage, `videos/${Date.now()}_${file.name}`);
             const uploadTask = uploadBytesResumable(fileRef, file);
             
@@ -2101,7 +2150,6 @@ window.deleteVideo = async function(docId) {
 
 document.getElementById("refresh-video-btn").addEventListener("click", loadVideoList);
 
-// 플레이리스트 관련 함수들
 async function handlePlaylistSubmit(e) {
     e.preventDefault();
     
@@ -2213,15 +2261,12 @@ window.deletePlaylist = async function(docId) {
 
 document.getElementById("refresh-playlist-btn").addEventListener("click", loadPlaylistList);
 
-// 아카이브 관련 함수들
 function initializeArchiveForms() {
-    // 아카이브 타임라인
     const archiveTimelineForm = document.getElementById("archive-timeline-form");
     if (archiveTimelineForm) {
         archiveTimelineForm.addEventListener("submit", handleArchiveTimelineSubmit);
     }
     
-    // 아카이브 비디오
     const archiveVideoForm = document.getElementById("archive-video-form");
     if (archiveVideoForm) {
         archiveVideoForm.addEventListener("submit", handleArchiveVideoSubmit);
@@ -2232,7 +2277,6 @@ function initializeArchiveForms() {
         );
     }
     
-    // 아카이브 갤러리
     const archiveGalleryForm = document.getElementById("archive-gallery-form");
     if (archiveGalleryForm) {
         archiveGalleryForm.addEventListener("submit", handleArchiveGallerySubmit);
@@ -2242,7 +2286,6 @@ function initializeArchiveForms() {
         );
     }
     
-    // 새로고침 버튼들
     document.getElementById("refresh-archive-timeline-btn").addEventListener("click", loadArchiveTimelineList);
     document.getElementById("refresh-archive-videos-btn").addEventListener("click", loadArchiveVideosList);
     document.getElementById("refresh-archive-gallery-btn").addEventListener("click", loadArchiveGalleryList);
@@ -2269,28 +2312,40 @@ function setupArchiveVideoForm() {
 async function handleArchiveTimelineSubmit(e) {
     e.preventDefault();
     
-    const form = e.target;
-    const timelineData = {
-        date: document.getElementById("archive-event-date").value,
-        title: document.getElementById("archive-event-title").value,
-        description: document.getElementById("archive-event-description").value,
-        timestamp: serverTimestamp()
-    };
+    const date = document.getElementById("archive-event-date").value;
+    const title = document.getElementById("archive-event-title").value.trim();
+    const description = document.getElementById("archive-event-description").value.trim();
+    const isPublic = document.getElementById("archive-event-visibility").value === "true";
+    
+    if (!date || !title || !description) {
+        showMessage(document.getElementById("archive-timeline-message"), "모든 필드를 입력해주세요.", "error");
+        return;
+    }
     
     try {
-        await addDoc(collection(window.db, "archiveTimeline"), timelineData);
-        showMessage(document.getElementById("archive-timeline-message"), "아카이브 타임라인 이벤트가 성공적으로 추가되었습니다!", "success");
-        form.reset();
+        await addDoc(collection(window.db, "archiveTimeline"), {
+            date,
+            title,
+            description,
+            isPublic,
+            timestamp: serverTimestamp()
+        });
+        
+        const statusText = isPublic ? "공개" : "비공개";
+        showMessage(document.getElementById("archive-timeline-message"), 
+            `아카이브 타임라인 이벤트가 성공적으로 추가되었습니다! (${statusText})`, "success");
+        document.getElementById("archive-timeline-form").reset();
+        document.getElementById("archive-event-visibility").value = "true";
         loadArchiveTimelineList();
     } catch (error) {
-        console.error("아카이브 타임라인 추가 실패:", error);
-        showMessage(document.getElementById("archive-timeline-message"), "아카이브 타임라인 이벤트 추가에 실패했습니다.", "error");
+        console.error("아카이브 타임라인 추가 오류:", error);
+        showMessage(document.getElementById("archive-timeline-message"), "타임라인 이벤트 추가 중 오류가 발생했습니다.", "error");
     }
 }
 
 async function loadArchiveTimelineList() {
     const container = document.getElementById("archive-timeline-list");
-    container.innerHTML = '<p style="text-align: center; color: #8d6e63;">아카이브 타임라인 목록을 불러오는 중...</p>';
+    container.innerHTML = '<p style="text-align: center; color: #8d6e63;">타임라인 목록을 불러오는 중...</p>';
     
     try {
         if (!window.db) {
@@ -2302,35 +2357,63 @@ async function loadArchiveTimelineList() {
         const querySnapshot = await getDocs(q);
         
         if (querySnapshot.empty) {
-            container.innerHTML = '<p style="text-align: center; color: #8d6e63;">등록된 아카이브 타임라인 이벤트가 없습니다.</p>';
+            container.innerHTML = '<p style="text-align: center; color: #8d6e63;">등록된 아카이브 타임라인이 없습니다.</p>';
             return;
         }
         
         let html = '';
         querySnapshot.forEach((doc) => {
             const data = doc.data();
+            const isPublic = data.isPublic !== false;
+            const itemClass = isPublic ? 'public' : 'private';
+            const statusText = isPublic ? '공개' : '비공개';
+            const toggleText = isPublic ? '비공개로 변경' : '공개로 변경';
             
             html += `
-                <div class="content-item">
+                <div class="content-item ${itemClass}">
                     <div class="content-item-header">
-                        <h4>${data.title || '제목 없음'}</h4>
+                        <h4>${data.title || '제목 없음'}
+                            <span class="visibility-status">${statusText}</span>
+                        </h4>
                         <div class="content-item-actions">
+                            <button class="visibility-toggle-btn" onclick="toggleArchiveTimelineVisibility('${doc.id}', ${!isPublic})">
+                                ${toggleText}
+                            </button>
                             <button class="delete-btn" onclick="deleteArchiveTimeline('${doc.id}')">삭제</button>
                         </div>
                     </div>
                     <p>${data.description || '설명 없음'}</p>
-                    <p><strong>날짜:</strong> ${data.date}</p>
+                    <p><strong>날짜:</strong> ${data.date || '날짜 미상'}</p>
+                    ${!isPublic ? '<p style="color: #666; font-style: italic;"><strong>상태:</strong> 이 이벤트는 비공개로 설정되어 아카이빙 페이지에서 보이지 않습니다.</p>' : ''}
                 </div>
             `;
         });
         
         container.innerHTML = html;
-        
     } catch (error) {
         console.error("아카이브 타임라인 목록 로딩 실패:", error);
         container.innerHTML = '<p style="text-align: center; color: #dc3545;">아카이브 타임라인 목록을 불러오는데 실패했습니다.</p>';
     }
 }
+
+window.toggleArchiveTimelineVisibility = async function(docId, newVisibility) {
+    const statusText = newVisibility ? "공개" : "비공개";
+    
+    if (confirm(`이 타임라인 이벤트를 ${statusText}로 변경하시겠습니까?`)) {
+        try {
+            await updateDoc(doc(window.db, "archiveTimeline", docId), {
+                isPublic: newVisibility
+            });
+            showMessage(document.getElementById("archive-timeline-message"), 
+                `타임라인 이벤트가 ${statusText}로 변경되었습니다.`, "success");
+            loadArchiveTimelineList();
+        } catch (error) {
+            console.error("공개/비공개 설정 변경 실패:", error);
+            showMessage(document.getElementById("archive-timeline-message"), 
+                "공개/비공개 설정 변경 중 오류가 발생했습니다.", "error");
+        }
+    }
+};
 
 window.deleteArchiveTimeline = async function(docId) {
     if (confirm("이 아카이브 타임라인 이벤트를 삭제하시겠습니까?")) {
@@ -2589,3 +2672,5 @@ window.deleteArchiveGallery = async function(docId) {
 
 </body>
 </html>
+<script>
+import { updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
