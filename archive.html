@@ -100,6 +100,31 @@
             border-radius: 10px;
             padding: 30px 20px;
             margin: 30px 0;
+            max-height: 300px;
+            overflow-y: auto;
+            transition: max-height 0.5s ease;
+        }
+
+        .timeline-track.expanded {
+            max-height: 600px;
+        }
+
+        .timeline-track::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .timeline-track::-webkit-scrollbar-track {
+            background: rgba(245, 240, 230, 0.1);
+            border-radius: 4px;
+        }
+
+        .timeline-track::-webkit-scrollbar-thumb {
+            background: rgba(141, 110, 99, 0.5);
+            border-radius: 4px;
+        }
+
+        .timeline-track::-webkit-scrollbar-thumb:hover {
+            background: rgba(141, 110, 99, 0.7);
         }
 
         .timeline-items {
@@ -122,6 +147,10 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
+        .timeline-item.hidden {
+            display: none;
+        }
+
         .timeline-date {
             color: #8d6e63;
             font-weight: bold;
@@ -139,6 +168,32 @@
         .timeline-description {
             color: #d4c4a8;
             line-height: 1.6;
+        }
+
+        .timeline-expand-btn {
+            display: none;
+            width: 100%;
+            background: rgba(245, 240, 230, 0.1);
+            color: #f5f0e6;
+            border: 2px solid rgba(245, 240, 230, 0.3);
+            padding: 15px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: "Song Myung", serif;
+            margin-top: 20px;
+            font-size: 1.1em;
+        }
+
+        .timeline-expand-btn:hover {
+            background: #8d6e63;
+            border-color: #8d6e63;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .timeline-expand-btn.show {
+            display: block;
         }
 
         .gallery-grid {
@@ -475,6 +530,10 @@
             .video-modal-iframe {
                 height: 300px;
             }
+
+            .timeline-track {
+                max-height: 250px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -504,6 +563,14 @@
 
             .video-modal-iframe {
                 height: 250px;
+            }
+
+            .timeline-track {
+                max-height: 200px;
+            }
+
+            .timeline-track.expanded {
+                max-height: 400px;
             }
         }
     </style>
@@ -542,10 +609,13 @@
             </div>
 
             <div class="timeline-container">
-                <div class="timeline-track">
+                <div class="timeline-track" id="timelineTrack">
                     <div class="timeline-items" id="timelineItems">
                         <div class="loading-message">타임라인을 불러오는 중...</div>
                     </div>
+                    <button class="timeline-expand-btn" id="timelineExpandBtn">
+                        <span id="expandBtnText">더 많은 이벤트 보기</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -599,7 +669,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAIU8q64ZB6g8D72SPcCxxkOQmhtREN9cg",
@@ -617,6 +687,8 @@
         let timelineData = [];
         let videoData = [];
         let galleryData = [];
+        let isTimelineExpanded = false;
+        const TIMELINE_INITIAL_LIMIT = 2;
 
         const categoryLabels = {
             production: '제작 현장',
@@ -648,13 +720,15 @@
                 timelineData = [];
                 snapshot.forEach(doc => {
                     const data = doc.data();
-                    timelineData.push({
-                        id: doc.id,
-                        date: data.date,
-                        title: data.title,
-                        description: data.description,
-                        year: data.date ? data.date.substring(0, 4) : '2024'
-                    });
+                    if (data.isPublic !== false) {
+                        timelineData.push({
+                            id: doc.id,
+                            date: data.date,
+                            title: data.title,
+                            description: data.description,
+                            year: data.date ? data.date.substring(0, 4) : '2024'
+                        });
+                    }
                 });
             } catch (error) {
                 console.error("타임라인 로드 오류:", error);
@@ -710,17 +784,24 @@
 
         function renderTimeline(data) {
             const container = document.getElementById('timelineItems');
+            const expandBtn = document.getElementById('timelineExpandBtn');
+            const timelineTrack = document.getElementById('timelineTrack');
             
             if (data.length === 0) {
                 container.innerHTML = '<div class="empty-message">아직 등록된 타임라인 이벤트가 없습니다.<br><br>관리자 패널에서 타임라인 이벤트를 추가해보세요!</div>';
+                expandBtn.classList.remove('show');
                 return;
             }
 
             container.innerHTML = '';
-            data.forEach(item => {
+            data.forEach((item, index) => {
                 const timelineItem = document.createElement('div');
                 timelineItem.className = 'timeline-item';
                 timelineItem.dataset.year = item.year;
+                
+                if (index >= TIMELINE_INITIAL_LIMIT && !isTimelineExpanded) {
+                    timelineItem.classList.add('hidden');
+                }
                 
                 timelineItem.innerHTML = `
                     <div class="timeline-date">${item.date}</div>
@@ -730,6 +811,47 @@
                 
                 container.appendChild(timelineItem);
             });
+
+            if (data.length > TIMELINE_INITIAL_LIMIT) {
+                expandBtn.classList.add('show');
+                updateExpandButtonText();
+            } else {
+                expandBtn.classList.remove('show');
+            }
+        }
+
+        function updateExpandButtonText() {
+            const expandBtnText = document.getElementById('expandBtnText');
+            const hiddenCount = timelineData.filter((_, index) => index >= TIMELINE_INITIAL_LIMIT).length;
+            
+            if (isTimelineExpanded) {
+                expandBtnText.textContent = '접기';
+            } else {
+                expandBtnText.textContent = `더 많은 이벤트 보기 (+${hiddenCount}개)`;
+            }
+        }
+
+        function toggleTimelineExpansion() {
+            const timelineTrack = document.getElementById('timelineTrack');
+            const hiddenItems = document.querySelectorAll('.timeline-item.hidden');
+            
+            isTimelineExpanded = !isTimelineExpanded;
+            
+            if (isTimelineExpanded) {
+                hiddenItems.forEach(item => item.classList.remove('hidden'));
+                timelineTrack.classList.add('expanded');
+            } else {
+                const allItems = document.querySelectorAll('.timeline-item');
+                allItems.forEach((item, index) => {
+                    if (index >= TIMELINE_INITIAL_LIMIT) {
+                        item.classList.add('hidden');
+                    }
+                });
+                timelineTrack.classList.remove('expanded');
+                timelineTrack.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            
+            updateExpandButtonText();
         }
 
         function getYouTubeThumbnail(url) {
@@ -864,6 +986,8 @@
                 });
             });
             
+            document.getElementById('timelineExpandBtn').addEventListener('click', toggleTimelineExpansion);
+            
             document.querySelectorAll('.modal-close').forEach(closeBtn => {
                 closeBtn.addEventListener('click', closeModal);
             });
@@ -894,13 +1018,30 @@
             const items = document.querySelectorAll('.timeline-item');
             
             if (period === 'all') {
-                items.forEach(item => item.style.display = 'block');
+                items.forEach((item, index) => {
+                    item.style.display = 'block';
+                    if (index >= TIMELINE_INITIAL_LIMIT && !isTimelineExpanded) {
+                        item.classList.add('hidden');
+                    } else {
+                        item.classList.remove('hidden');
+                    }
+                });
             } else {
-                items.forEach(item => {
+                items.forEach((item, index) => {
                     if (item.dataset.year === period) {
                         item.style.display = 'block';
+                        const visibleIndex = Array.from(items)
+                            .filter(i => i.dataset.year === period && i.style.display !== 'none')
+                            .indexOf(item);
+                        
+                        if (visibleIndex >= TIMELINE_INITIAL_LIMIT && !isTimelineExpanded) {
+                            item.classList.add('hidden');
+                        } else {
+                            item.classList.remove('hidden');
+                        }
                     } else {
                         item.style.display = 'none';
+                        item.classList.remove('hidden');
                     }
                 });
             }
