@@ -252,10 +252,204 @@
             box-shadow: 0 5px 15px rgba(141, 110, 99, 0.4);
         }
 
+        .support-btn {
+            background: none;
+            border: none;
+            color: #f5f0e6;
+            font-size: 1.2em;
+            cursor: pointer;
+            font-family: 'Song Myung', serif;
+            transition: all 0.3s ease;
+            display: block;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(245, 240, 230, 0.05);
+            border: 1px solid rgba(245, 240, 230, 0.1);
+            width: 100%;
+        }
+
+        .support-btn:hover {
+            color: #ffffff;
+            background: #8d6e63;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(141, 110, 99, 0.4);
+        }
+
         .youtube-icon { color: #ff6b6b; }
         .instagram-icon { color: #e1306c; }
         .blog-icon { color: #03c75a; }
         .email-icon { color: #ffd93d; }
+        .support-icon { color: #ff9800; }
+
+        .support-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .support-modal-content {
+            background-color: #4e2e1e;
+            margin: 5% auto;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(245, 240, 230, 0.2);
+        }
+
+        .support-modal-header {
+            background: linear-gradient(135deg, #8d6e63, #a1887f);
+            color: #f5f0e6;
+            padding: 25px;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .support-modal-header h3 {
+            margin: 0;
+            font-size: 1.6em;
+        }
+
+        .support-modal-close {
+            background: none;
+            border: none;
+            color: #f5f0e6;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .support-modal-close:hover {
+            background: rgba(245, 240, 230, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .support-modal-body {
+            padding: 30px;
+            color: #f5f0e6;
+        }
+
+        .support-description {
+            text-align: center;
+            color: #d4c4a8;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .account-info {
+            background: rgba(245, 240, 230, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid rgba(245, 240, 230, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .account-details {
+            flex: 1;
+        }
+
+        .account-bank {
+            color: #8d6e63;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .account-number {
+            color: #f5f0e6;
+            font-size: 1.2em;
+            margin-bottom: 8px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+
+        .account-holder {
+            color: #d4c4a8;
+            font-size: 1em;
+        }
+
+        .qr-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .qr-code {
+            width: 90px;
+            height: 90px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+        }
+
+        .qr-label {
+            color: #b8a082;
+            font-size: 0.8em;
+            text-align: center;
+        }
+
+        .copy-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .copy-btn {
+            background: rgba(245, 240, 230, 0.1);
+            color: #d4c4a8;
+            border: 1px solid rgba(245, 240, 230, 0.2);
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Song Myung', serif;
+        }
+
+        .copy-btn:hover {
+            background: rgba(245, 240, 230, 0.15);
+            border-color: rgba(245, 240, 230, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .copy-btn.copied {
+            background: rgba(141, 110, 99, 0.2);
+            border-color: #8d6e63;
+            color: #8d6e63;
+        }
+
+        .thanks-note {
+            text-align: center;
+            color: #b8a082;
+            font-size: 1em;
+            font-style: italic;
+        }
 
         .navigation-section {
             margin-bottom: 60px;
@@ -379,6 +573,32 @@
             font-weight: bold;
             color: #d4c4a8;
         }
+
+        @media (max-width: 768px) {
+            .account-info {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+
+            .copy-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .copy-btn {
+                min-width: 200px;
+            }
+
+            .support-modal-content {
+                margin: 10% auto;
+                width: 95%;
+            }
+
+            .support-modal-body {
+                padding: 20px;
+            }
+        }
     </style>
     <link rel="stylesheet" href="css/chatbot.css">
     <script src="js/chatbot.js"></script>
@@ -440,6 +660,12 @@
                     <span class="contact-label">이메일:</span>
                     <a href="mailto:we.are.psychopath2025@gmail.com" class="contact-value">we.are.psychopath2025@gmail.com</a>
                 </div>
+                
+                <div class="contact-card">
+                    <span class="contact-icon support-icon">💝</span>
+                    <span class="contact-label">후원:</span>
+                    <button class="support-btn" onclick="openSupportModal()">프로젝트 후원하기</button>
+                </div>
             </div>
         </div>
 
@@ -488,5 +714,92 @@
             <p>모든 이야기는 소중하고, 모든 사람은 존중받을 권리가 있습니다.</p>
         </footer>
     </div>
+
+    <div id="supportModal" class="support-modal">
+        <div class="support-modal-content">
+            <div class="support-modal-header">
+                <h3>프로젝트 후원</h3>
+                <span class="support-modal-close" onclick="closeSupportModal()">&times;</span>
+            </div>
+            <div class="support-modal-body">
+                <p class="support-description">
+                    더 많은 이야기를 담기 위한 여정에 함께해 주세요.<br>
+                    여러분의 작은 관심이 큰 힘이 됩니다.
+                </p>
+                
+                <div class="account-info">
+                    <div class="account-details">
+                        <div class="account-bank">카카오뱅크</div>
+                        <div class="account-number">3333-3300-3088-35</div>
+                        <div class="account-holder">임주은</div>
+                    </div>
+                    
+                    <div class="qr-section">
+                        <div class="qr-code">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=kakaobank://transfer?bank_code=090&account_number=3333330030883&amount=&name=%EC%9E%84%EC%A3%BC%EC%9D%80" alt="계좌 QR코드" style="width: 80px; height: 80px; border-radius: 4px;">
+                        </div>
+                        <div class="qr-label">계좌이체 QR</div>
+                    </div>
+                </div>
+                
+                <div class="copy-buttons">
+                    <button class="copy-btn" onclick="copyToClipboard('3333-3300-3088-35', this)">
+                        계좌번호 복사
+                    </button>
+                    <button class="copy-btn" onclick="copyToClipboard('카카오뱅크 3333-3300-3088-35 임주은', this)">
+                        전체 정보 복사
+                    </button>
+                </div>
+                
+                <p class="thanks-note">감사합니다 🙏</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openSupportModal() {
+            document.getElementById('supportModal').style.display = 'block';
+        }
+
+        function closeSupportModal() {
+            document.getElementById('supportModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('supportModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function copyToClipboard(text, button) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '복사됨 ✓';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(() => {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                const originalText = button.textContent;
+                button.textContent = '복사됨 ✓';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+    </script>
 </body>
 </html>
