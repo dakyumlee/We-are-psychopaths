@@ -299,8 +299,24 @@
             border-radius: 15px;
             width: 90%;
             max-width: 600px;
+            max-height: 90vh;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(245, 240, 230, 0.2);
+            animation: modalSlideIn 0.3s ease-out;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .support-modal-header {
@@ -311,6 +327,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
         }
 
         .support-modal-header h3 {
@@ -343,14 +360,75 @@
         .support-modal-body {
             padding: 30px;
             color: #f5f0e6;
+            overflow-y: auto;
+            flex: 1;
         }
 
-        .support-description {
+        .modal-step {
+            display: none;
+        }
+
+        .modal-step.active {
+            display: block;
+        }
+
+        .method-selection {
+            display: grid;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .method-card {
+            background: rgba(245, 240, 230, 0.08);
+            border: 2px solid rgba(245, 240, 230, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .method-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(245, 240, 230, 0.05);
+            transition: left 0.5s ease;
+        }
+
+        .method-card:hover::before {
+            left: 100%;
+        }
+
+        .method-card:hover {
+            background: rgba(245, 240, 230, 0.12);
+            border-color: rgba(245, 240, 230, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .method-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .method-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #f5f0e6;
+        }
+
+        .method-description {
+            font-size: 1em;
             color: #d4c4a8;
-            font-size: 1.1em;
-            line-height: 1.6;
-            margin-bottom: 30px;
+            line-height: 1.5;
         }
 
         .account-info {
@@ -418,9 +496,10 @@
             gap: 12px;
             justify-content: center;
             margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
-        .copy-btn {
+        .copy-btn, .back-btn {
             background: rgba(245, 240, 230, 0.1);
             color: #d4c4a8;
             border: 1px solid rgba(245, 240, 230, 0.2);
@@ -432,7 +511,7 @@
             font-family: 'Song Myung', serif;
         }
 
-        .copy-btn:hover {
+        .copy-btn:hover, .back-btn:hover {
             background: rgba(245, 240, 230, 0.15);
             border-color: rgba(245, 240, 230, 0.3);
             transform: translateY(-2px);
@@ -444,11 +523,25 @@
             color: #8d6e63;
         }
 
+        .back-btn {
+            background: rgba(141, 110, 99, 0.1);
+            color: #8d6e63;
+            border-color: rgba(141, 110, 99, 0.3);
+        }
+
         .thanks-note {
             text-align: center;
             color: #b8a082;
             font-size: 1em;
             font-style: italic;
+        }
+
+        .support-description {
+            text-align: center;
+            color: #d4c4a8;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 30px;
         }
 
         .navigation-section {
@@ -586,22 +679,29 @@
                 align-items: center;
             }
 
-            .copy-btn {
+            .copy-btn, .back-btn {
                 min-width: 200px;
             }
 
             .support-modal-content {
-                margin: 10% auto;
-                width: 95%;
+                margin: 2% auto;
+                width: 98%;
+                max-height: 96vh;
             }
 
             .support-modal-body {
                 padding: 20px;
             }
+
+            .method-selection {
+                gap: 15px;
+            }
+
+            .method-card {
+                padding: 20px;
+            }
         }
     </style>
-    <link rel="stylesheet" href="css/chatbot.css">
-    <script src="js/chatbot.js"></script>
 </head>
 <body class="song-myung-regular">
     <nav>
@@ -722,36 +822,166 @@
                 <span class="support-modal-close" onclick="closeSupportModal()">&times;</span>
             </div>
             <div class="support-modal-body">
-                <p class="support-description">
-                    더 많은 이야기를 담기 위한 여정에 함께해 주세요.<br>
-                    여러분의 작은 관심이 큰 힘이 됩니다.
-                </p>
-                
-                <div class="account-info">
-                    <div class="account-details">
-                        <div class="account-bank">카카오뱅크</div>
-                        <div class="account-number">3333-3300-3088-35</div>
-                        <div class="account-holder">임주은</div>
+                <div id="step1" class="modal-step active">
+                    <p class="support-description">
+                        더 많은 이야기를 담기 위한 여정에 함께해 주세요.<br>
+                        편리한 후원 방법을 선택해주세요.
+                    </p>
+                    
+                    <div class="method-selection">
+                        <div class="method-card" onclick="showStep('toss')">
+                            <span class="method-icon">💙</span>
+                            <div class="method-title">토스</div>
+                            <div class="method-description">토스 앱으로 간편하게<br>수수료 없이 송금</div>
+                        </div>
+                        
+                        <div class="method-card" onclick="showStep('kakaopay')">
+                            <span class="method-icon">🟨</span>
+                            <div class="method-title">카카오페이</div>
+                            <div class="method-description">카카오톡에서 바로<br>QR 코드로 송금</div>
+                        </div>
+                        
+                        <div class="method-card" onclick="showStep('kakaobank')">
+                            <span class="method-icon">🟡</span>
+                            <div class="method-title">카카오뱅크</div>
+                            <div class="method-description">카카오뱅크 앱에서<br>QR 스캔 송금</div>
+                        </div>
+                        
+                        <div class="method-card" onclick="showStep('other')">
+                            <span class="method-icon">🏦</span>
+                            <div class="method-title">다른 은행</div>
+                            <div class="method-description">계좌번호로<br>타행이체 송금</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="stepToss" class="modal-step">
+                    <div class="account-info">
+                        <div class="account-details">
+                            <div class="account-bank">토스뱅크</div>
+                            <div class="account-number">1000-0000-0000</div>
+                            <div class="account-holder">임주은</div>
+                        </div>
+                        
+                        <div class="qr-section">
+                            <div class="qr-code">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=toss://send?amount=&recipient=임주은&bank=토스뱅크&account=10000000000" alt="토스 QR코드" style="width: 80px; height: 80px; border-radius: 4px;">
+                            </div>
+                            <div class="qr-label">토스 송금 QR</div>
+                        </div>
                     </div>
                     
-                    <div class="qr-section">
-                        <div class="qr-code">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=kakaobank://transfer?bank_code=090&account_number=3333330030883&amount=&name=%EC%9E%84%EC%A3%BC%EC%9D%80" alt="계좌 QR코드" style="width: 80px; height: 80px; border-radius: 4px;">
-                        </div>
-                        <div class="qr-label">계좌이체 QR</div>
+                    <div class="copy-buttons">
+                        <button class="copy-btn" onclick="copyToClipboard('1000-0000-0000', this)">
+                            계좌번호 복사
+                        </button>
+                        <button class="copy-btn" onclick="copyToClipboard('토스뱅크 1000-0000-0000 임주은', this)">
+                            전체 정보 복사
+                        </button>
+                        <button class="back-btn" onclick="showStep('1')">
+                            ← 다른 방법 선택
+                        </button>
                     </div>
+                    
+                    <p class="thanks-note">토스 앱에서 QR 스캔하거나 계좌번호로 송금해주세요 🙏</p>
                 </div>
-                
-                <div class="copy-buttons">
-                    <button class="copy-btn" onclick="copyToClipboard('3333-3300-3088-35', this)">
-                        계좌번호 복사
-                    </button>
-                    <button class="copy-btn" onclick="copyToClipboard('카카오뱅크 3333-3300-3088-35 임주은', this)">
-                        전체 정보 복사
-                    </button>
+
+                <div id="stepKakaopay" class="modal-step">
+                    <div class="account-info">
+                        <div class="account-details">
+                            <div class="account-bank">카카오뱅크</div>
+                            <div class="account-number">3333-3300-3088-35</div>
+                            <div class="account-holder">임주은</div>
+                        </div>
+                        
+                        <div class="qr-section">
+                            <div class="qr-code">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=kakaopay://send?bank_code=090&account_number=3333330030883&amount=&name=임주은" alt="카카오페이 QR코드" style="width: 80px; height: 80px; border-radius: 4px;">
+                            </div>
+                            <div class="qr-label">카카오페이 QR</div>
+                        </div>
+                    </div>
+                    
+                    <div class="copy-buttons">
+                        <button class="copy-btn" onclick="copyToClipboard('3333-3300-3088-35', this)">
+                            계좌번호 복사
+                        </button>
+                        <button class="copy-btn" onclick="copyToClipboard('카카오뱅크 3333-3300-3088-35 임주은', this)">
+                            전체 정보 복사
+                        </button>
+                        <button class="back-btn" onclick="showStep('1')">
+                            ← 다른 방법 선택
+                        </button>
+                    </div>
+                    
+                    <p class="thanks-note">카카오톡에서 QR 스캔하거나 카카오페이로 송금해주세요 🙏</p>
                 </div>
-                
-                <p class="thanks-note">감사합니다 🙏</p>
+
+                <div id="stepKakaobank" class="modal-step">
+                    <div class="account-info">
+                        <div class="account-details">
+                            <div class="account-bank">카카오뱅크</div>
+                            <div class="account-number">3333-3300-3088-35</div>
+                            <div class="account-holder">임주은</div>
+                        </div>
+                        
+                        <div class="qr-section">
+                            <div class="qr-code">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=kakaobank://transfer?bank_code=090&account_number=3333330030883&amount=&name=임주은" alt="카카오뱅크 QR코드" style="width: 80px; height: 80px; border-radius: 4px;">
+                            </div>
+                            <div class="qr-label">카카오뱅크 QR</div>
+                        </div>
+                    </div>
+                    
+                    <div class="copy-buttons">
+                        <button class="copy-btn" onclick="copyToClipboard('3333-3300-3088-35', this)">
+                            계좌번호 복사
+                        </button>
+                        <button class="copy-btn" onclick="copyToClipboard('카카오뱅크 3333-3300-3088-35 임주은', this)">
+                            전체 정보 복사
+                        </button>
+                        <button class="back-btn" onclick="showStep('1')">
+                            ← 다른 방법 선택
+                        </button>
+                    </div>
+                    
+                    <p class="thanks-note">카카오뱅크 앱에서 QR 스캔하거나 계좌이체로 송금해주세요 🙏</p>
+                </div>
+
+                <div id="stepOther" class="modal-step">
+                    <div class="account-info">
+                        <div class="account-details">
+                            <div class="account-bank">카카오뱅크 (은행코드: 090)</div>
+                            <div class="account-number">3333-3300-3088-35</div>
+                            <div class="account-holder">임주은</div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(245, 240, 230, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                        <h4 style="color: #8d6e63; margin-bottom: 15px;">💡 타행이체 방법</h4>
+                        <p style="color: #d4c4a8; line-height: 1.6; margin-bottom: 10px;">
+                            1. 본인 은행 앱에서 "송금" 또는 "이체" 선택<br>
+                            2. "타행이체" 선택<br>
+                            3. 은행: <strong>카카오뱅크 (090)</strong><br>
+                            4. 계좌번호: <strong>3333-3300-3088-35</strong><br>
+                            5. 예금주: <strong>임주은</strong>
+                        </p>
+                    </div>
+                    
+                    <div class="copy-buttons">
+                        <button class="copy-btn" onclick="copyToClipboard('3333-3300-3088-35', this)">
+                            계좌번호 복사
+                        </button>
+                        <button class="copy-btn" onclick="copyToClipboard('카카오뱅크 3333-3300-3088-35 임주은', this)">
+                            전체 정보 복사
+                        </button>
+                        <button class="back-btn" onclick="showStep('1')">
+                            ← 다른 방법 선택
+                        </button>
+                    </div>
+                    
+                    <p class="thanks-note">본인 은행 앱에서 타행이체로 송금해주세요 🙏</p>
+                </div>
             </div>
         </div>
     </div>
@@ -759,10 +989,33 @@
     <script>
         function openSupportModal() {
             document.getElementById('supportModal').style.display = 'block';
+            showStep('1');
         }
 
         function closeSupportModal() {
             document.getElementById('supportModal').style.display = 'none';
+        }
+
+        function showStep(stepName) {
+            const allSteps = document.querySelectorAll('.modal-step');
+            allSteps.forEach(step => step.classList.remove('active'));
+            
+            let targetStep;
+            if (stepName === '1') {
+                targetStep = document.getElementById('step1');
+            } else if (stepName === 'toss') {
+                targetStep = document.getElementById('stepToss');
+            } else if (stepName === 'kakaopay') {
+                targetStep = document.getElementById('stepKakaopay');
+            } else if (stepName === 'kakaobank') {
+                targetStep = document.getElementById('stepKakaobank');
+            } else if (stepName === 'other') {
+                targetStep = document.getElementById('stepOther');
+            }
+            
+            if (targetStep) {
+                targetStep.classList.add('active');
+            }
         }
 
         window.onclick = function(event) {
