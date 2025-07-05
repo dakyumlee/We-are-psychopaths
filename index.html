@@ -755,17 +755,16 @@
                         </div>
                         
                         <div class="method-card" onclick="showStep('samsungpay')">
-                            <span class="method-icon">📱</span>
+                            <span class="method-icon">🩵</span>
                             <div class="method-title">삼성페이</div>
                             <div class="method-description">삼성페이 앱으로<br>간편 이체</div>
                         </div>
                         
                         <div class="method-card" onclick="showStep('other')">
-                            <span class="method-icon">🏦</span>
+                            <span class="method-icon">🤍</span>
                             <div class="method-title">다른 은행</div>
                             <div class="method-description">계좌번호로<br>타행이체 송금</div>
                         </div>
-                    </div>
                     </div>
                 </div>
 
@@ -779,19 +778,16 @@
                         
                         <div class="qr-section">
                             <div class="qr-code">
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=toss://" alt="토스 앱 실행 QR" style="width: 80px; height: 80px; border-radius: 4px;">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=supertoss://send?amount=0&bank=090&accountNo=3333330030883500&message=%EC%9A%B0%EB%A6%AC%EC%9D%98%EC%A0%95%EC%8B%A0%EB%B3%91%EC%9D%BC%EC%A7%80%ED%9B%84%EC%9B%90" alt="토스 QR코드" style="width: 80px; height: 80px; border-radius: 4px;">
                             </div>
                             <div class="qr-label">토스 앱 실행</div>
-                        </div>=0&bank=090&accountNo=3333330030883&message=" alt="토스 QR코드" style="width: 80px; height: 80px; border-radius: 4px;">
-                            </div>
-                            <div class="qr-label">토스 송금 QR</div>
                         </div>
                     </div>
                     
                     <div style="background: rgba(245, 240, 230, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
                         <h4 style="color: #8d6e63; margin-bottom: 15px;">💙 토스 송금 방법</h4>
                         <p style="color: #d4c4a8; line-height: 1.6;">
-                            1. 토스 앱 실행<br>
+                            1. QR 스캔해서 토스 앱 실행<br>
                             2. 하단 "송금" 버튼 클릭<br>
                             3. "QR 스캔" 또는 "계좌로 송금" 선택<br>
                             4. 은행: <strong>카카오뱅크</strong> 선택<br>
@@ -824,7 +820,7 @@
                         
                         <div class="qr-section">
                             <div class="qr-code">
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=kakaobank://" alt="카카오뱅크 앱 실행" style="width: 80px; height: 80px; border-radius: 4px;">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=kakaobank://send" alt="카카오뱅크 앱 실행" style="width: 80px; height: 80px; border-radius: 4px;">
                             </div>
                             <div class="qr-label">카카오뱅크 앱 실행</div>
                         </div>
@@ -833,10 +829,10 @@
                     <div style="background: rgba(245, 240, 230, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
                         <h4 style="color: #8d6e63; margin-bottom: 15px;">💛 카카오뱅크 송금 방법</h4>
                         <p style="color: #d4c4a8; line-height: 1.6;">
-                            1. 카카오뱅크 앱 실행<br>
+                            1. QR 스캔해서 카카오뱅크 앱 실행<br>
                             2. "송금" 메뉴 선택<br>
-                            3. "QR 스캔" 또는 "계좌 입력"<br>
-                            4. 위 QR 스캔으로 간편 송금<br>
+                            3. "계좌로 송금" 또는 "QR 스캔" 선택<br>
+                            4. 계좌번호: <strong>3333-3300-3088-35</strong> 입력<br>
                             5. 송금 금액 입력 후 전송
                         </p>
                     </div>
@@ -866,7 +862,7 @@
                         
                         <div class="qr-section">
                             <div class="qr-code">
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=naverpay://" alt="네이버페이 앱 실행" style="width: 80px; height: 80px; border-radius: 4px;">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=naverpay://send" alt="네이버페이 앱 실행" style="width: 80px; height: 80px; border-radius: 4px;">
                             </div>
                             <div class="qr-label">네이버페이 앱 실행</div>
                         </div>
@@ -875,11 +871,11 @@
                     <div style="background: rgba(245, 240, 230, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
                         <h4 style="color: #8d6e63; margin-bottom: 15px;">💚 네이버페이 송금 방법</h4>
                         <p style="color: #d4c4a8; line-height: 1.6;">
-                            1. 네이버 앱 실행<br>
-                            2. "페이" 메뉴 선택<br>
-                            3. "송금" 버튼 클릭<br>
-                            4. "QR 스캔" 또는 "계좌로 송금" 선택<br>
-                            5. 은행: <strong>카카오뱅크</strong>, 계좌: <strong>3333-3300-3088-35</strong>
+                            1. QR 스캔해서 네이버페이 앱 실행<br>
+                            2. "송금" 버튼 클릭<br>
+                            3. "계좌로 송금" 선택<br>
+                            4. 은행: <strong>카카오뱅크</strong> 선택<br>
+                            5. 계좌번호: <strong>3333-3300-3088-35</strong> 입력
                         </p>
                     </div>
                     
@@ -908,7 +904,7 @@
                         
                         <div class="qr-section">
                             <div class="qr-code">
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=samsungpay://" alt="삼성페이 앱 실행" style="width: 80px; height: 80px; border-radius: 4px;">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=samsungpay://send" alt="삼성페이 앱 실행" style="width: 80px; height: 80px; border-radius: 4px;">
                             </div>
                             <div class="qr-label">삼성페이 앱 실행</div>
                         </div>
@@ -917,9 +913,9 @@
                     <div style="background: rgba(245, 240, 230, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
                         <h4 style="color: #8d6e63; margin-bottom: 15px;">🩵 삼성페이 송금 방법</h4>
                         <p style="color: #d4c4a8; line-height: 1.6;">
-                            1. 삼성페이 앱 실행<br>
+                            1. QR 스캔해서 삼성페이 앱 실행<br>
                             2. "송금" 메뉴 선택<br>
-                            3. "QR 스캔" 또는 "계좌번호 입력"<br>
+                            3. "계좌번호 입력" 선택<br>
                             4. 은행: <strong>카카오뱅크</strong> 선택<br>
                             5. 계좌번호: <strong>3333-3300-3088-35</strong> 입력
                         </p>
@@ -938,48 +934,6 @@
                     </div>
                     
                     <p class="thanks-note">삼성페이로 간편하게 송금해주세요 🙏</p>
-                </div>
-
-                <div id="stepKakaobank" class="modal-step">
-                    <div class="account-info">
-                        <div class="account-details">
-                            <div class="account-bank">카카오뱅크</div>
-                            <div class="account-number">3333-3300-3088-35</div>
-                            <div class="account-holder">임주은</div>
-                        </div>
-                        
-                        <div class="qr-section">
-                            <div class="qr-code">
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=kakaobank://transfer?bank_code=090&account_number=3333330030883&amount=&name=%EC%9E%84%EC%A3%BC%EC%9D%80" alt="카카오뱅크 QR코드" style="width: 80px; height: 80px; border-radius: 4px;">
-                            </div>
-                            <div class="qr-label">계좌이체 QR</div>
-                        </div>
-                    </div>
-                    
-                    <div style="background: rgba(245, 240, 230, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                        <h4 style="color: #8d6e63; margin-bottom: 15px;">🟡 카카오뱅크 송금 방법</h4>
-                        <p style="color: #d4c4a8; line-height: 1.6;">
-                            1. 카카오뱅크 앱 실행<br>
-                            2. "송금" 메뉴 선택<br>
-                            3. "QR 스캔" 또는 "계좌 입력"<br>
-                            4. 위 QR 스캔으로 간편 송금<br>
-                            5. 송금 금액 입력 후 전송
-                        </p>
-                    </div>
-                    
-                    <div class="copy-buttons">
-                        <button class="copy-btn" onclick="copyToClipboard('3333-3300-3088-35', this)">
-                            계좌번호 복사
-                        </button>
-                        <button class="copy-btn" onclick="copyToClipboard('카카오뱅크 3333-3300-3088-35 임주은', this)">
-                            전체 정보 복사
-                        </button>
-                        <button class="back-btn" onclick="showStep('1')">
-                            ← 다른 방법 선택
-                        </button>
-                    </div>
-                    
-                    <p class="thanks-note">카카오뱅크 앱에서 QR 스캔하거나 계좌이체로 송금해주세요 🙏</p>
                 </div>
 
                 <div id="stepOther" class="modal-step">
@@ -1039,12 +993,12 @@
                 targetStep = document.getElementById('step1');
             } else if (stepName === 'toss') {
                 targetStep = document.getElementById('stepToss');
+            } else if (stepName === 'kakaobank') {
+                targetStep = document.getElementById('stepKakaobank');
             } else if (stepName === 'naverpay') {
                 targetStep = document.getElementById('stepNaverpay');
             } else if (stepName === 'samsungpay') {
                 targetStep = document.getElementById('stepSamsungpay');
-            } else if (stepName === 'kakaobank') {
-                targetStep = document.getElementById('stepKakaobank');
             } else if (stepName === 'other') {
                 targetStep = document.getElementById('stepOther');
             }
