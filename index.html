@@ -861,22 +861,22 @@
         <p>© 2024-2025 우리의 정신병 일지 프로젝트</p>
         <p>모든 이야기는 소중하고, 모든 사람은 존중받을 권리가 있습니다.</p>
     </footer>
-</div>
 
-<div class="chatbot-container">
-    <button class="chatbot-button" onclick="toggleChatbot()">💬</button>
-    <div id="chatbot-window" class="chatbot-window">
-        <div class="chatbot-header">
-            <h4>상담사 쭈쭈</h4>
-            <button class="chatbot-close" onclick="toggleChatbot()">×</button>
-        </div>
-        <div id="chatbot-messages" class="chatbot-messages">
-            <div class="message bot-message">
-                안녕하세요! 상담사 쭈쭈입니다. 궁금한 것이 있으시면 언제든 물어보세요. 😊
+    <div class="chatbot-container">
+        <button class="chatbot-button" onclick="toggleChatbot()">💬</button>
+        <div id="chatbot-window" class="chatbot-window">
+            <div class="chatbot-header">
+                <h4>마음 상담사</h4>
+                <button class="chatbot-close" onclick="toggleChatbot()">×</button>
             </div>
-        </div>
-        <div class="chatbot-input-area">
-            <input type="text" id="chatbot-input" class="chatbot-input" placeholder="메시지를 입력하세요..." onkeypress="handleChatInput(event)">
+            <div id="chatbot-messages" class="chatbot-messages">
+                <div class="message bot-message">
+                    안녕하세요. 저는 마음 상담사입니다. 이곳에 오시느라 용기 내주셔서 고마워요. 지금 어떤 기분이신지, 또는 무엇이든 편하게 말씀해 주세요.
+                </div>
+            </div>
+            <div class="chatbot-input-area">
+                <input type="text" id="chatbot-input" class="chatbot-input" placeholder="메시지를 입력하세요..." onkeypress="handleChatInput(event)">
+            </div>
         </div>
     </div>
 </div>
@@ -937,7 +937,7 @@
                     
                     <div class="qr-section">
                         <div class="qr-code">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=supertoss://send?amount=0&bank=090&accountNo=33333003088350&message=%EC%9A%B0%EB%A6%AC%EC%9D%98%EC%A0%95%EC%8B%A0%EB%B3%91%EC%9D%BC%EC%A7%80%ED%9B%84%EC%9B%90" alt="토스 QR코드" style="width: 80px; height: 80px; border-radius: 4px;">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=supertoss://send" alt="토스 QR코드" style="width: 80px; height: 80px; border-radius: 4px;">
                         </div>
                         <div class="qr-label">토스 앱 실행</div>
                     </div>
@@ -1255,7 +1255,6 @@
         }
     }
 </script>
-```
 
 </body>
 </html>
