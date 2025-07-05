@@ -622,6 +622,104 @@
             font-weight: bold;
             color: #d4c4a8;
         }
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1500;
+        }
+        .chatbot-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8d6e63, #a1887f);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .chatbot-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
+        }
+        .chatbot-window {
+            display: none;
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 350px;
+            height: 500px;
+            background: #4e2e1e;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(245, 240, 230, 0.2);
+            overflow: hidden;
+            z-index: 1600;
+        }
+        .chatbot-header {
+            background: linear-gradient(135deg, #8d6e63, #a1887f);
+            color: #f5f0e6;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chatbot-close {
+            background: none;
+            border: none;
+            color: #f5f0e6;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        .chatbot-close:hover {
+            background: rgba(245, 240, 230, 0.2);
+        }
+        .chatbot-messages {
+            height: 350px;
+            overflow-y: auto;
+            padding: 15px;
+            color: #f5f0e6;
+        }
+        .chatbot-input-area {
+            padding: 15px;
+            border-top: 1px solid rgba(245, 240, 230, 0.1);
+        }
+        .chatbot-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(245, 240, 230, 0.2);
+            border-radius: 20px;
+            background: rgba(245, 240, 230, 0.05);
+            color: #f5f0e6;
+            font-family: 'Song Myung', serif;
+        }
+        .chatbot-input:focus {
+            outline: none;
+            border-color: #8d6e63;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 80%;
+        }
+        .user-message {
+            background: #8d6e63;
+            margin-left: auto;
+            text-align: right;
+        }
+        .bot-message {
+            background: rgba(245, 240, 230, 0.1);
+            margin-right: auto;
+        }
         @media (max-width: 768px) {
             .account-info {
                 flex-direction: column;
@@ -763,6 +861,24 @@
         <p>© 2024-2025 우리의 정신병 일지 프로젝트</p>
         <p>모든 이야기는 소중하고, 모든 사람은 존중받을 권리가 있습니다.</p>
     </footer>
+</div>
+
+<div class="chatbot-container">
+    <button class="chatbot-button" onclick="toggleChatbot()">💬</button>
+    <div id="chatbot-window" class="chatbot-window">
+        <div class="chatbot-header">
+            <h4>상담사 쭈쭈</h4>
+            <button class="chatbot-close" onclick="toggleChatbot()">×</button>
+        </div>
+        <div id="chatbot-messages" class="chatbot-messages">
+            <div class="message bot-message">
+                안녕하세요! 상담사 쭈쭈입니다. 궁금한 것이 있으시면 언제든 물어보세요. 😊
+            </div>
+        </div>
+        <div class="chatbot-input-area">
+            <input type="text" id="chatbot-input" class="chatbot-input" placeholder="메시지를 입력하세요..." onkeypress="handleChatInput(event)">
+        </div>
+    </div>
 </div>
 
 <div id="supportModal" class="support-modal">
@@ -1085,6 +1201,58 @@
                 button.classList.remove('copied');
             }, 2000);
         });
+    }
+
+    function toggleChatbot() {
+        const chatbotWindow = document.getElementById('chatbot-window');
+        if (chatbotWindow.style.display === 'none' || chatbotWindow.style.display === '') {
+            chatbotWindow.style.display = 'block';
+        } else {
+            chatbotWindow.style.display = 'none';
+        }
+    }
+
+    function handleChatInput(event) {
+        if (event.key === 'Enter') {
+            const input = document.getElementById('chatbot-input');
+            const message = input.value.trim();
+            if (message) {
+                addMessage(message, 'user');
+                input.value = '';
+                
+                setTimeout(() => {
+                    const botResponse = getBotResponse(message);
+                    addMessage(botResponse, 'bot');
+                }, 500);
+            }
+        }
+    }
+
+    function addMessage(text, sender) {
+        const messagesContainer = document.getElementById('chatbot-messages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}-message`;
+        messageDiv.textContent = text;
+        messagesContainer.appendChild(messageDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function getBotResponse(message) {
+        const lowerMessage = message.toLowerCase();
+        
+        if (lowerMessage.includes('후원') || lowerMessage.includes('돈') || lowerMessage.includes('계좌')) {
+            return '후원해주셔서 감사합니다! 카카오뱅크 333-3300-3088-35 (임주은) 계좌로 후원하실 수 있어요. 💝';
+        } else if (lowerMessage.includes('영화') || lowerMessage.includes('다큐')) {
+            return '조현병 당사자와 가족의 이야기를 담은 다큐멘터리입니다. 진솔하고 따뜻한 이야기를 전하고 싶어요. 🎬';
+        } else if (lowerMessage.includes('인터뷰') || lowerMessage.includes('참여')) {
+            return '인터뷰 참여에 관심 있으시군요! we.are.psychopath2025@gmail.com으로 연락주시면 자세히 안내해드릴게요. 📧';
+        } else if (lowerMessage.includes('안녕') || lowerMessage.includes('hello')) {
+            return '안녕하세요! 우리의 정신병 일지 프로젝트에 관심 가져주셔서 감사해요. 궁금한 것이 있으시면 언제든 물어보세요! 😊';
+        } else if (lowerMessage.includes('감사') || lowerMessage.includes('고마워')) {
+            return '천만에요! 함께해주셔서 저희가 더 감사해요. 💖';
+        } else {
+            return '궁금한 점이 있으시면 언제든 말씀해주세요. 후원, 영화, 인터뷰 참여 등에 대해 도움드릴 수 있어요! 😊';
+        }
     }
 </script>
 ```
