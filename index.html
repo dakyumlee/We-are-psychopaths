@@ -691,9 +691,11 @@
         .chatbot-input-area {
             padding: 15px;
             border-top: 1px solid rgba(245, 240, 230, 0.1);
+            display: flex;
+            gap: 10px;
         }
         .chatbot-input {
-            width: 100%;
+            flex: 1;
             padding: 10px;
             border: 1px solid rgba(245, 240, 230, 0.2);
             border-radius: 20px;
@@ -704,6 +706,19 @@
         .chatbot-input:focus {
             outline: none;
             border-color: #8d6e63;
+        }
+        .chatbot-send {
+            background: #8d6e63;
+            color: #f5f0e6;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Song Myung', serif;
+            transition: all 0.3s ease;
+        }
+        .chatbot-send:hover {
+            background: #a1887f;
         }
         .message {
             margin-bottom: 15px;
@@ -871,11 +886,12 @@
             </div>
             <div id="chatbot-messages" class="chatbot-messages">
                 <div class="message bot-message">
-                    안녕하세요. 저는 마음 상담사입니다. 이곳에 오시느라 용기 내주셔서 고마워요. 지금 어떤 기분이신지, 또는 무엇이든 편하게 말씀해 주세요.
+                    안녕하세요. 저는 마음 상담사입니다.<br><br>이곳에 오시느라 용기 내주셔서 고마워요. 지금 어떤 기분이신지, 또는 무엇이든 편하게 말씀해 주세요.<br><br>천천히, 편안한 속도로 이야기해요.
                 </div>
             </div>
             <div class="chatbot-input-area">
-                <input type="text" id="chatbot-input" class="chatbot-input" placeholder="메시지를 입력하세요..." onkeypress="handleChatInput(event)">
+                <input type="text" id="chatbot-input" class="chatbot-input" placeholder="편하게 말씀해 주세요..." onkeypress="handleChatInput(event)">
+                <button class="chatbot-send" onclick="sendChatMessage()">전송</button>
             </div>
         </div>
     </div>
@@ -1214,17 +1230,58 @@
 
     function handleChatInput(event) {
         if (event.key === 'Enter') {
-            const input = document.getElementById('chatbot-input');
-            const message = input.value.trim();
-            if (message) {
-                addMessage(message, 'user');
-                input.value = '';
-                
-                setTimeout(() => {
-                    const botResponse = getBotResponse(message);
-                    addMessage(botResponse, 'bot');
-                }, 500);
-            }
+            sendChatMessage();
+        }
+    }
+
+    function sendChatMessage() {
+        const input = document.getElementById('chatbot-input');
+        const message = input.value.trim();
+        if (message) {
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // 타이핑 표시
+            showTypingIndicator();
+            
+            // 실제 API 호출 (원래 코드)
+            fetch('/.netlify/functions/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    messages: [{ role: 'user', content: message }],
+                    userId: 'user_' + Date.now()
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideTypingIndicator();
+                addMessage(data.message, 'bot');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                hideTypingIndicator();
+                addMessage('죄송합니다. 일시적인 문제가 발생했습니다.', 'bot');
+            });
+        }
+    }
+
+    function showTypingIndicator() {
+        const messagesContainer = document.getElementById('chatbot-messages');
+        const typingDiv = document.createElement('div');
+        typingDiv.className = 'message bot-message typing';
+        typingDiv.id = 'typing-indicator';
+        typingDiv.innerHTML = '타이핑 중...';
+        messagesContainer.appendChild(typingDiv);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    function hideTypingIndicator() {
+        const typingEl = document.getElementById('typing-indicator');
+        if (typingEl) {
+            typingEl.remove();
         }
     }
 
@@ -1238,21 +1295,8 @@
     }
 
     function getBotResponse(message) {
-        const lowerMessage = message.toLowerCase();
-        
-        if (lowerMessage.includes('후원') || lowerMessage.includes('돈') || lowerMessage.includes('계좌')) {
-            return '후원해주셔서 감사합니다! 카카오뱅크 333-3300-3088-35 (임주은) 계좌로 후원하실 수 있어요. 💝';
-        } else if (lowerMessage.includes('영화') || lowerMessage.includes('다큐')) {
-            return '조현병 당사자와 가족의 이야기를 담은 다큐멘터리입니다. 진솔하고 따뜻한 이야기를 전하고 싶어요. 🎬';
-        } else if (lowerMessage.includes('인터뷰') || lowerMessage.includes('참여')) {
-            return '인터뷰 참여에 관심 있으시군요! we.are.psychopath2025@gmail.com으로 연락주시면 자세히 안내해드릴게요. 📧';
-        } else if (lowerMessage.includes('안녕') || lowerMessage.includes('hello')) {
-            return '안녕하세요! 우리의 정신병 일지 프로젝트에 관심 가져주셔서 감사해요. 궁금한 것이 있으시면 언제든 물어보세요! 😊';
-        } else if (lowerMessage.includes('감사') || lowerMessage.includes('고마워')) {
-            return '천만에요! 함께해주셔서 저희가 더 감사해요. 💖';
-        } else {
-            return '궁금한 점이 있으시면 언제든 말씀해주세요. 후원, 영화, 인터뷰 참여 등에 대해 도움드릴 수 있어요! 😊';
-        }
+        // 이 함수는 더 이상 사용하지 않음 - API로 대체
+        return '';
     }
 </script>
 
