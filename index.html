@@ -3,7 +3,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes"/>
     <title>우리의 정신병 일지</title>
     <link href="https://fonts.googleapis.com/css2?family=Song+Myung&display=swap" rel="stylesheet">
     <style>
@@ -475,18 +475,8 @@
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
         }
         .copy-btn.copied {
-            background: linear-gradient(135deg, #8d6e63, #a1887f);
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
             transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(141, 110, 99, 0.4);
-        }
-        .copy-btn.copied::after {
-            content: "✓";
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.2em;
-            color: #f5f0e6;
         }
         .back-btn {
             background: rgba(245, 240, 230, 0.1);
@@ -622,13 +612,11 @@
             font-weight: bold;
             color: #d4c4a8;
         }
-        .chatbot-container {
+
+        .chatbot-float-btn {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1500;
-        }
-        .chatbot-button {
+            bottom: 30px;
+            right: 30px;
             width: 60px;
             height: 60px;
             border-radius: 50%;
@@ -639,19 +627,19 @@
             cursor: pointer;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             transition: all 0.3s ease;
+            z-index: 1500;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .chatbot-button:hover {
+        .chatbot-float-btn:hover {
             transform: scale(1.1);
             box-shadow: 0 6px 25px rgba(0, 0, 0, 0.4);
         }
-        .chatbot-window {
-            display: none;
+        .chatbot-container {
             position: fixed;
-            bottom: 90px;
-            right: 20px;
+            bottom: 100px;
+            right: 30px;
             width: 350px;
             height: 500px;
             background: #4e2e1e;
@@ -660,14 +648,35 @@
             border: 1px solid rgba(245, 240, 230, 0.2);
             overflow: hidden;
             z-index: 1600;
+            display: none;
+            flex-direction: column;
+            animation: slideUp 0.3s ease-out;
+        }
+        .chatbot-container.active {
+            display: flex;
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         .chatbot-header {
             background: linear-gradient(135deg, #8d6e63, #a1887f);
             color: #f5f0e6;
-            padding: 15px;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-shrink: 0;
+        }
+        .chatbot-header h3 {
+            margin: 0;
+            font-size: 1.1em;
         }
         .chatbot-close {
             background: none;
@@ -678,34 +687,47 @@
             padding: 5px;
             border-radius: 50%;
             transition: all 0.3s ease;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .chatbot-close:hover {
             background: rgba(245, 240, 230, 0.2);
         }
         .chatbot-messages {
-            height: 350px;
+            flex: 1;
             overflow-y: auto;
             padding: 15px;
             color: #f5f0e6;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
         .chatbot-input-area {
             padding: 15px;
             border-top: 1px solid rgba(245, 240, 230, 0.1);
             display: flex;
             gap: 10px;
+            flex-shrink: 0;
         }
         .chatbot-input {
             flex: 1;
-            padding: 10px;
+            padding: 10px 15px;
             border: 1px solid rgba(245, 240, 230, 0.2);
             border-radius: 20px;
             background: rgba(245, 240, 230, 0.05);
             color: #f5f0e6;
             font-family: 'Song Myung', serif;
+            font-size: 14px;
+            outline: none;
         }
         .chatbot-input:focus {
-            outline: none;
             border-color: #8d6e63;
+        }
+        .chatbot-input::placeholder {
+            color: rgba(245, 240, 230, 0.5);
         }
         .chatbot-send {
             background: #8d6e63;
@@ -716,61 +738,168 @@
             cursor: pointer;
             font-family: 'Song Myung', serif;
             transition: all 0.3s ease;
+            font-size: 14px;
         }
         .chatbot-send:hover {
             background: #a1887f;
         }
+        .chatbot-send:disabled {
+            background: rgba(141, 110, 99, 0.5);
+            cursor: not-allowed;
+        }
         .message {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             padding: 12px 16px;
             border-radius: 18px;
-            max-width: 80%;
+            max-width: 85%;
             word-wrap: break-word;
             line-height: 1.4;
+            font-size: 14px;
         }
-        .user-message {
+        .message.user {
             background: #8d6e63;
             margin-left: auto;
             margin-right: 0;
-            text-align: left;
             color: #ffffff;
+            border-bottom-right-radius: 6px;
         }
-        .bot-message {
+        .message.bot {
             background: rgba(245, 240, 230, 0.15);
             margin-right: auto;
             margin-left: 0;
             color: #f5f0e6;
+            border-bottom-left-radius: 6px;
         }
-        .typing {
+        .message.typing {
             opacity: 0.7;
             font-style: italic;
         }
+
         @media (max-width: 768px) {
+            .hero-section h1 {
+                font-size: 2.5em;
+            }
+            
+            .contact-section {
+                padding: 40px 20px;
+            }
+            
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
             .account-info {
                 flex-direction: column;
                 text-align: center;
                 gap: 20px;
             }
+            
             .copy-buttons {
                 flex-direction: column;
                 align-items: center;
             }
+            
             .copy-btn, .back-btn {
                 min-width: 200px;
             }
+            
             .support-modal-content {
                 margin: 2% auto;
-                width: 98%;
-                max-height: 96vh;
+                width: 95%;
+                max-height: 95vh;
             }
+            
             .support-modal-body {
                 padding: 20px;
             }
+            
             .method-selection {
                 gap: 15px;
             }
+            
             .method-card {
                 padding: 20px;
+            }
+            
+            .nav-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-container {
+                gap: 15px;
+                justify-content: flex-start;
+                overflow-x: auto;
+                padding: 0 15px;
+            }
+            
+            .nav-container li a {
+                font-size: 0.95em;
+                padding: 6px 12px;
+                white-space: nowrap;
+            }
+            
+            .main-container {
+                padding: 80px 15px 40px;
+            }
+            
+            .chatbot-container {
+                width: 300px;
+                height: 450px;
+                right: 15px;
+                bottom: 85px;
+            }
+            
+            .chatbot-float-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 55px;
+                height: 55px;
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section h1 {
+                font-size: 2em;
+            }
+            
+            .hero-section {
+                padding: 40px 0;
+            }
+            
+            .contact-section h2 {
+                font-size: 2em;
+            }
+            
+            .support-modal-header {
+                padding: 15px 20px;
+            }
+            
+            .support-modal-body {
+                padding: 15px;
+            }
+            
+            .method-card {
+                padding: 15px;
+            }
+            
+            .chatbot-container {
+                width: calc(100vw - 30px);
+                height: 400px;
+                right: 15px;
+                bottom: 80px;
+                max-width: 350px;
+            }
+            
+            .nav-container {
+                gap: 10px;
+                padding: 0 10px;
+            }
+            
+            .nav-container li a {
+                font-size: 0.9em;
+                padding: 5px 10px;
             }
         }
     </style>
@@ -787,421 +916,435 @@
         </ul>
     </nav>
 
-```
-<div class="main-container">
-    <div class="hero-section">
-        <h1 ondblclick="window.location.href='admin.html'" style="cursor: pointer;">
-            우리의 정신병 일지
-        </h1>
-        <div class="project-info">
-            <p class="period">2024.11.15~</p>
-            <p class="slogan">We are psychopaths</p>
-            <p class="support">2025 부산 영상위원회 장편 다큐멘터리 기획 개발 지원작</p>
-        </div>
-    </div>
-
-    <div class="intro-section">
-        <p class="intro-text">
-            정신질환을 앓고 있는 당사자 혹은 가족분들과 함께 만들어가는 다큐멘터리 프로젝트입니다.<br>
-            우리의 이야기가 누군가에게 위로와 희망이 되기를 바랍니다.
-        </p>
-    </div>
-
-    <div class="contact-section">
-        <h2>연락처 및 소셜미디어</h2>
-        <div class="contact-grid">
-            <div class="contact-card">
-                <span class="contact-icon youtube-icon">📺</span>
-                <span class="contact-label">유튜브:</span>
-                <a href="https://www.youtube.com/@%EC%9E%84%EC%AD%88%EC%AD%88%EA%B3%B5%EC%AD%88" target="_blank" rel="noopener noreferrer" class="contact-value">임쭈쭈</a>
-            </div>
-            
-            <div class="contact-card">
-                <span class="contact-icon instagram-icon">📷</span>
-                <span class="contact-label">인스타그램:</span>
-                <a href="https://instagram.com/wearepsychopaths" target="_blank" rel="noopener noreferrer" class="contact-value">@wearepsychopaths</a>
-            </div>
-            
-            <div class="contact-card">
-                <span class="contact-icon blog-icon">📝</span>
-                <span class="contact-label">블로그:</span>
-                <a href="https://blog.naver.com/jueun_3299/223804219544" target="_blank" rel="noopener noreferrer" class="contact-value">jueun_3299</a>
-            </div>
-            
-            <div class="contact-card">
-                <span class="contact-icon email-icon">📧</span>
-                <span class="contact-label">이메일:</span>
-                <a href="mailto:we.are.psychopath2025@gmail.com" class="contact-value">we.are.psychopath2025@gmail.com</a>
-            </div>
-            
-            <div class="contact-card">
-                <span class="contact-icon support-icon">💝</span>
-                <span class="contact-label">후원:</span>
-                <button class="support-btn" onclick="openSupportModal()">프로젝트 후원하기</button>
+    <div class="main-container">
+        <div class="hero-section">
+            <h1 ondblclick="window.location.href='admin.html'" style="cursor: pointer;">
+                우리의 정신병 일지
+            </h1>
+            <div class="project-info">
+                <p class="period">2024.11.15~</p>
+                <p class="slogan">We are psychopaths</p>
+                <p class="support">2025 부산 영상위원회 장편 다큐멘터리 기획 개발 지원작</p>
             </div>
         </div>
-    </div>
 
-    <div class="navigation-section">
-        <h2>사이트 둘러보기</h2>
-        <div class="nav-cards">
-            <a href="movie.html" class="nav-card">
-                <h3>영화: &lt;우리의 정신병 일지&gt;</h3>
-                <p>조현병 당사자와 그의 가족들에 관한 다큐멘터리의 모든 정보</p>
-            </a>
-            <a href="my-diary.html" class="nav-card">
-                <h3>나의 정신병 일지</h3>
-                <p>감독 주은과 엄마 순경의 삶의 여정과 이야기</p>
-            </a>
-            <a href="your-diary.html" class="nav-card">
-                <h3>당신의 정신병 일지</h3>
-                <p>모든 이들이 자신의 이야기를 나누는 익명 커뮤니티</p>
-            </a>
-            <a href="recovery.html" class="nav-card">
-                <h3>당신의 회복 일지</h3>
-                <p>조현병 정보와 회복을 위한 다양한 자료와 도움말</p>
-            </a>
-            <a href="archive.html" class="nav-card">
-                <h3>아카이빙</h3>
-                <p>영화 제작 과정의 기록들과 소중한 순간들</p>
-            </a>
-        </div>
-    </div>
-
-    <div class="interview-call">
-        <div class="call-box">
-            <h3>🎤 인터뷰이를 찾습니다</h3>
-            <p>
-                정신질환을 앓고 있는 당사자 혹은 가족분들 중 인터뷰이를 구하고 있습니다.<br>
-                다큐멘터리를 통해 자신 혹은 자신의 가족들의 이야기를 하고 싶으신 분들이 있다면<br>
-                언제든 연락주세요.
+        <div class="intro-section">
+            <p class="intro-text">
+                정신질환을 앓고 있는 당사자 혹은 가족분들과 함께 만들어가는 다큐멘터리 프로젝트입니다.<br>
+                우리의 이야기가 누군가에게 위로와 희망이 되기를 바랍니다.
             </p>
-            <a href="mailto:we.are.psychopath2025@gmail.com" class="contact-btn">
-                이메일로 연락하기
-            </a>
         </div>
-    </div>
 
-    <footer>
-        <p>© 2024-2025 우리의 정신병 일지 프로젝트</p>
-        <p>모든 이야기는 소중하고, 모든 사람은 존중받을 권리가 있습니다.</p>
-    </footer>
-
-    <div class="chatbot-container">
-        <button class="chatbot-button" onclick="toggleChatbot()">💬</button>
-        <div id="chatbot-window" class="chatbot-window">
-            <div class="chatbot-header">
-                <h4>마음 상담사</h4>
-                <button class="chatbot-close" onclick="toggleChatbot()">×</button>
-            </div>
-            <div id="chatbot-messages" class="chatbot-messages">
-                <div class="message bot-message">
-                    안녕하세요. 저는 마음 상담사입니다.<br><br>이곳에 오시느라 용기 내주셔서 고마워요. 지금 어떤 기분이신지, 또는 무엇이든 편하게 말씀해 주세요.<br><br>천천히, 편안한 속도로 이야기해요.
+        <div class="contact-section">
+            <h2>연락처 및 소셜미디어</h2>
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <span class="contact-icon youtube-icon">📺</span>
+                    <span class="contact-label">유튜브:</span>
+                    <a href="https://www.youtube.com/@%EC%9E%84%EC%AD%88%EC%AD%88%EA%B3%B5%EC%AD%88" target="_blank" rel="noopener noreferrer" class="contact-value">임쭈쭈</a>
+                </div>
+                
+                <div class="contact-card">
+                    <span class="contact-icon instagram-icon">📷</span>
+                    <span class="contact-label">인스타그램:</span>
+                    <a href="https://instagram.com/wearepsychopaths" target="_blank" rel="noopener noreferrer" class="contact-value">@wearepsychopaths</a>
+                </div>
+                
+                <div class="contact-card">
+                    <span class="contact-icon blog-icon">📝</span>
+                    <span class="contact-label">블로그:</span>
+                    <a href="https://blog.naver.com/jueun_3299/223804219544" target="_blank" rel="noopener noreferrer" class="contact-value">jueun_3299</a>
+                </div>
+                
+                <div class="contact-card">
+                    <span class="contact-icon email-icon">📧</span>
+                    <span class="contact-label">이메일:</span>
+                    <a href="mailto:we.are.psychopath2025@gmail.com" class="contact-value">we.are.psychopath2025@gmail.com</a>
+                </div>
+                
+                <div class="contact-card">
+                    <span class="contact-icon support-icon">💝</span>
+                    <span class="contact-label">후원:</span>
+                    <button class="support-btn" onclick="openSupportModal()">프로젝트 후원하기</button>
                 </div>
             </div>
-            <div class="chatbot-input-area">
-                <input type="text" id="chatbot-input" class="chatbot-input" placeholder="편하게 말씀해 주세요..." onkeypress="handleChatInput(event)">
-                <button class="chatbot-send" onclick="sendChatMessage()">전송</button>
+        </div>
+
+        <div class="navigation-section">
+            <h2>사이트 둘러보기</h2>
+            <div class="nav-cards">
+                <a href="movie.html" class="nav-card">
+                    <h3>영화: &lt;우리의 정신병 일지&gt;</h3>
+                    <p>조현병 당사자와 그의 가족들에 관한 다큐멘터리의 모든 정보</p>
+                </a>
+                <a href="my-diary.html" class="nav-card">
+                    <h3>나의 정신병 일지</h3>
+                    <p>감독 주은과 엄마 순경의 삶의 여정과 이야기</p>
+                </a>
+                <a href="your-diary.html" class="nav-card">
+                    <h3>당신의 정신병 일지</h3>
+                    <p>모든 이들이 자신의 이야기를 나누는 익명 커뮤니티</p>
+                </a>
+                <a href="recovery.html" class="nav-card">
+                    <h3>당신의 회복 일지</h3>
+                    <p>조현병 정보와 회복을 위한 다양한 자료와 도움말</p>
+                </a>
+                <a href="archive.html" class="nav-card">
+                    <h3>아카이빙</h3>
+                    <p>영화 제작 과정의 기록들과 소중한 순간들</p>
+                </a>
             </div>
         </div>
-    </div>
-</div>
 
-<div id="supportModal" class="support-modal">
-    <div class="support-modal-content">
-        <div class="support-modal-header">
-            <h3>프로젝트 후원</h3>
-            <span class="support-modal-close" onclick="closeSupportModal()">&times;</span>
-        </div>
-        <div class="support-modal-body">
-            <div id="step1" class="modal-step active">
-                <p class="support-description">
-                    더 많은 이야기를 담기 위한 여정에 함께해 주세요.<br>
-                    편리한 후원 방법을 선택해주세요.
+        <div class="interview-call">
+            <div class="call-box">
+                <h3>🎤 인터뷰이를 찾습니다</h3>
+                <p>
+                    정신질환을 앓고 있는 당사자 혹은 가족분들 중 인터뷰이를 구하고 있습니다.<br>
+                    다큐멘터리를 통해 자신 혹은 자신의 가족들의 이야기를 하고 싶으신 분들이 있다면<br>
+                    언제든 연락주세요.
                 </p>
-                
-                <div class="method-selection">
-                    <div class="method-card" onclick="showStep('toss')">
-                        <span class="method-icon">💙</span>
-                        <div class="method-title">토스</div>
-                        <div class="method-description">토스 앱으로 간편하게<br>수수료 없이 송금</div>
-                    </div>
-                    
-                    <div class="method-card" onclick="showStep('kakaobank')">
-                        <span class="method-icon">💛</span>
-                        <div class="method-title">카카오뱅크</div>
-                        <div class="method-description">카카오뱅크 앱에서<br>QR 스캔 송금</div>
-                    </div>
-                    
-                    <div class="method-card" onclick="showStep('naverpay')">
-                        <span class="method-icon">💚</span>
-                        <div class="method-title">네이버페이</div>
-                        <div class="method-description">네이버페이로<br>간편 송금</div>
-                    </div>
-                    
-                    <div class="method-card" onclick="showStep('samsungpay')">
-                        <span class="method-icon">🩵</span>
-                        <div class="method-title">삼성페이</div>
-                        <div class="method-description">삼성페이 앱으로<br>간편 이체</div>
-                    </div>
-                    
-                    <div class="method-card" onclick="showStep('other')">
-                        <span class="method-icon">🤍</span>
-                        <div class="method-title">다른 은행</div>
-                        <div class="method-description">계좌번호로<br>타행이체 송금</div>
-                    </div>
-                </div>
+                <a href="mailto:we.are.psychopath2025@gmail.com" class="contact-btn">
+                    이메일로 연락하기
+                </a>
             </div>
+        </div>
 
-            <div id="stepToss" class="modal-step">
-                <div class="account-info">
-                    <div class="account-details">
-                        <div class="account-bank">카카오뱅크</div>
-                        <div class="account-number">333-3300-3088-35</div>
-                        <div class="account-holder">임주은</div>
-                    </div>
+        <footer>
+            <p>© 2024-2025 우리의 정신병 일지 프로젝트</p>
+            <p>모든 이야기는 소중하고, 모든 사람은 존중받을 권리가 있습니다.</p>
+        </footer>
+    </div>
+
+    <button class="chatbot-float-btn" onclick="toggleChatbot()" title="상담사와 대화하기">💬</button>
+    <div id="chatbot-container" class="chatbot-container">
+        <div class="chatbot-header">
+            <h3>마음 상담사</h3>
+            <button class="chatbot-close" onclick="toggleChatbot()">×</button>
+        </div>
+        <div id="chatbot-messages" class="chatbot-messages">
+            <div class="message bot">
+                안녕하세요. 저는 마음 상담사입니다.<br><br>이곳에 오시느라 용기 내주셔서 고마워요. 지금 어떤 기분이신지, 또는 무엇이든 편하게 말씀해 주세요.<br><br>천천히, 편안한 속도로 이야기해요.
+            </div>
+        </div>
+        <div class="chatbot-input-area">
+            <input type="text" id="chatbot-input" class="chatbot-input" placeholder="편하게 말씀해 주세요..." onkeypress="handleChatInput(event)">
+            <button id="chatbot-send" class="chatbot-send" onclick="sendChatMessage()">전송</button>
+        </div>
+    </div>
+
+    
+    <div id="supportModal" class="support-modal">
+        <div class="support-modal-content">
+            <div class="support-modal-header">
+                <h3>프로젝트 후원</h3>
+                <span class="support-modal-close" onclick="closeSupportModal()">&times;</span>
+            </div>
+            <div class="support-modal-body">
+                <div id="step1" class="modal-step active">
+                    <p class="support-description">
+                        더 많은 이야기를 담기 위한 여정에 함께해 주세요.<br>
+                        편리한 후원 방법을 선택해주세요.
+                    </p>
                     
-                    <div class="qr-section">
-                        <div class="qr-code">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=supertoss://send" alt="토스 QR코드" style="width: 80px; height: 80px; border-radius: 4px;">
+                    <div class="method-selection">
+                        <div class="method-card" onclick="showStep('toss')">
+                            <span class="method-icon">💙</span>
+                            <div class="method-title">토스</div>
+                            <div class="method-description">토스 앱으로 간편하게<br>수수료 없이 송금</div>
                         </div>
-                        <div class="qr-label">토스 앱 실행</div>
+                        
+                        <div class="method-card" onclick="showStep('kakaobank')">
+                            <span class="method-icon">💛</span>
+                            <div class="method-title">카카오뱅크</div>
+                            <div class="method-description">카카오뱅크 앱에서<br>QR 스캔 송금</div>
+                        </div>
+                        
+                        <div class="method-card" onclick="showStep('naverpay')">
+                            <span class="method-icon">💚</span>
+                            <div class="method-title">네이버페이</div>
+                            <div class="method-description">네이버페이로<br>간편 송금</div>
+                        </div>
+                        
+                        <div class="method-card" onclick="showStep('samsungpay')">
+                            <span class="method-icon">🩵</span>
+                            <div class="method-title">삼성페이</div>
+                            <div class="method-description">삼성페이 앱으로<br>간편 이체</div>
+                        </div>
+                        
+                        <div class="method-card" onclick="showStep('other')">
+                            <span class="method-icon">🤍</span>
+                            <div class="method-title">다른 은행</div>
+                            <div class="method-description">계좌번호로<br>타행이체 송금</div>
+                        </div>
                     </div>
                 </div>
-                
-                <div style="background: rgba(245, 240, 230, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                    <h4 style="color: #8d6e63; margin-bottom: 15px;">💙 토스 송금 방법</h4>
-                    <p style="color: #d4c4a8; line-height: 1.6;">
-                        1. QR 스캔해서 토스 앱 실행<br>
-                        2. 하단 "송금" 버튼 클릭<br>
-                        3. "QR 스캔" 또는 "계좌로 송금" 선택<br>
-                        4. 은행: <strong>카카오뱅크</strong> 선택<br>
-                        5. 계좌번호: <strong>333-3300-3088-35</strong> 입력
-                    </p>
-                </div>
-                
-                <div class="copy-buttons">
-                    <button class="copy-btn" onclick="copyToClipboard('333-3300-3088-35', this)">
-                        📋 계좌번호 복사
-                    </button>
-                    <button class="copy-btn" onclick="copyToClipboard('카카오뱅크 333-3300-3088-35 임주은', this)">
-                        📝 전체 정보 복사
-                    </button>
-                    <button class="back-btn" onclick="showStep('1')">
-                        ← 다른 방법 선택
-                    </button>
-                </div>
-                
-                <p class="thanks-note">토스에서 수수료 없이 송금 가능해요 🙏</p>
-            </div>
 
-            <div id="stepKakaobank" class="modal-step">
-                <div class="account-info">
-                    <div class="account-details">
-                        <div class="account-bank">카카오뱅크</div>
-                        <div class="account-number">333-3300-3088-35</div>
-                        <div class="account-holder">임주은</div>
+                <div id="stepToss" class="modal-step">
+                    <div class="account-info">
+                        <div class="account-details">
+                            <div class="account-bank">카카오뱅크</div>
+                            <div class="account-number">333-3300-3088-35</div>
+                            <div class="account-holder">임주은</div>
+                        </div>
+                        
+                        <div class="qr-section">
+                            <div class="qr-code">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=supertoss://send" alt="토스 QR코드" style="width: 80px; height: 80px; border-radius: 4px;">
+                            </div>
+                            <div class="qr-label">토스 앱 실행</div>
+                        </div>
                     </div>
                     
-                    <div class="qr-section">
-                        <div class="qr-code">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=kakaobank://send" alt="카카오뱅크 앱 실행" style="width: 80px; height: 80px; border-radius: 4px;">
-                        </div>
-                        <div class="qr-label">카카오뱅크 앱 실행</div>
-                    </div>
-                </div>
-                
-                <div style="background: rgba(245, 240, 230, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                    <h4 style="color: #8d6e63; margin-bottom: 15px;">💛 카카오뱅크 송금 방법</h4>
-                    <p style="color: #d4c4a8; line-height: 1.6;">
-                        1. QR 스캔해서 카카오뱅크 앱 실행<br>
-                        2. "송금" 메뉴 선택<br>
-                        3. "계좌로 송금" 또는 "QR 스캔" 선택<br>
-                        4. 계좌번호: <strong>333-3300-3088-35</strong> 입력<br>
-                        5. 송금 금액 입력 후 전송
-                    </p>
-                </div>
-                
-                <div class="copy-buttons">
-                    <button class="copy-btn" onclick="copyToClipboard('333-3300-3088-35', this)">
-                        📋 계좌번호 복사
-                    </button>
-                    <button class="copy-btn" onclick="copyToClipboard('카카오뱅크 333-3300-3088-35 임주은', this)">
-                        📝 전체 정보 복사
-                    </button>
-                    <button class="back-btn" onclick="showStep('1')">
-                        ← 다른 방법 선택
-                    </button>
-                </div>
-                
-                <p class="thanks-note">카카오뱅크 앱에서 QR 스캔하거나 계좌이체로 송금해주세요 🙏</p>
-            </div>
-
-            <div id="stepNaverpay" class="modal-step">
-                <div class="account-info">
-                    <div class="account-details">
-                        <div class="account-bank">카카오뱅크</div>
-                        <div class="account-number">333-3300-3088-35</div>
-                        <div class="account-holder">임주은</div>
+                    <div style="background: rgba(245, 240, 230, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                        <h4 style="color: #8d6e63; margin-bottom: 15px;">💙 토스 송금 방법</h4>
+                        <p style="color: #d4c4a8; line-height: 1.6;">
+                            1. QR 스캔해서 토스 앱 실행<br>
+                            2. 하단 "송금" 버튼 클릭<br>
+                            3. "QR 스캔" 또는 "계좌로 송금" 선택<br>
+                            4. 은행: <strong>카카오뱅크</strong> 선택<br>
+                            5. 계좌번호: <strong>333-3300-3088-35</strong> 입력
+                        </p>
                     </div>
                     
-                    <div class="qr-section">
-                        <div class="qr-code">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=naverpay://send" alt="네이버페이 앱 실행" style="width: 80px; height: 80px; border-radius: 4px;">
-                        </div>
-                        <div class="qr-label">네이버페이 앱 실행</div>
-                    </div>
-                </div>
-                
-                <div style="background: rgba(245, 240, 230, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                    <h4 style="color: #8d6e63; margin-bottom: 15px;">💚 네이버페이 송금 방법</h4>
-                    <p style="color: #d4c4a8; line-height: 1.6;">
-                        1. QR 스캔해서 네이버페이 앱 실행<br>
-                        2. "송금" 버튼 클릭<br>
-                        3. "계좌로 송금" 선택<br>
-                        4. 은행: <strong>카카오뱅크</strong> 선택<br>
-                        5. 계좌번호: <strong>333-3300-3088-35</strong> 입력
-                    </p>
-                </div>
-                
-                <div class="copy-buttons">
-                    <button class="copy-btn" onclick="copyToClipboard('333-3300-3088-35', this)">
-                        📋 계좌번호 복사
-                    </button>
-                    <button class="copy-btn" onclick="copyToClipboard('카카오뱅크 333-3300-3088-35 임주은', this)">
-                        📝 전체 정보 복사
-                    </button>
-                    <button class="back-btn" onclick="showStep('1')">
-                        ← 다른 방법 선택
-                    </button>
-                </div>
-                
-                <p class="thanks-note">네이버페이로 간편하게 송금해주세요 🙏</p>
-            </div>
-
-            <div id="stepSamsungpay" class="modal-step">
-                <div class="account-info">
-                    <div class="account-details">
-                        <div class="account-bank">카카오뱅크</div>
-                        <div class="account-number">333-3300-3088-35</div>
-                        <div class="account-holder">임주은</div>
+                    <div class="copy-buttons">
+                        <button class="copy-btn" onclick="copyToClipboard('333-3300-3088-35', this)">
+                            📋 계좌번호 복사
+                        </button>
+                        <button class="copy-btn" onclick="copyToClipboard('카카오뱅크 333-3300-3088-35 임주은', this)">
+                            📝 전체 정보 복사
+                        </button>
+                        <button class="back-btn" onclick="showStep('1')">
+                            ← 다른 방법 선택
+                        </button>
                     </div>
                     
-                    <div class="qr-section">
-                        <div class="qr-code">
-                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=samsungpay://send" alt="삼성페이 앱 실행" style="width: 80px; height: 80px; border-radius: 4px;">
-                        </div>
-                        <div class="qr-label">삼성페이 앱 실행</div>
-                    </div>
+                    <p class="thanks-note">토스에서 수수료 없이 송금 가능해요 🙏</p>
                 </div>
-                
-                <div style="background: rgba(245, 240, 230, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                    <h4 style="color: #8d6e63; margin-bottom: 15px;">🩵 삼성페이 송금 방법</h4>
-                    <p style="color: #d4c4a8; line-height: 1.6;">
-                        1. QR 스캔해서 삼성페이 앱 실행<br>
-                        2. "송금" 메뉴 선택<br>
-                        3. "계좌번호 입력" 선택<br>
-                        4. 은행: <strong>카카오뱅크</strong> 선택<br>
-                        5. 계좌번호: <strong>333-3300-3088-35</strong> 입력
-                    </p>
-                </div>
-                
-                <div class="copy-buttons">
-                    <button class="copy-btn" onclick="copyToClipboard('333-3300-3088-35', this)">
-                        📋 계좌번호 복사
-                    </button>
-                    <button class="copy-btn" onclick="copyToClipboard('카카오뱅크 333-3300-3088-35 임주은', this)">
-                        📝 전체 정보 복사
-                    </button>
-                    <button class="back-btn" onclick="showStep('1')">
-                        ← 다른 방법 선택
-                    </button>
-                </div>
-                
-                <p class="thanks-note">삼성페이로 간편하게 송금해주세요 🙏</p>
-            </div>
 
-            <div id="stepOther" class="modal-step">
-                <div class="account-info">
-                    <div class="account-details">
-                        <div class="account-bank">카카오뱅크 (은행코드: 090)</div>
-                        <div class="account-number">333-3300-3088-35</div>
-                        <div class="account-holder">임주은</div>
+                <div id="stepKakaobank" class="modal-step">
+                    <div class="account-info">
+                        <div class="account-details">
+                            <div class="account-bank">카카오뱅크</div>
+                            <div class="account-number">333-3300-3088-35</div>
+                            <div class="account-holder">임주은</div>
+                        </div>
+                        
+                        <div class="qr-section">
+                            <div class="qr-code">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=kakaobank://send" alt="카카오뱅크 앱 실행" style="width: 80px; height: 80px; border-radius: 4px;">
+                            </div>
+                            <div class="qr-label">카카오뱅크 앱 실행</div>
+                        </div>
                     </div>
+                    
+                    <div style="background: rgba(245, 240, 230, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                        <h4 style="color: #8d6e63; margin-bottom: 15px;">💛 카카오뱅크 송금 방법</h4>
+                        <p style="color: #d4c4a8; line-height: 1.6;">
+                            1. QR 스캔해서 카카오뱅크 앱 실행<br>
+                            2. "송금" 메뉴 선택<br>
+                            3. "계좌로 송금" 또는 "QR 스캔" 선택<br>
+                            4. 계좌번호: <strong>333-3300-3088-35</strong> 입력<br>
+                            5. 송금 금액 입력 후 전송
+                        </p>
+                    </div>
+                    
+                    <div class="copy-buttons">
+                        <button class="copy-btn" onclick="copyToClipboard('333-3300-3088-35', this)">
+                            📋 계좌번호 복사
+                        </button>
+                        <button class="copy-btn" onclick="copyToClipboard('카카오뱅크 333-3300-3088-35 임주은', this)">
+                            📝 전체 정보 복사
+                        </button>
+                        <button class="back-btn" onclick="showStep('1')">
+                            ← 다른 방법 선택
+                        </button>
+                    </div>
+                    
+                    <p class="thanks-note">카카오뱅크 앱에서 QR 스캔하거나 계좌이체로 송금해주세요 🙏</p>
                 </div>
-                
-                <div style="background: rgba(245, 240, 230, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-                    <h4 style="color: #8d6e63; margin-bottom: 15px;">🤍 타행이체 방법</h4>
-                    <p style="color: #d4c4a8; line-height: 1.6; margin-bottom: 10px;">
-                        1. 본인 은행 앱에서 "송금" 또는 "이체" 선택<br>
-                        2. "타행이체" 선택<br>
-                        3. 은행: <strong>카카오뱅크 (090)</strong><br>
-                        4. 계좌번호: <strong>333-3300-3088-35</strong><br>
-                        5. 예금주: <strong>임주은</strong>
-                    </p>
+
+                <div id="stepNaverpay" class="modal-step">
+                    <div class="account-info">
+                        <div class="account-details">
+                            <div class="account-bank">카카오뱅크</div>
+                            <div class="account-number">333-3300-3088-35</div>
+                            <div class="account-holder">임주은</div>
+                        </div>
+                        
+                        <div class="qr-section">
+                            <div class="qr-code">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=naverpay://send" alt="네이버페이 앱 실행" style="width: 80px; height: 80px; border-radius: 4px;">
+                            </div>
+                            <div class="qr-label">네이버페이 앱 실행</div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(245, 240, 230, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                        <h4 style="color: #8d6e63; margin-bottom: 15px;">💚 네이버페이 송금 방법</h4>
+                        <p style="color: #d4c4a8; line-height: 1.6;">
+                            1. QR 스캔해서 네이버페이 앱 실행<br>
+                            2. "송금" 버튼 클릭<br>
+                            3. "계좌로 송금" 선택<br>
+                            4. 은행: <strong>카카오뱅크</strong> 선택<br>
+                            5. 계좌번호: <strong>333-3300-3088-35</strong> 입력
+                        </p>
+                    </div>
+                    
+                    <div class="copy-buttons">
+                        <button class="copy-btn" onclick="copyToClipboard('333-3300-3088-35', this)">
+                            📋 계좌번호 복사
+                        </button>
+                        <button class="copy-btn" onclick="copyToClipboard('카카오뱅크 333-3300-3088-35 임주은', this)">
+                            📝 전체 정보 복사
+                        </button>
+                        <button class="back-btn" onclick="showStep('1')">
+                            ← 다른 방법 선택
+                        </button>
+                    </div>
+                    
+                    <p class="thanks-note">네이버페이로 간편하게 송금해주세요 🙏</p>
                 </div>
-                
-                <div class="copy-buttons">
-                    <button class="copy-btn" onclick="copyToClipboard('333-3300-3088-35', this)">
-                        📋 계좌번호 복사
-                    </button>
-                    <button class="copy-btn" onclick="copyToClipboard('카카오뱅크 333-3300-3088-35 임주은', this)">
-                        📝 전체 정보 복사
-                    </button>
-                    <button class="back-btn" onclick="showStep('1')">
-                        ← 다른 방법 선택
-                    </button>
+
+                <div id="stepSamsungpay" class="modal-step">
+                    <div class="account-info">
+                        <div class="account-details">
+                            <div class="account-bank">카카오뱅크</div>
+                            <div class="account-number">333-3300-3088-35</div>
+                            <div class="account-holder">임주은</div>
+                        </div>
+                        
+                        <div class="qr-section">
+                            <div class="qr-code">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=samsungpay://send" alt="삼성페이 앱 실행" style="width: 80px; height: 80px; border-radius: 4px;">
+                            </div>
+                            <div class="qr-label">삼성페이 앱 실행</div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(245, 240, 230, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                        <h4 style="color: #8d6e63; margin-bottom: 15px;">🩵 삼성페이 송금 방법</h4>
+                        <p style="color: #d4c4a8; line-height: 1.6;">
+                            1. QR 스캔해서 삼성페이 앱 실행<br>
+                            2. "송금" 메뉴 선택<br>
+                            3. "계좌번호 입력" 선택<br>
+                            4. 은행: <strong>카카오뱅크</strong> 선택<br>
+                            5. 계좌번호: <strong>333-3300-3088-35</strong> 입력
+                        </p>
+                    </div>
+                    
+                    <div class="copy-buttons">
+                        <button class="copy-btn" onclick="copyToClipboard('333-3300-3088-35', this)">
+                            📋 계좌번호 복사
+                        </button>
+                        <button class="copy-btn" onclick="copyToClipboard('카카오뱅크 333-3300-3088-35 임주은', this)">
+                            📝 전체 정보 복사
+                        </button>
+                        <button class="back-btn" onclick="showStep('1')">
+                            ← 다른 방법 선택
+                        </button>
+                    </div>
+                    
+                    <p class="thanks-note">삼성페이로 간편하게 송금해주세요 🙏</p>
                 </div>
-                
-                <p class="thanks-note">본인 은행 앱에서 타행이체로 송금해주세요 🙏</p>
+
+                <div id="stepOther" class="modal-step">
+                    <div class="account-info">
+                        <div class="account-details">
+                            <div class="account-bank">카카오뱅크 (은행코드: 090)</div>
+                            <div class="account-number">333-3300-3088-35</div>
+                            <div class="account-holder">임주은</div>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(245, 240, 230, 0.05); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                        <h4 style="color: #8d6e63; margin-bottom: 15px;">🤍 타행이체 방법</h4>
+                        <p style="color: #d4c4a8; line-height: 1.6; margin-bottom: 10px;">
+                            1. 본인 은행 앱에서 "송금" 또는 "이체" 선택<br>
+                            2. "타행이체" 선택<br>
+                            3. 은행: <strong>카카오뱅크 (090)</strong><br>
+                            4. 계좌번호: <strong>333-3300-3088-35</strong><br>
+                            5. 예금주: <strong>임주은</strong>
+                        </p>
+                    </div>
+                    
+                    <div class="copy-buttons">
+                        <button class="copy-btn" onclick="copyToClipboard('333-3300-3088-35', this)">
+                            📋 계좌번호 복사
+                        </button>
+                        <button class="copy-btn" onclick="copyToClipboard('카카오뱅크 333-3300-3088-35 임주은', this)">
+                            📝 전체 정보 복사
+                        </button>
+                        <button class="back-btn" onclick="showStep('1')">
+                            ← 다른 방법 선택
+                        </button>
+                    </div>
+                    
+                    <p class="thanks-note">본인 은행 앱에서 타행이체로 송금해주세요 🙏</p>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
-    function openSupportModal() {
-        document.getElementById('supportModal').style.display = 'block';
-        showStep('1');
-    }
-
-    function closeSupportModal() {
-        document.getElementById('supportModal').style.display = 'none';
-    }
-
-    function showStep(stepName) {
-        const allSteps = document.querySelectorAll('.modal-step');
-        allSteps.forEach(step => step.classList.remove('active'));
-        
-        let targetStep;
-        if (stepName === '1') {
-            targetStep = document.getElementById('step1');
-        } else if (stepName === 'toss') {
-            targetStep = document.getElementById('stepToss');
-        } else if (stepName === 'kakaobank') {
-            targetStep = document.getElementById('stepKakaobank');
-        } else if (stepName === 'naverpay') {
-            targetStep = document.getElementById('stepNaverpay');
-        } else if (stepName === 'samsungpay') {
-            targetStep = document.getElementById('stepSamsungpay');
-        } else if (stepName === 'other') {
-            targetStep = document.getElementById('stepOther');
+    <script>
+        function openSupportModal() {
+            document.getElementById('supportModal').style.display = 'block';
+            showStep('1');
         }
-        
-        if (targetStep) {
-            targetStep.classList.add('active');
-        }
-    }
 
-    window.onclick = function(event) {
-        const modal = document.getElementById('supportModal');
-        if (event.target == modal) {
-            modal.style.display = 'none';
+        function closeSupportModal() {
+            document.getElementById('supportModal').style.display = 'none';
         }
-    }
 
-    function copyToClipboard(text, button) {
-        navigator.clipboard.writeText(text).then(() => {
+        function showStep(stepName) {
+            const allSteps = document.querySelectorAll('.modal-step');
+            allSteps.forEach(step => step.classList.remove('active'));
+            
+            let targetStep;
+            if (stepName === '1') {
+                targetStep = document.getElementById('step1');
+            } else if (stepName === 'toss') {
+                targetStep = document.getElementById('stepToss');
+            } else if (stepName === 'kakaobank') {
+                targetStep = document.getElementById('stepKakaobank');
+            } else if (stepName === 'naverpay') {
+                targetStep = document.getElementById('stepNaverpay');
+            } else if (stepName === 'samsungpay') {
+                targetStep = document.getElementById('stepSamsungpay');
+            } else if (stepName === 'other') {
+                targetStep = document.getElementById('stepOther');
+            }
+            
+            if (targetStep) {
+                targetStep.classList.add('active');
+            }
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('supportModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function copyToClipboard(text, button) {
+            if (!button.classList.contains('copied')) {
+                navigator.clipboard.writeText(text).then(() => {
+                    handleCopySuccess(button);
+                }).catch(() => {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = text;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    
+                    handleCopySuccess(button);
+                });
+            }
+        }
+
+        function handleCopySuccess(button) {
             const originalText = button.textContent;
             button.textContent = '복사됨 ✓';
             button.classList.add('copied');
@@ -1210,112 +1353,105 @@
                 button.textContent = originalText;
                 button.classList.remove('copied');
             }, 2000);
-        }).catch(() => {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            
-            const originalText = button.textContent;
-            button.textContent = '복사됨 ✓';
-            button.classList.add('copied');
-            
-            setTimeout(() => {
-                button.textContent = originalText;
-                button.classList.remove('copied');
-            }, 2000);
-        });
-    }
-
-    function toggleChatbot() {
-        const chatbotWindow = document.getElementById('chatbot-window');
-        if (chatbotWindow.style.display === 'none' || chatbotWindow.style.display === '') {
-            chatbotWindow.style.display = 'block';
-        } else {
-            chatbotWindow.style.display = 'none';
         }
-    }
 
-    function handleChatInput(event) {
-        if (event.key === 'Enter') {
-            sendChatMessage();
+        let chatbotMessages = [];
+        let conversationHistory = [];
+        let userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
+        function toggleChatbot() {
+            const chatbotContainer = document.getElementById('chatbot-container');
+            chatbotContainer.classList.toggle('active');
+            
+            if (chatbotContainer.classList.contains('active')) {
+                document.getElementById('chatbot-input').focus();
+                scrollChatToBottom();
+            }
         }
-    }
 
-    function sendChatMessage() {
-        const input = document.getElementById('chatbot-input');
-        const message = input.value.trim();
-        if (message) {
-            addMessage(message, 'user');
+        function handleChatInput(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendChatMessage();
+            }
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chatbot-input');
+            const sendBtn = document.getElementById('chatbot-send');
+            const message = input.value.trim();
+            
+            if (!message || sendBtn.disabled) return;
+
+            addChatMessage(message, 'user');
             input.value = '';
-            
-            // 타이핑 표시
+            sendBtn.disabled = true;
+
             showTypingIndicator();
-            
-            // 실제 API 호출 (원래 코드)
+
+            conversationHistory.push({ role: 'user', content: message });
+
             fetch('/.netlify/functions/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    messages: [{ role: 'user', content: message }],
-                    userId: 'user_' + Date.now()
+                    messages: conversationHistory,
+                    userId: userId
                 })
             })
             .then(response => response.json())
             .then(data => {
                 hideTypingIndicator();
-                addMessage(data.message, 'bot');
+                addChatMessage(data.message, 'bot');
+                conversationHistory.push({ role: 'assistant', content: data.message });
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('챗봇 오류:', error);
                 hideTypingIndicator();
-                addMessage('죄송합니다. 일시적인 문제가 발생했습니다.', 'bot');
+                addChatMessage('죄송합니다. 일시적인 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.', 'bot');
+            })
+            .finally(() => {
+                sendBtn.disabled = false;
+                input.focus();
             });
         }
-    }
 
-    function showTypingIndicator() {
-        const messagesContainer = document.getElementById('chatbot-messages');
-        const typingDiv = document.createElement('div');
-        typingDiv.className = 'message bot-message typing';
-        typingDiv.id = 'typing-indicator';
-        typingDiv.innerHTML = '타이핑 중...';
-        messagesContainer.appendChild(typingDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
-
-    function hideTypingIndicator() {
-        const typingEl = document.getElementById('typing-indicator');
-        if (typingEl) {
-            typingEl.remove();
+        function showTypingIndicator() {
+            const messagesContainer = document.getElementById('chatbot-messages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'message bot typing';
+            typingDiv.id = 'typing-indicator';
+            typingDiv.textContent = '타이핑 중...';
+            messagesContainer.appendChild(typingDiv);
+            scrollChatToBottom();
         }
-    }
 
-    function addMessage(text, sender) {
-        const messagesContainer = document.getElementById('chatbot-messages');
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${sender}-message`;
-        
-        if (text.includes('<br>')) {
-            messageDiv.innerHTML = text;
-        } else {
-            messageDiv.textContent = text;
+        function hideTypingIndicator() {
+            const typingEl = document.getElementById('typing-indicator');
+            if (typingEl) {
+                typingEl.remove();
+            }
         }
-        
-        messagesContainer.appendChild(messageDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }
 
-    function getBotResponse(message) {
-        // 이 함수는 더 이상 사용하지 않음 - API로 대체
-        return '';
-    }
-</script>
-```
+        function addChatMessage(text, sender) {
+            const messagesContainer = document.getElementById('chatbot-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            if (text.includes('<br>')) {
+                messageDiv.innerHTML = text;
+            } else {
+                messageDiv.textContent = text;
+            }
+            
+            messagesContainer.appendChild(messageDiv);
+            scrollChatToBottom();
+        }
 
-</body>
-</html>
+        function scrollChatToBottom() {
+            const messagesContainer = document.getElementById('chatbot-messages');
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    </script>
