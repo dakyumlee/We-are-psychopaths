@@ -887,7 +887,7 @@
         <p>모든 이야기는 소중하고, 모든 사람은 존중받을 권리가 있습니다.</p>
     </footer>
 
-    <div class="chatbot-container" style="display: none;">
+    <div class="chatbot-container">
         <button class="chatbot-button" onclick="toggleChatbot()">💬</button>
         <div id="chatbot-window" class="chatbot-window">
             <div class="chatbot-header">
@@ -895,6 +895,9 @@
                 <button class="chatbot-close" onclick="toggleChatbot()">×</button>
             </div>
             <div id="chatbot-messages" class="chatbot-messages">
+                <div class="message bot-message">
+                    안녕하세요. 저는 마음 상담사입니다.<br><br>이곳에 오시느라 용기 내주셔서 고마워요. 지금 어떤 기분이신지, 또는 무엇이든 편하게 말씀해 주세요.<br><br>천천히, 편안한 속도로 이야기해요.
+                </div>
             </div>
             <div class="chatbot-input-area">
                 <input type="text" id="chatbot-input" class="chatbot-input" placeholder="편하게 말씀해 주세요..." onkeypress="handleChatInput(event)">
@@ -1297,7 +1300,6 @@
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender}-message`;
         
-        // HTML 태그 처리
         if (text.includes('<br>')) {
             messageDiv.innerHTML = text;
         } else {
@@ -1313,6 +1315,7 @@
         return '';
     }
 </script>
+```
 
 </body>
 </html>
