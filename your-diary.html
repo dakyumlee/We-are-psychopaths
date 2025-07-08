@@ -91,14 +91,14 @@
 
         .dislike-btn:hover {
             background: rgba(220, 53, 69, 0.2);
-            border-color: #dc3545;
-            color: #dc3545;
+            border-color: #392d2e;
+            color: #ffffff;
         }
 
         .dislike-btn.active {
-            background: #dc3545;
+            background: #392d2e;
             color: white;
-            border-color: #dc3545;
+            border-color: #392d2e;
         }
 
         .comment-btn {
@@ -122,7 +122,7 @@
         }
 
         .delete-story-btn:hover {
-            background: #dc3545 !important;
+            background: #392d2e !important;
             color: white !important;
         }
 
@@ -136,11 +136,11 @@
             padding: 10px;
             background: rgba(255, 0, 0, 0.1);
             border-radius: 8px;
-            border-left: 4px solid #ff0000;
+            border-left: 4px solid #3f2f2f;
         }
 
         .youtube-link a {
-            color: #ff6b6b;
+            color: #322525;
             text-decoration: none;
             font-weight: 500;
         }
@@ -216,7 +216,7 @@
 
         .playlist-link {
             display: inline-block;
-            background: #ff0000;
+            background: #392d2e;
             color: white;
             padding: 10px 15px;
             border-radius: 25px;
@@ -226,7 +226,7 @@
         }
 
         .playlist-link:hover {
-            background: #cc0000;
+            background: #392d2e;
             transform: scale(1.05);
         }
 
@@ -436,6 +436,89 @@
         let lastDoc = null;
         let userLikes = JSON.parse(localStorage.getItem('userLikes') || '{}');
         let currentCommentStoryId = null;
+
+        async function loadPlaylists() {
+            const playlistGrid = document.getElementById('playlist-grid');
+            if (!playlistGrid) {
+                console.error('playlist-grid 요소를 찾을 수 없습니다');
+                return;
+            }
+        
+            try {
+                console.log('Firebase DB 상태:', window.db ? '연결됨' : '연결 안됨');
+                
+                if (!window.db) {
+                    playlistGrid.innerHTML = '<p style="text-align: center; color: #dc3545;">Firebase 연결을 확인하는 중...</p>';
+                    setTimeout(loadPlaylists, 1000);
+                    return;
+                }
+
+                const [playlistsSnapshot, motherMusicSnapshot] = await Promise.all([
+                    getDocs(collection(window.db, 'playlists')),
+                    getDocs(collection(window.db, 'motherMusic'))
+                ]);
+                
+                const allPlaylists = [];
+                
+                playlistsSnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    allPlaylists.push({
+                        id: doc.id,
+                        title: data.title,
+                        description: data.description || '',
+                        url: data.url,
+                        thumbnail: data.thumbnail || '/api/placeholder/300/150',
+                        tags: data.tags || [],
+                        source: 'playlists'
+                    });
+                });
+
+                motherMusicSnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    allPlaylists.push({
+                        id: doc.id,
+                        title: data.title,
+                        description: '엄마가 추천하는 음악',
+                        url: data.url,
+                        thumbnail: '/api/placeholder/300/150',
+                        tags: ['엄마추천'],
+                        source: 'motherMusic'
+                    });
+                });
+        
+                console.log('총 플레이리스트 수:', allPlaylists.length);
+                console.log('플레이리스트 데이터:', allPlaylists);
+        
+                if (allPlaylists.length === 0) {
+                    playlistGrid.innerHTML = '<p style="text-align: center; color: #d4c4a8;">등록된 플레이리스트가 없습니다.</p>';
+                    return;
+                }
+        
+                playlistGrid.innerHTML = allPlaylists.map(playlist => `
+                    <div class="playlist-card">
+                        <img src="${playlist.thumbnail}" 
+                             alt="${playlist.title}" 
+                             class="playlist-thumbnail"
+                             onerror="this.src='/api/placeholder/300/150'">
+                        <div class="playlist-title">${playlist.title}</div>
+                        <div class="playlist-description">${playlist.description}</div>
+                        <div class="playlist-tags">
+                            ${playlist.tags.map(tag => `<span class="playlist-tag">${tag}</span>`).join('')}
+                        </div>
+                        <a href="${playlist.url}" target="_blank" rel="noopener noreferrer" class="playlist-link">
+                            플레이리스트 듣기
+                        </a>
+                        <small style="display: block; margin-top: 5px; opacity: 0.7; font-size: 12px;">
+                            출처: ${playlist.source}
+                        </small>
+                    </div>
+                `).join('');
+        
+            } catch (error) {
+                console.error('플레이리스트 로드 실패:', error);
+                playlistGrid.innerHTML = '<p style="text-align: center; color: #dc3545;">플레이리스트를 불러오는데 실패했습니다: ' + error.message + '</p>';
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
             loadStories();
@@ -651,45 +734,6 @@
             } catch (error) {
                 console.error('이야기 저장 실패:', error);
                 alert('이야기 저장 중 오류가 발생했습니다.');
-            }
-        }
-
-        async function loadPlaylists() {
-            const playlistGrid = document.getElementById('playlist-grid');
-            if (!playlistGrid) return;
-
-            try {
-                const snapshot = await getDocs(collection(window.db, 'playlists'));
-                const playlists = [];
-                
-                snapshot.forEach((doc) => {
-                    playlists.push({ id: doc.id, ...doc.data() });
-                });
-
-                if (playlists.length === 0) {
-                    playlistGrid.innerHTML = '<p style="text-align: center; color: #d4c4a8;">등록된 플레이리스트가 없습니다.</p>';
-                    return;
-                }
-
-                playlistGrid.innerHTML = playlists.map(playlist => `
-                    <div class="playlist-card">
-                        <img src="${playlist.thumbnail || '/api/placeholder/300/150'}" 
-                             alt="${playlist.title}" 
-                             class="playlist-thumbnail">
-                        <div class="playlist-title">${playlist.title}</div>
-                        <div class="playlist-description">${playlist.description || ''}</div>
-                        <div class="playlist-tags">
-                            ${playlist.tags ? playlist.tags.map(tag => `<span class="playlist-tag">${tag}</span>`).join('') : ''}
-                        </div>
-                        <a href="${playlist.url}" target="_blank" rel="noopener noreferrer" class="playlist-link">
-                            플레이리스트 듣기
-                        </a>
-                    </div>
-                `).join('');
-
-            } catch (error) {
-                console.error('플레이리스트 로드 실패:', error);
-                playlistGrid.innerHTML = '<p style="text-align: center; color: #dc3545;">플레이리스트를 불러오는데 실패했습니다.</p>';
             }
         }
 
